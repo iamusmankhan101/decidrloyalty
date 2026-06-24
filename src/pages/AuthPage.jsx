@@ -82,13 +82,16 @@ export default function AuthPage({ mode }) {
 
       {/* ── Right panel ── */}
       <div className="auth-right">
-        <div className="auth-card">
 
-          {/* Mobile logo */}
+        {/* Mobile gradient header (hidden on desktop) */}
+        <div className="auth-mobile-header">
           <Link to="/" className="auth-mobile-brand">
             <img src="/decidr-logo.png" alt="decidr" className="auth-mobile-logo" />
-            <span className="auth-brand-badge auth-brand-badge--dark">loyalty</span>
+            <span className="auth-brand-badge">loyalty</span>
           </Link>
+        </div>
+
+        <div className="auth-card">
 
           <h1 className="auth-title">
             {isSignup ? 'Create your account' : 'Welcome back'}
