@@ -1,0 +1,91 @@
+.lp { min-height: 100vh; background: #fff; }
+
+/* Nav */
+.lp-nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #f1f5f9; }
+.lp-nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.lp-logo { font-size: 1.2rem; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
+.lp-logo-badge { background: #6366f1; color: #fff; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 99px; vertical-align: middle; margin-left: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
+.lp-nav-links { display: flex; align-items: center; gap: 1.5rem; }
+.lp-nav-link { font-size: 0.88rem; font-weight: 500; color: #475569; transition: color 0.2s; }
+.lp-nav-link:hover { color: #0f172a; }
+
+/* Buttons */
+.lp-btn { display: inline-flex; align-items: center; justify-content: center; font-weight: 600; border-radius: 10px; transition: all 0.2s; border: none; }
+.lp-btn-sm { background: #6366f1; color: #fff; font-size: 0.85rem; padding: 0.5rem 1.1rem; }
+.lp-btn-sm:hover { background: #4f46e5; }
+.lp-btn-lg { background: #6366f1; color: #fff; font-size: 1rem; padding: 0.875rem 2rem; }
+.lp-btn-lg:hover { background: #4f46e5; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(99,102,241,0.3); }
+.lp-btn-ghost-lg { background: transparent; color: #475569; font-size: 1rem; padding: 0.875rem 1.5rem; border: 1.5px solid #e2e8f0; }
+.lp-btn-ghost-lg:hover { border-color: #6366f1; color: #6366f1; }
+.lp-btn-white { background: #fff; color: #6366f1; font-size: 1rem; padding: 0.875rem 2rem; }
+.lp-btn-white:hover { background: #f1f5f9; transform: translateY(-1px); }
+
+/* Hero */
+.lp-hero { max-width: 1100px; margin: 0 auto; padding: 5rem 1.5rem 4rem; display: flex; align-items: center; gap: 4rem; }
+.lp-hero-inner { flex: 1; }
+.lp-hero-badge { display: inline-block; background: #eef2ff; color: #6366f1; font-size: 0.8rem; font-weight: 600; padding: 0.35rem 0.9rem; border-radius: 99px; margin-bottom: 1.5rem; }
+.lp-hero-title { font-size: 3rem; font-weight: 800; line-height: 1.15; color: #0f172a; margin-bottom: 1.25rem; letter-spacing: -1px; }
+.lp-accent { color: #6366f1; }
+.lp-hero-sub { font-size: 1.05rem; color: #64748b; line-height: 1.75; margin-bottom: 2rem; }
+.lp-hero-cta { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+.lp-hero-note { font-size: 0.8rem; color: #94a3b8; }
+
+/* Pass preview */
+.lp-pass-preview { flex-shrink: 0; }
+.lp-pass { width: 300px; background: #1e1b4b; border-radius: 20px; overflow: hidden; box-shadow: 0 24px 48px rgba(99,102,241,0.25); }
+.lp-pass-header { background: #312e81; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+.lp-pass-cafe { color: #fff; font-weight: 700; font-size: 0.95rem; }
+.lp-pass-label { color: rgba(255,255,255,0.5); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; }
+.lp-pass-body { padding: 1.5rem; }
+.lp-pass-name { color: #fff; font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
+.lp-pass-stamps { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.lp-pass-dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.1); }
+.lp-pass-dot.filled { background: #6366f1; border-color: #6366f1; }
+.lp-pass-progress { color: rgba(255,255,255,0.6); font-size: 0.78rem; }
+
+/* Sections */
+.lp-section-inner { max-width: 1100px; margin: 0 auto; padding: 5rem 1.5rem; }
+.lp-section-title { font-size: 2rem; font-weight: 800; color: #0f172a; text-align: center; margin-bottom: 0.75rem; letter-spacing: -0.5px; }
+.lp-section-sub { font-size: 1rem; color: #64748b; text-align: center; margin-bottom: 3rem; }
+
+/* Features */
+.lp-features { background: #f8fafc; }
+.lp-features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.lp-feature-card { background: #fff; border-radius: 14px; padding: 1.75rem; border: 1px solid #f1f5f9; transition: box-shadow 0.2s; }
+.lp-feature-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+.lp-feature-icon { font-size: 2rem; display: block; margin-bottom: 0.75rem; }
+.lp-feature-title { font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; }
+.lp-feature-desc { font-size: 0.88rem; color: #64748b; line-height: 1.65; }
+
+/* How it works */
+.lp-how-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+.lp-how-step { text-align: center; }
+.lp-how-num { width: 48px; height: 48px; border-radius: 50%; background: #6366f1; color: #fff; font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+.lp-how-title { font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; }
+.lp-how-desc { font-size: 0.85rem; color: #64748b; line-height: 1.65; }
+
+/* CTA */
+.lp-cta { background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); }
+.lp-cta-inner { text-align: center; padding-top: 5rem; padding-bottom: 5rem; }
+.lp-cta-title { font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 0.75rem; }
+.lp-cta-sub { font-size: 1rem; color: rgba(255,255,255,0.75); margin-bottom: 2rem; }
+
+/* Footer */
+.lp-footer { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; max-width: 1100px; margin: 0 auto; font-size: 0.82rem; color: #94a3b8; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .lp-hero { flex-direction: column; padding: 3rem 1.25rem 2rem; gap: 2.5rem; }
+  .lp-hero-title { font-size: 2.2rem; }
+  .lp-pass { width: 100%; max-width: 320px; margin: 0 auto; }
+  .lp-features-grid { grid-template-columns: 1fr 1fr; }
+  .lp-how-steps { grid-template-columns: 1fr 1fr; }
+  .lp-nav-links { gap: 0.75rem; }
+}
+@media (max-width: 600px) {
+  .lp-hero-title { font-size: 1.8rem; }
+  .lp-features-grid { grid-template-columns: 1fr; }
+  .lp-how-steps { grid-template-columns: 1fr; }
+  .lp-nav-links .lp-nav-link:not(:last-child) { display: none; }
+  .lp-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+}
