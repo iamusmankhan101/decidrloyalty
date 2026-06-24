@@ -125,48 +125,81 @@ const HOW = [
 ];
 
 function FeaturesSection() {
-  const cardRefs = React.useRef([]);
+  const listRefs = React.useRef([]);
   const [visible, setVisible] = React.useState(new Set());
 
   React.useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting)
             setVisible(prev => new Set([...prev, entry.target.dataset.idx]));
-          }
         });
       },
-      { threshold: 0.25 }
+      { threshold: 0.2 }
     );
-    cardRefs.current.forEach(ref => ref && obs.observe(ref));
+    listRefs.current.forEach(ref => ref && obs.observe(ref));
     return () => obs.disconnect();
   }, []);
 
   return (
     <section className="lp-features" id="features">
       <div className="lp-features-wrap">
-        <div className="lp-features-left">
+
+        {/* Left: stacked card visual */}
+        <div className="lp-stack-outer">
+          <div className="lp-bg-card lp-bg-card-3" />
+          <div className="lp-bg-card lp-bg-card-2" />
+          <div className="lp-bg-card lp-bg-card-1" />
+          <div className="lp-front-card">
+            <div className="lp-fc-header">
+              <div>
+                <p className="lp-fc-brand">DECIDR LOYALTY</p>
+                <p className="lp-fc-name">Loyalty Card</p>
+              </div>
+              <div className="lp-fc-icon">☕</div>
+            </div>
+            <div className="lp-fc-promo">
+              <p className="lp-fc-promo-label">REWARD</p>
+              <h3 className="lp-fc-promo-text">FREE COFFEE<br />ON YOUR 10TH VISIT</h3>
+            </div>
+            <div className="lp-fc-stamps">
+              {Array.from({ length: 10 }, (_, i) => (
+                <span key={i} className={`lp-fc-dot${i < 3 ? ' lp-fc-dot-filled' : ''}`} />
+              ))}
+            </div>
+            <p className="lp-fc-progress">3 / 10 stamps · 7 more for a free coffee</p>
+            <div className="lp-fc-footer">
+              <span className="lp-fc-footer-label">STAMPS COLLECTED</span>
+              <span className="lp-fc-footer-label">STATUS</span>
+              <span className="lp-fc-footer-val">3</span>
+              <span className="lp-fc-footer-val">Bronze</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: feature list */}
+        <div className="lp-features-right">
           <span className="lp-features-badge">✦ Feature rich</span>
           <h2 className="lp-features-heading">Everything your<br />cafe needs</h2>
-          <p className="lp-features-sub">Built specifically for independent cafes and small coffee shops that want to keep customers coming back.</p>
-        </div>
-        <div className="lp-features-right">
-          {FEATURES.map((f, i) => (
-            <div
-              key={f.title}
-              ref={el => cardRefs.current[i] = el}
-              data-idx={String(i)}
-              className={`lp-fcard${visible.has(String(i)) ? ' lp-fcard-visible' : ''}`}
-            >
-              <span className="lp-fcard-icon">{f.icon}</span>
-              <div className="lp-fcard-body">
-                <h3 className="lp-fcard-title">{f.title}</h3>
-                <p className="lp-fcard-desc">{f.desc}</p>
+          <div className="lp-feat-list">
+            {FEATURES.map((f, i) => (
+              <div
+                key={f.title}
+                ref={el => listRefs.current[i] = el}
+                data-idx={String(i)}
+                className={`lp-feat-item${visible.has(String(i)) ? ' lp-feat-visible' : ''}`}
+              >
+                <div className="lp-feat-icon">{f.icon}</div>
+                <div className="lp-feat-body">
+                  <h3 className="lp-feat-title">{f.title}</h3>
+                  <p className="lp-feat-desc">{f.desc}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+
       </div>
     </section>
   );
