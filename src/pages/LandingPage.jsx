@@ -228,16 +228,6 @@ export default function LandingPage() {
             <PhoneMockup />
           </div>
         </div>
-        {/* Trusted strip */}
-        <div className="lp-trusted">
-          <p className="lp-trusted-label">Trusted by many companies</p>
-          <div className="lp-trusted-logos">
-            <span className="lp-trusted-logo">SocialPilot</span>
-            <span className="lp-trusted-logo">Adobe</span>
-            <span className="lp-trusted-logo">TouchBistro</span>
-            <span className="lp-trusted-logo">Google</span>
-          </div>
-        </div>
       </section>
 
       <FeaturesSection />
