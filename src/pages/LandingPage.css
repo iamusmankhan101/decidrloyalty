@@ -262,6 +262,7 @@
   margin-bottom: 1.5rem;
   letter-spacing: -1px;
 }
+.lp-hero-title * { font-family: 'ClashDisplay', sans-serif; font-weight: 600; }
 
 .lp-accent { color: #f8f0e2; }
 
