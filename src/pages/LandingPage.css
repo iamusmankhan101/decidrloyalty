@@ -33,11 +33,12 @@
 ═══════════════════════════════════════════════ */
 .lp-hero {
   background: linear-gradient(to bottom, #012a8b 0%, #4a7fcb 30%, #b8d4e8 52%, #f8f0e2 72%, #ffffff 100%);
-  padding: 6rem 1.5rem 5rem;
+  padding: 5rem 2rem 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Moving lines */
@@ -76,7 +77,172 @@
 .lp-line:nth-child(8) { left: 84%; animation-duration: 7.8s; animation-delay: -2.8s; width: 0.5px; }
 .lp-line:nth-child(9) { left: 93%; animation-duration: 8.4s; animation-delay: -4.8s; }
 
-.lp-hero-inner { position: relative; z-index: 1; max-width: 760px; width: 100%; }
+/* Two-column row */
+.lp-hero-content {
+  max-width: 1100px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 3rem;
+}
+
+.lp-hero-inner { flex: 1; }
+
+/* Phone column */
+.lp-hero-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: phoneFloat 4s ease-in-out infinite;
+}
+
+@keyframes phoneFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+/* ── Phone frame ── */
+.lp-phone {
+  width: 255px;
+  background: #0b0b18;
+  border-radius: 42px;
+  border: 2px solid #252535;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.05) inset,
+    0 40px 80px rgba(0,0,0,0.5),
+    0 0 60px rgba(1,42,139,0.3);
+  padding: 14px 14px 22px;
+}
+
+.lp-phone-island {
+  width: 88px;
+  height: 28px;
+  background: #000;
+  border-radius: 20px;
+  margin: 0 auto 10px;
+}
+
+.lp-phone-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 6px;
+  margin-bottom: 14px;
+}
+
+.lp-phone-time { font-size: 0.78rem; font-weight: 700; color: #fff; }
+.lp-phone-status-icons { display: flex; align-items: center; gap: 5px; }
+
+.lp-phone-wallet {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.14em;
+  padding: 0 6px;
+  margin-bottom: 10px;
+}
+
+/* ── Loyalty card inside phone ── */
+.lp-loyalty-card {
+  background: linear-gradient(140deg, #012a8b 0%, #0245d1 55%, #1a5ce8 100%);
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 8px 24px rgba(1,42,139,0.5);
+}
+
+.lp-loyalty-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.lp-loyalty-brand {
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.lp-loyalty-name { font-size: 0.95rem; font-weight: 700; color: #fff; }
+
+.lp-loyalty-icon {
+  width: 34px;
+  height: 34px;
+  background: #fff;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.lp-loyalty-stamps { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 7px; }
+
+.lp-stamp {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lp-stamp-done {
+  background: rgba(255,255,255,0.92);
+  border-color: #fff;
+  font-size: 0.55rem;
+  color: #012a8b;
+  font-weight: 800;
+}
+
+.lp-loyalty-prog { font-size: 0.6rem; color: rgba(255,255,255,0.65); margin-bottom: 10px; }
+
+.lp-loyalty-qr {
+  background: #fff;
+  border-radius: 9px;
+  padding: 8px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lp-phone-demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.55);
+  padding-top: 2px;
+}
+
+.lp-demo-dot {
+  width: 7px;
+  height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 6px #22c55e;
+  animation: demoPulse 2s ease-in-out infinite;
+}
+
+@keyframes demoPulse {
+  0%, 100% { box-shadow: 0 0 4px #22c55e; }
+  50%       { box-shadow: 0 0 10px #22c55e; }
+}
 
 .lp-hero-eyebrow {
   font-size: 0.9rem;
@@ -113,7 +279,7 @@
   letter-spacing: -1px;
   margin-bottom: 2rem;
 }
-.lp-hero-stat .lp-accent { color: #012a8b; }
+.lp-stat-accent { color: #f8f0e2; }
 
 /* Dual CTA with pill design */
 .lp-hero-cta {
@@ -169,7 +335,7 @@
 }
 
 /* Trusted strip */
-.lp-trusted { }
+.lp-trusted { position: relative; z-index: 1; max-width: 1100px; width: 100%; text-align: center; }
 .lp-trusted-label {
   font-size: 0.78rem;
   font-weight: 600;
@@ -227,6 +393,9 @@
 
 /* Responsive */
 @media (max-width: 900px) {
+  .lp-hero-content { flex-direction: column; gap: 3rem; text-align: center; }
+  .lp-hero-inner { text-align: center; }
+  .lp-hero-cta { justify-content: center; }
   .lp-hero-title { font-size: 2.4rem; }
   .lp-hero-stat { font-size: 1.9rem; }
   .lp-features-grid { grid-template-columns: 1fr 1fr; }
@@ -239,6 +408,7 @@
   .lp-hero-stat { font-size: 1.5rem; }
   .lp-hero-cta { flex-direction: column; border-radius: 14px; padding: 8px; gap: 6px; }
   .lp-hero-or { width: 32px; height: 32px; }
+  .lp-phone { width: 220px; }
   .lp-features-grid { grid-template-columns: 1fr; }
   .lp-how-steps { grid-template-columns: 1fr; }
   .lp-nav-links .lp-nav-link:not(:last-child) { display: none; }
