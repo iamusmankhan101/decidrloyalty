@@ -34,7 +34,7 @@
 ═══════════════════════════════════════════════ */
 .lp-hero {
   background: linear-gradient(to bottom, #012a8b 0%, #4a7fcb 30%, #b8d4e8 52%, #f8f0e2 72%, #ffffff 100%);
-  padding: 8rem 2rem 4rem;
+  padding: 11rem 2rem 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,7 +88,6 @@
   position: relative;
   z-index: 1;
   margin-bottom: 3rem;
-  padding-top: 40px;
 }
 
 .lp-hero-inner { flex: 1; text-align: left; }
