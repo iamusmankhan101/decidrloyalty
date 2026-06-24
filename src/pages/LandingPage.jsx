@@ -124,26 +124,48 @@ const HOW = [
   { step: '4', title: 'Reward your regulars', desc: 'On the 9th stamp, they get a reward screen to show the cashier.' },
 ];
 
+const SCROLL_PER_CARD = 140;
+
 function FeaturesSection() {
+  const tunnelRef = React.useRef(null);
+  const [visibleCount, setVisibleCount] = React.useState(0);
+
+  React.useEffect(() => {
+    const onScroll = () => {
+      if (!tunnelRef.current) return;
+      const scrolled = -tunnelRef.current.getBoundingClientRect().top;
+      if (scrolled < 0) { setVisibleCount(0); return; }
+      setVisibleCount(Math.min(FEATURES.length, Math.floor(scrolled / SCROLL_PER_CARD) + 1));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <section className="lp-features" id="features">
-      <div className="lp-features-header">
-        <span className="lp-features-badge">✦ Feature rich</span>
-        <h2 className="lp-features-heading">Everything your cafe needs</h2>
-        <p className="lp-features-sub">Built specifically for independent cafes and small coffee shops that want to keep customers coming back.</p>
-      </div>
-      <div className="lp-feat-stack">
-        {FEATURES.map((f, i) => (
-          <div key={f.title} className="lp-feat-slot">
-            <div className="lp-feat-card" style={{ '--i': i }}>
-              <div className="lp-feat-icon">{f.icon}</div>
-              <div className="lp-feat-body">
-                <h3 className="lp-feat-title">{f.title}</h3>
-                <p className="lp-feat-desc">{f.desc}</p>
-              </div>
-            </div>
+      <div className="lp-feat-tunnel" ref={tunnelRef}>
+        <div className="lp-feat-pin">
+          <div className="lp-features-header">
+            <span className="lp-features-badge">✦ Feature rich</span>
+            <h2 className="lp-features-heading">Everything your cafe needs</h2>
+            <p className="lp-features-sub">Built specifically for independent cafes and small coffee shops that want to keep customers coming back.</p>
           </div>
-        ))}
+          <div className="lp-feat-stack">
+            {FEATURES.map((f, i) => (
+              <div
+                key={f.title}
+                className={`lp-feat-card${i < visibleCount ? ' lp-feat-card--in' : ''}`}
+              >
+                <div className="lp-feat-icon">{f.icon}</div>
+                <div className="lp-feat-body">
+                  <h3 className="lp-feat-title">{f.title}</h3>
+                  <p className="lp-feat-desc">{f.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

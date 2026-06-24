@@ -383,16 +383,35 @@
 .lp-section-sub { font-size: 1rem; color: #666; text-align: center; margin-bottom: 3rem; }
 
 /* ═══════════════════════════════════════════════
-   FEATURES — sticky stacking cards on white
+   FEATURES — pinned section, cards reveal on scroll
 ═══════════════════════════════════════════════ */
 .lp-features {
   background: #fff;
-  padding: 6rem 2rem 4rem;
+}
+
+/* Tall tunnel creates scroll room (100vh pin + 6 cards × 140px) */
+.lp-feat-tunnel {
+  height: calc(100vh + 900px);
+  position: relative;
+}
+
+/* Sticky panel fills the viewport and stays put while tunnel scrolls */
+.lp-feat-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem 2rem;
+  overflow: hidden;
 }
 
 .lp-features-header {
-  max-width: 640px;
-  margin: 0 auto 3.5rem;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto 1.75rem;
   text-align: center;
 }
 
@@ -402,75 +421,74 @@
   gap: 6px;
   background: rgba(1,42,139,0.06);
   color: #012a8b;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 99px;
   border: 1px solid rgba(1,42,139,0.15);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   letter-spacing: 0.04em;
 }
 
 .lp-features-heading {
   font-family: 'Clash Display', sans-serif;
-  font-size: 2.8rem;
+  font-size: 2.4rem;
   font-weight: 600;
   color: #0f172a;
   line-height: 1.1;
   letter-spacing: -0.5px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.65rem;
 }
 
 .lp-features-sub {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: #64748b;
-  line-height: 1.75;
+  line-height: 1.6;
 }
 
-/* Stacking container */
+/* Card list */
 .lp-feat-stack {
-  max-width: 680px;
+  max-width: 640px;
+  width: 100%;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-/* Slot gives each card scroll-travel room before the next one arrives */
-.lp-feat-slot {
-  height: 260px;
-}
-
-.lp-feat-slot:last-child {
-  height: 520px;
-}
-
-/* ALL cards sticky at the SAME top — they pile up on each other */
+/* Cards start hidden below; animate in when JS adds .lp-feat-card--in */
 .lp-feat-card {
-  position: sticky;
-  top: 100px;
-  z-index: calc(var(--i) + 1);
   background: #fff;
   border: 1px solid rgba(0,0,0,0.09);
-  border-radius: 20px;
-  padding: 1.6rem 1.75rem;
+  border-radius: 16px;
+  padding: 0.9rem 1.25rem;
   display: flex;
-  align-items: flex-start;
-  gap: 1.25rem;
-  box-shadow:
-    0 1px 3px rgba(0,0,0,0.04),
-    0 8px 28px rgba(0,0,0,0.07);
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.45s cubic-bezier(0.16,1,0.3,1),
+              transform 0.45s cubic-bezier(0.16,1,0.3,1);
+}
+
+.lp-feat-card--in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .lp-feat-icon {
-  width: 48px; height: 48px; min-width: 48px;
+  width: 40px; height: 40px; min-width: 40px;
   background: rgba(1,42,139,0.07);
-  border-radius: 14px;
+  border-radius: 11px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
 }
 
 .lp-feat-body { flex: 1; }
-.lp-feat-title { font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 0.35rem; }
-.lp-feat-desc { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; color: #64748b; line-height: 1.65; }
+.lp-feat-title { font-size: 0.9rem; font-weight: 700; color: #0f172a; margin-bottom: 0.2rem; }
+.lp-feat-desc { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: #64748b; line-height: 1.5; }
 
 /* How it works */
 .lp-how { background: #f8f0e2; }
