@@ -2,6 +2,31 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './LandingPage.css';
 
+const WavyLines = () => (
+  <svg className="lp-wavy-svg" viewBox="0 0 1440 820" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    {/* top-left → bottom-right diagonal */}
+    <path className="lp-wave lp-wave-1"
+      d="M -100 60 C 280 20, 580 180, 900 140 C 1150 110, 1350 260, 1600 220"
+      fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="35" strokeLinecap="round"/>
+    {/* right → left, mid-upper area */}
+    <path className="lp-wave lp-wave-2"
+      d="M 1600 320 C 1200 280, 950 420, 650 360 C 380 300, 150 440, -100 390"
+      fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="35" strokeLinecap="round"/>
+    {/* bottom-left → top-right diagonal */}
+    <path className="lp-wave lp-wave-3"
+      d="M -100 780 C 200 680, 450 760, 700 640 C 950 520, 1150 600, 1600 480"
+      fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="35" strokeLinecap="round"/>
+    {/* top-right → bottom-left */}
+    <path className="lp-wave lp-wave-4"
+      d="M 1600 80 C 1250 160, 1000 60, 720 200 C 460 330, 200 220, -100 340"
+      fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="35" strokeLinecap="round"/>
+    {/* center, short curve top-to-bottom */}
+    <path className="lp-wave lp-wave-5"
+      d="M 580 -50 C 480 150, 720 300, 560 500 C 420 680, 680 740, 580 900"
+      fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="35" strokeLinecap="round"/>
+  </svg>
+);
+
 const QRMockup = () => (
   <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
     style={{ display: 'block', width: '100%', height: '100%', shapeRendering: 'crispEdges' }}>
@@ -219,6 +244,118 @@ function FeaturesSection() {
   );
 }
 
+const PLANS = [
+  {
+    name: 'Starter',
+    badge: null,
+    monthlyPrice: 'PKR 6,000',
+    annualPrice: 'PKR 4,500',
+    annualNote: 'Billed annually · save PKR 18,000/yr',
+    desc: 'For one outlet getting started with digital loyalty.',
+    posTag: 'Staff web app at counter — works with any POS',
+    features: [
+      '1 card type (stamps or cashback)',
+      'Up to 3,500 active customers',
+      'Apple & Google Wallet',
+      'Staff web app for stamping (tablet at counter)',
+      'Zero POS integration needed',
+      'Push notifications on stamp & reward',
+      'Email support',
+    ],
+    cta: 'Start with Starter →',
+    ctaStyle: 'outline',
+  },
+  {
+    name: 'Growth',
+    badge: '⚡ Most Popular',
+    monthlyPrice: 'PKR 8,000',
+    annualPrice: 'PKR 6,000',
+    annualNote: 'Billed annually · save PKR 24,000/yr',
+    desc: 'Receipt QR codes that work with any POS printer — no extra step for staff.',
+    posTag: 'Receipt QR codes — any POS printer',
+    features: [
+      '3 card types (stamps, cashback, membership)',
+      'Up to 3,500 active customers',
+      'Apple & Google Wallet',
+      'Receipt QR code per transaction',
+      'Works with any POS that prints receipts',
+      'Push notifications & reward campaigns',
+      'Real-time analytics dashboard',
+      'Priority email & chat support',
+    ],
+    cta: 'Book a demo →',
+    ctaStyle: 'primary',
+  },
+  {
+    name: 'Enterprise',
+    badge: null,
+    monthlyPrice: 'Custom',
+    annualPrice: 'Custom',
+    annualNote: 'Tailored to your scale · let\'s talk',
+    desc: 'For chains, franchises, and brands with a real loyalty program.',
+    posTag: 'Direct POS API — Square, Lightspeed, Toast',
+    features: [
+      'Unlimited card types & customers',
+      'Direct POS API integration (Square, Lightspeed, Toast)',
+      'Auto-stamp on payment — zero staff action',
+      'Tiered memberships & VIP segments',
+      'Custom CRM integrations',
+      'Dedicated success manager',
+      'SLA & onboarding workshop',
+    ],
+    cta: 'Talk to sales →',
+    ctaStyle: 'outline',
+  },
+];
+
+function PricingSection() {
+  const [annual, setAnnual] = React.useState(true);
+  return (
+    <section className="lp-pricing">
+      <div className="lp-pricing-inner">
+        <div className="lp-pricing-header">
+          <span className="lp-pricing-badge">✦ Simple pricing</span>
+          <h2 className="lp-pricing-heading">Plans that grow with you</h2>
+          <p className="lp-pricing-sub">Start free, scale when ready. No hidden fees.</p>
+          <div className="lp-pricing-toggle">
+            <span className={!annual ? 'lp-toggle-active' : ''}>Monthly</span>
+            <button className={`lp-toggle-btn${annual ? ' lp-toggle-on' : ''}`} onClick={() => setAnnual(a => !a)} aria-label="Toggle billing">
+              <span className="lp-toggle-thumb" />
+            </button>
+            <span className={annual ? 'lp-toggle-active' : ''}>Annual</span>
+            {annual && <span className="lp-toggle-save">SAVE UP TO 33%</span>}
+          </div>
+        </div>
+        <div className="lp-pricing-grid">
+          {PLANS.map(p => (
+            <div key={p.name} className={`lp-plan${p.ctaStyle === 'primary' ? ' lp-plan--featured' : ''}`}>
+              {p.badge && <span className="lp-plan-badge">{p.badge}</span>}
+              <div className="lp-plan-top">
+                <p className="lp-plan-name">{p.name}</p>
+                <div className="lp-plan-price">
+                  <span className="lp-plan-amount">{annual ? p.annualPrice : p.monthlyPrice}</span>
+                  {p.monthlyPrice !== 'Custom' && <span className="lp-plan-period">/month</span>}
+                </div>
+                <p className="lp-plan-note">{annual ? p.annualNote : 'Billed monthly'}</p>
+                <p className="lp-plan-desc">{p.desc}</p>
+                <span className="lp-plan-pos-tag">🔌 {p.posTag}</span>
+              </div>
+              <ul className="lp-plan-features">
+                {p.features.map(f => (
+                  <li key={f} className="lp-plan-feature">
+                    <span className="lp-plan-check">✓</span>{f}
+                  </li>
+                ))}
+              </ul>
+              <Link to="/signup" className={`lp-plan-cta${p.ctaStyle === 'primary' ? ' lp-plan-cta--primary' : ''}`}>{p.cta}</Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function LandingPage() {
   const [statIdx, setStatIdx] = React.useState(0);
   React.useEffect(() => {
@@ -246,9 +383,7 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="lp-hero">
-        <div className="lp-hero-lines" aria-hidden="true">
-          {Array.from({ length: 9 }, (_, i) => <span key={i} className="lp-line" />)}
-        </div>
+        <WavyLines />
         <div className="lp-hero-content">
           {/* Left: text */}
           <div className="lp-hero-inner">
@@ -265,11 +400,8 @@ export default function LandingPage() {
               Upto <span className="lp-stat-accent">{HERO_STATS[statIdx]}</span>
             </p>
             <div className="lp-hero-cta">
-              <Link to="/signup" className="lp-btn lp-btn-primary">Start free trial</Link>
-              <span className="lp-hero-or">OR</span>
-              <Link to="/login" className="lp-btn lp-btn-dark">Book a demo</Link>
+              <Link to="/login" className="lp-btn lp-btn-primary">Book a demo</Link>
             </div>
-            <p className="lp-hero-note">14-days free trial. No credit card required.</p>
           </div>
           {/* Right: phone mockup */}
           <div className="lp-hero-right">
@@ -309,18 +441,90 @@ export default function LandingPage() {
       <PricingSection />
 
       {/* CTA */}
-      <section className="lp-cta">
-        <div className="lp-section-inner lp-cta-inner">
-          <h2 className="lp-cta-title">Ready to build a loyal customer base?</h2>
-          <p className="lp-cta-sub">Join cafes already using decidr loyalty to retain customers.</p>
-          <Link to="/signup" className="lp-btn lp-btn-lg lp-btn-white">Create your loyalty program →</Link>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="lp-footer">
-        <span>© 2026 decidr™ · All rights reserved</span>
-        <span>Built for cafes by <a href="https://trydecidr.xyz" style={{ color: '#6366f1' }}>decidr</a></span>
+        <div className="lp-footer-inner">
+          {/* Brand col */}
+          <div className="lp-footer-brand">
+            <div className="lp-footer-logo">
+              <img src="/decidr-logo.png" alt="decidr" className="lp-footer-logo-img" />
+              <span className="lp-footer-logo-badge">loyalty</span>
+            </div>
+            <p className="lp-footer-tagline">Digital loyalty cards for cafes and local businesses. No app needed — just scan and earn.</p>
+            <div className="lp-footer-socials">
+              <a href="#" className="lp-footer-social" aria-label="Facebook">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+              <a href="#" className="lp-footer-social" aria-label="Twitter">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4l16 16M4 20L20 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              </a>
+              <a href="#" className="lp-footer-social" aria-label="LinkedIn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+              </a>
+              <a href="#" className="lp-footer-social" aria-label="Instagram">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div className="lp-footer-col">
+            <h4 className="lp-footer-col-title">Quick Links</h4>
+            <ul className="lp-footer-links">
+              <li><a href="#features">Features</a></li>
+              <li><a href="#how">How it works</a></li>
+              <li><a href="#pricing">Pricing</a></li>
+              <li><Link to="/signup">Get started free</Link></li>
+              <li><Link to="/login">Log in</Link></li>
+            </ul>
+          </div>
+
+          {/* Product */}
+          <div className="lp-footer-col">
+            <h4 className="lp-footer-col-title">Product</h4>
+            <ul className="lp-footer-links">
+              <li><a href="#">Stamp Cards</a></li>
+              <li><a href="#">Cashback Cards</a></li>
+              <li><a href="#">Memberships</a></li>
+              <li><a href="#">Gift Cards</a></li>
+              <li><a href="#">Analytics</a></li>
+              <li><a href="#">POS Integration</a></li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div className="lp-footer-col">
+            <h4 className="lp-footer-col-title">Contact Us</h4>
+            <ul className="lp-footer-contact">
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Dubai, UAE
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Lahore, Pakistan
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                ali@gfdubai.com
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.58 4.93 2 2 0 0 1 3.55 2.73h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.4a16 16 0 0 0 5.69 5.69l.88-.88a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.27 17.5z"/></svg>
+                +971 50 000 0000
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.58 4.93 2 2 0 0 1 3.55 2.73h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.4a16 16 0 0 0 5.69 5.69l.88-.88a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.27 17.5z"/></svg>
+                +92 371 2524553
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="lp-footer-bottom">
+          <span>© 2026 decidr™ · All rights reserved</span>
+          <span>Built for cafes &amp; local businesses</span>
+        </div>
       </footer>
     </div>
   );
