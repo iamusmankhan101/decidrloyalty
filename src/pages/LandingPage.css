@@ -254,18 +254,20 @@
 }
 
 .lp-hero-title {
+  font-family: 'ClashDisplay', sans-serif;
   font-size: 3.4rem;
-  font-weight: 800;
-  line-height: 1.12;
+  font-weight: 600;
+  line-height: 1.1;
   color: #fff;
   margin-bottom: 1.5rem;
-  letter-spacing: -1.5px;
+  letter-spacing: -1px;
 }
 
 .lp-accent { color: #f8f0e2; }
 
 .lp-hero-sub {
-  font-size: 1.05rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
   color: rgba(255,255,255,0.82);
   line-height: 1.75;
   max-width: 520px;
