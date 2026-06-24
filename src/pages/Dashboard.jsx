@@ -138,7 +138,7 @@ function ScanTab({ rid, token, program }) {
 
 /* ─── Setup Tab ─────────────────────────────────────────────── */
 function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, saveProgram }) {
-  const stampUrl = `https://loyalty.trydecidr.xyz/stamp/${form.slug || rid}`;
+  const stampUrl = `https://loyalty.trydecidr.xyz/stamp/${program?.slug || rid}`;
   const qrUrl    = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(stampUrl)}`;
 
   return (
