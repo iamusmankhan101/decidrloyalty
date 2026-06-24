@@ -89,7 +89,7 @@
   margin-bottom: 3rem;
 }
 
-.lp-hero-inner { flex: 1; }
+.lp-hero-inner { flex: 1; text-align: left; }
 
 /* Phone column */
 .lp-hero-right {
@@ -268,8 +268,8 @@
   font-size: 1.05rem;
   color: rgba(255,255,255,0.82);
   line-height: 1.75;
-  max-width: 580px;
-  margin: 0 auto 1.75rem;
+  max-width: 520px;
+  margin: 0 0 1.75rem;
 }
 
 .lp-hero-stat {
@@ -279,7 +279,7 @@
   letter-spacing: -1px;
   margin-bottom: 2rem;
 }
-.lp-stat-accent { color: #f8f0e2; }
+.lp-stat-accent { color: #012a8b; }
 
 /* Dual CTA with pill design */
 .lp-hero-cta {
