@@ -255,7 +255,7 @@
 }
 
 .lp-hero-title {
-  font-family: 'ClashDisplay', sans-serif;
+  font-family: 'Clash Display', sans-serif;
   font-size: 3.4rem;
   font-weight: 600;
   line-height: 1.1;
@@ -263,7 +263,7 @@
   margin-bottom: 1.5rem;
   letter-spacing: -1px;
 }
-.lp-hero-title * { font-family: 'ClashDisplay', sans-serif; font-weight: 600; }
+.lp-hero-title * { font-family: 'Clash Display', sans-serif; font-weight: 600; }
 
 .lp-accent { color: #f8f0e2; }
 
