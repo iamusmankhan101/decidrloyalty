@@ -1,18 +1,19 @@
 .lp { min-height: 100vh; background: #f8f0e2; }
 
 /* Nav */
-.lp-nav { position: sticky; top: 0; z-index: 100; background: rgba(248,240,226,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(1,42,139,0.1); }
-.lp-nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
-.lp-logo { font-size: 1.25rem; font-weight: 800; color: #012a8b; letter-spacing: -0.5px; }
-.lp-logo-badge { background: #012a8b; color: #f8f0e2; font-size: 0.62rem; font-weight: 700; padding: 2px 7px; border-radius: 99px; vertical-align: middle; margin-left: 5px; letter-spacing: 0.5px; text-transform: uppercase; }
+.lp-nav { position: absolute; top: 0; left: 0; right: 0; z-index: 100; background: transparent; }
+.lp-nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; height: 72px; display: flex; align-items: center; justify-content: space-between; }
+.lp-logo { display: flex; align-items: center; gap: 8px; }
+.lp-logo-img { height: 28px; width: auto; display: block; }
+.lp-logo-badge { background: rgba(248,240,226,0.2); color: #f8f0e2; font-size: 0.62rem; font-weight: 700; padding: 3px 9px; border-radius: 99px; letter-spacing: 0.5px; text-transform: uppercase; border: 1px solid rgba(248,240,226,0.35); backdrop-filter: blur(4px); }
 .lp-nav-links { display: flex; align-items: center; gap: 1.5rem; }
-.lp-nav-link { font-size: 0.88rem; font-weight: 500; color: #444; transition: color 0.2s; }
-.lp-nav-link:hover { color: #012a8b; }
+.lp-nav-link { font-size: 0.88rem; font-weight: 500; color: rgba(255,255,255,0.8); transition: color 0.2s; }
+.lp-nav-link:hover { color: #fff; }
 
 /* Buttons */
 .lp-btn { display: inline-flex; align-items: center; justify-content: center; font-weight: 600; border-radius: 10px; transition: all 0.2s; border: none; cursor: pointer; text-decoration: none; }
-.lp-btn-sm { background: #012a8b; color: #f8f0e2; font-size: 0.85rem; padding: 0.5rem 1.1rem; }
-.lp-btn-sm:hover { background: #01227a; }
+.lp-btn-sm { background: rgba(248,240,226,0.15); color: #f8f0e2; font-size: 0.85rem; padding: 0.5rem 1.1rem; border: 1px solid rgba(248,240,226,0.35); backdrop-filter: blur(4px); }
+.lp-btn-sm:hover { background: rgba(248,240,226,0.25); }
 
 /* Hero primary/dark CTA buttons */
 .lp-btn-primary { background: #012a8b; color: #f8f0e2; font-size: 1rem; padding: 0.9rem 2rem; border-radius: 12px; }
@@ -33,7 +34,7 @@
 ═══════════════════════════════════════════════ */
 .lp-hero {
   background: linear-gradient(to bottom, #012a8b 0%, #4a7fcb 30%, #b8d4e8 52%, #f8f0e2 72%, #ffffff 100%);
-  padding: 5rem 2rem 4rem;
+  padding: 8rem 2rem 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -283,6 +284,18 @@
   margin-bottom: 2rem;
 }
 .lp-stat-accent { color: #012a8b; }
+
+@keyframes statSlide {
+  0%   { opacity: 0; transform: translateY(18px); }
+  14%  { opacity: 1; transform: translateY(0); }
+  86%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-18px); }
+}
+
+.lp-stat-anim {
+  display: block;
+  animation: statSlide 3s ease-in-out forwards;
+}
 
 /* Dual CTA with pill design */
 .lp-hero-cta {

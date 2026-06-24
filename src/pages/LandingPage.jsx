@@ -106,6 +106,8 @@ const PhoneMockup = () => (
   </div>
 );
 
+const HERO_STATS = ['+40% Revenue', '2x Customer Retention'];
+
 const FEATURES = [
   { icon: '📱', title: 'Digital Stamp Cards', desc: 'Replace paper cards with a seamless digital experience customers actually use.' },
   { icon: '👛', title: 'Google Wallet Ready', desc: 'Customers save their loyalty card to Google Wallet. Stamps update automatically.' },
@@ -123,12 +125,21 @@ const HOW = [
 ];
 
 export default function LandingPage() {
+  const [statIdx, setStatIdx] = React.useState(0);
+  React.useEffect(() => {
+    const t = setInterval(() => setStatIdx(i => (i + 1) % HERO_STATS.length), 3000);
+    return () => clearInterval(t);
+  }, []);
+
   return (
     <div className="lp">
       {/* Nav */}
       <nav className="lp-nav">
         <div className="lp-nav-inner">
-          <span className="lp-logo">decidr<span className="lp-logo-badge">loyalty</span></span>
+          <div className="lp-logo">
+            <img src="/decidr-logo.png" alt="decidr" className="lp-logo-img" />
+            <span className="lp-logo-badge">loyalty</span>
+          </div>
           <div className="lp-nav-links">
             <a href="#features" className="lp-nav-link">Features</a>
             <a href="#how" className="lp-nav-link">How it works</a>
@@ -155,7 +166,9 @@ export default function LandingPage() {
               Boost customer retention and increase visit frequency with a branded{' '}
               <strong>digital stamp card</strong> that lives in your customers' Apple and Google Wallets.
             </p>
-            <p className="lp-hero-stat">Upto <span className="lp-stat-accent">+30% Revenue</span></p>
+            <p key={statIdx} className="lp-hero-stat lp-stat-anim">
+              Upto <span className="lp-stat-accent">{HERO_STATS[statIdx]}</span>
+            </p>
             <div className="lp-hero-cta">
               <Link to="/signup" className="lp-btn lp-btn-primary">Start free trial</Link>
               <span className="lp-hero-or">OR</span>
