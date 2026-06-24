@@ -1047,7 +1047,7 @@
   max-width: 1100px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.4fr;
+  grid-template-columns: 2fr 1fr 1.4fr;
   gap: 3rem;
   padding-bottom: 3rem;
   border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -1263,6 +1263,7 @@
   .lp-ct-grid { grid-template-columns: repeat(2, 1fr); }
   .lp-pricing-grid { grid-template-columns: 1fr; max-width: 460px; margin-left: auto; margin-right: auto; }
   .lp-footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .lp-footer-brand { grid-column: 1 / -1; }
   .lp-nav-links { gap: 0.75rem; }
 }
 

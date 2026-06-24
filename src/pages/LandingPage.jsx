@@ -500,19 +500,6 @@ export default function LandingPage() {
             </ul>
           </div>
 
-          {/* Product */}
-          <div className="lp-footer-col">
-            <h4 className="lp-footer-col-title">Product</h4>
-            <ul className="lp-footer-links">
-              <li><a href="#">Stamp Cards</a></li>
-              <li><a href="#">Cashback Cards</a></li>
-              <li><a href="#">Memberships</a></li>
-              <li><a href="#">Gift Cards</a></li>
-              <li><a href="#">Analytics</a></li>
-              <li><a href="#">POS Integration</a></li>
-            </ul>
-          </div>
-
           {/* Contact */}
           <div className="lp-footer-col">
             <h4 className="lp-footer-col-title">Contact Us</h4>
@@ -527,6 +514,7 @@ export default function LandingPage() {
               </li>
             </ul>
           </div>
+
         </div>
 
         <div className="lp-footer-bottom">

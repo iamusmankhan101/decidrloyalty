@@ -1,0 +1,406 @@
+/* ═══════════════════════════════════════════════
+   BASE — mobile-first, full screen
+═══════════════════════════════════════════════ */
+.sp {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  font-family: 'Montserrat', sans-serif;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ── Loading ── */
+.sp-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: #64748b;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+}
+
+.sp-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e2e8f0;
+  border-top-color: var(--brand, #ff0000);
+  border-radius: 50%;
+  animation: sp-spin 0.7s linear infinite;
+}
+
+@keyframes sp-spin { to { transform: rotate(360deg); } }
+
+/* ── Error ── */
+.sp-error {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  font-family: 'Montserrat', sans-serif;
+  gap: 0.75rem;
+}
+
+.sp-error-icon { font-size: 3rem; }
+.sp-error h2 { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+.sp-error p  { font-size: 0.88rem; color: #64748b; line-height: 1.6; }
+
+/* ═══════════════════════════════════════════════
+   HEADER — branded top bar
+═══════════════════════════════════════════════ */
+.sp-header {
+  padding: 2.5rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 0 0 28px 28px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+}
+
+.sp-logo {
+  height: 52px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.sp-cafe-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.sp-header-sub {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════
+   BODY
+═══════════════════════════════════════════════ */
+.sp-body {
+  flex: 1;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sp-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.3px;
+}
+
+.sp-sub {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+/* ── Stamp dots ── */
+.sp-dots-wrap {
+  margin-bottom: 2rem;
+}
+
+.sp-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 0.6rem;
+}
+
+.sp-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #e2e8f0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.sp-dot.filled {
+  transform: scale(1.05);
+}
+
+.sp-dot-check {
+  font-size: 0.75rem;
+  color: #fff;
+  font-weight: 800;
+}
+
+.sp-dot-preview {
+  opacity: 0.45;
+}
+
+.sp-dots-label {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* ── Form ── */
+.sp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.sp-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sp-input {
+  padding: 1rem 1.1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #0f172a;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  letter-spacing: 1px;
+  text-align: center;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sp-input:focus {
+  border-color: var(--focus-color, #ff0000);
+  box-shadow: 0 0 0 3px var(--focus-color, #ff0000)22;
+}
+
+.sp-input::placeholder {
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #cbd5e1;
+}
+
+.sp-error-msg {
+  font-size: 0.83rem;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  text-align: center;
+}
+
+.sp-btn {
+  width: 100%;
+  padding: 1rem;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: inherit;
+  letter-spacing: 0.2px;
+}
+
+.sp-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.sp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.sp-privacy {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+}
+
+/* ── Reward info strip ── */
+.sp-reward-info {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid;
+  font-size: 0.88rem;
+  color: #374151;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Stamped success ── */
+.sp-success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #d1fae5;
+  color: #059669;
+  font-size: 1.8rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  animation: sp-pop 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+
+@keyframes sp-pop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.sp-stamped-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.sp-stamped-sub {
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+/* ═══════════════════════════════════════════════
+   REWARD VIEW
+═══════════════════════════════════════════════ */
+.sp-reward-view {
+  background: linear-gradient(160deg, var(--brand, #ff0000) 0%, #022a8a 100%);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.sp-reward-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  margin: 2rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 360px;
+}
+
+.sp-reward-emoji {
+  font-size: 3.5rem;
+  margin-bottom: 0.75rem;
+  animation: sp-pop 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+
+.sp-reward-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.6rem;
+}
+
+.sp-reward-sub {
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.sp-reward-badge {
+  display: inline-block;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.65rem 1.5rem;
+  border-radius: 99px;
+  margin-bottom: 1.25rem;
+}
+
+.sp-reward-note {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.sp-reward-actions { display: flex; flex-direction: column; gap: 0.75rem; }
+.sp-reward-actions .sp-btn { border-radius: 12px; }
+
+/* ── Confetti ── */
+.sp-reward-confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sp-confetti-piece {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: sp-fall 2.5s ease-in forwards;
+  opacity: 0.85;
+}
+
+@keyframes sp-fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+.sp-footer {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.72rem;
+  color: #cbd5e1;
+}
+
+.sp-footer strong { color: #94a3b8; }
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE — larger screens center the card
+═══════════════════════════════════════════════ */
+@media (min-width: 480px) {
+  .sp {
+    box-shadow: 0 0 0 1px #e2e8f0;
+    min-height: 100vh;
+  }
+
+  body {
+    background: #f1f5f9;
+  }
+}
