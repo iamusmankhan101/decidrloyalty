@@ -24,7 +24,7 @@ export default function LandingPage() {
       {/* Nav */}
       <nav className="lp-nav">
         <div className="lp-nav-inner">
-          <span className="lp-logo">decidr <span className="lp-logo-badge">loyalty</span></span>
+          <span className="lp-logo">decidr<span className="lp-logo-badge">loyalty</span></span>
           <div className="lp-nav-links">
             <a href="#features" className="lp-nav-link">Features</a>
             <a href="#how" className="lp-nav-link">How it works</a>
@@ -37,36 +37,29 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="lp-hero">
         <div className="lp-hero-inner">
-          <div className="lp-hero-badge">🚀 Now with Google Wallet integration</div>
+          <p className="lp-hero-eyebrow">Digital Loyalty Card</p>
           <h1 className="lp-hero-title">
-            Turn your cafe customers<br />into <span className="lp-accent">loyal regulars</span>
+            The <span className="lp-accent">#1 Digital Loyalty Card</span><br />
+            for Local Businesses
           </h1>
           <p className="lp-hero-sub">
-            Digital stamp cards that live in Google Wallet. No app. No paper. No hassle.<br />
-            Set up in 5 minutes and reward your best customers automatically.
+            <strong>Digital Loyalty Card</strong> — Boost customer retention and increase visit frequency with a
+            branded <strong>digital stamp card</strong> that lives in your customers' Apple and Google Wallets.
           </p>
+          <p className="lp-hero-stat">Upto <span className="lp-accent">+30% Revenue</span></p>
           <div className="lp-hero-cta">
-            <Link to="/signup" className="lp-btn lp-btn-lg">Start for free →</Link>
-            <Link to="/login"  className="lp-btn lp-btn-ghost-lg">Log in</Link>
+            <Link to="/signup" className="lp-btn lp-btn-primary">Start free trial</Link>
+            <span className="lp-hero-or">OR</span>
+            <Link to="/login" className="lp-btn lp-btn-dark">Book a demo</Link>
           </div>
-          <p className="lp-hero-note">Free to start · No credit card required</p>
-        </div>
-
-        {/* Pass preview */}
-        <div className="lp-pass-preview">
-          <div className="lp-pass">
-            <div className="lp-pass-header">
-              <span className="lp-pass-cafe">☕ Brew & Co.</span>
-              <span className="lp-pass-label">Loyalty Card</span>
-            </div>
-            <div className="lp-pass-body">
-              <p className="lp-pass-name">Ahmed Khan</p>
-              <div className="lp-pass-stamps">
-                {Array.from({ length: 9 }, (_, i) => (
-                  <span key={i} className={`lp-pass-dot${i < 6 ? ' filled' : ''}`} />
-                ))}
-              </div>
-              <p className="lp-pass-progress">6 / 9 stamps · 3 more for a free coffee</p>
+          <p className="lp-hero-note">14-days free trial. No credit card required.</p>
+          <div className="lp-trusted">
+            <p className="lp-trusted-label">Trusted by many companies</p>
+            <div className="lp-trusted-logos">
+              <span className="lp-trusted-logo">SocialPilot</span>
+              <span className="lp-trusted-logo">Adobe</span>
+              <span className="lp-trusted-logo">TouchBistro</span>
+              <span className="lp-trusted-logo">Google</span>
             </div>
           </div>
         </div>
