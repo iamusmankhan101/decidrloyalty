@@ -36,6 +36,12 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="lp-hero">
+        {/* S-wave background decoration */}
+        <div className="lp-hero-wave" aria-hidden="true">
+          <div className="lp-wave-blob lp-wave-blob-1" />
+          <div className="lp-wave-blob lp-wave-blob-2" />
+          <div className="lp-wave-blob lp-wave-blob-3" />
+        </div>
         <div className="lp-hero-inner">
           <p className="lp-hero-eyebrow">Digital Loyalty Card</p>
           <h1 className="lp-hero-title">
