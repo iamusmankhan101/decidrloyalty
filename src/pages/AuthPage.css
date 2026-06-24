@@ -117,9 +117,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
   flex-shrink: 0;
   border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9);
 }
 
 /* Testimonial */
@@ -218,17 +218,19 @@
   align-items: center;
 }
 
-.auth-input-icon {
+/* Lucide SVG icon inside input */
+.auth-icon {
   position: absolute;
-  left: 0.9rem;
-  font-size: 0.9rem;
+  left: 0.85rem;
+  color: #94a3b8;
   pointer-events: none;
-  line-height: 1;
+  flex-shrink: 0;
+  display: block;
 }
 
 .auth-input {
   width: 100%;
-  padding: 0.8rem 0.9rem;
+  padding: 0.8rem 0.9rem 0.8rem 2.5rem;
   border: 1.5px solid #e2e8f0;
   border-radius: 12px;
   font-size: 0.92rem;
@@ -240,11 +242,6 @@
   box-sizing: border-box;
 }
 
-.auth-input--icon {
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
-}
-
 .auth-input:focus {
   border-color: #ff0000;
   box-shadow: 0 0 0 3px rgba(255,0,0,0.08);
@@ -253,6 +250,11 @@
 
 .auth-input::placeholder { color: #cbd5e1; }
 
+/* Password input needs right padding for eye toggle */
+.auth-input--password {
+  padding-right: 2.75rem;
+}
+
 /* Show/hide password button */
 .auth-eye {
   position: absolute;
@@ -260,11 +262,14 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 0.9rem;
-  line-height: 1;
   padding: 4px;
   color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
 }
+.auth-eye:hover { color: #475569; }
 
 /* Error */
 .auth-error {
@@ -307,15 +312,9 @@
 
 .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-/* Spinner inside button */
-.auth-spinner {
-  width: 18px;
-  height: 18px;
-  border: 2.5px solid rgba(255,255,255,0.4);
-  border-top-color: #fff;
-  border-radius: 50%;
+/* Lucide Loader2 spin */
+.auth-spin {
   animation: auth-spin 0.7s linear infinite;
-  display: inline-block;
 }
 
 @keyframes auth-spin { to { transform: rotate(360deg); } }

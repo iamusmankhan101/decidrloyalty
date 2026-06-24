@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Mail, Lock, Eye, EyeOff, Store, AlertCircle, ArrowRight, Loader2, Wallet, Zap, BarChart3, Gift } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import './AuthPage.css';
 
 const PERKS = [
-  { icon: '📱', text: 'Digital stamp cards in Apple & Google Wallet' },
-  { icon: '⚡', text: 'Live in under 5 minutes — no app needed' },
-  { icon: '📊', text: 'Real-time customer analytics dashboard' },
-  { icon: '🎁', text: 'Automated rewards when stamps complete' },
+  { Icon: Wallet,    text: 'Digital stamp cards in Apple & Google Wallet' },
+  { Icon: Zap,       text: 'Live in under 5 minutes — no app needed' },
+  { Icon: BarChart3, text: 'Real-time customer analytics dashboard' },
+  { Icon: Gift,      text: 'Automated rewards when stamps complete' },
 ];
 
 export default function AuthPage({ mode }) {
@@ -15,10 +16,10 @@ export default function AuthPage({ mode }) {
   const navigate    = useNavigate();
   const isSignup    = mode === 'signup';
 
-  const [form, setForm]       = useState({ cafeName: '', email: '', password: '' });
+  const [form, setForm]         = useState({ cafeName: '', email: '', password: '' });
   const [showPass, setShowPass] = useState(false);
-  const [error, setError]     = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error, setError]       = useState('');
+  const [loading, setLoading]   = useState(false);
 
   function change(e) { setForm(f => ({ ...f, [e.target.name]: e.target.value })); setError(''); }
 
@@ -60,22 +61,21 @@ export default function AuthPage({ mode }) {
             <p className="auth-left-sub">
               The loyalty platform built for independent cafes and local businesses.
             </p>
-
             <ul className="auth-perks">
-              {PERKS.map(p => (
-                <li key={p.text} className="auth-perk">
-                  <span className="auth-perk-icon">{p.icon}</span>
-                  <span>{p.text}</span>
+              {PERKS.map(({ Icon, text }) => (
+                <li key={text} className="auth-perk">
+                  <span className="auth-perk-icon">
+                    <Icon size={18} strokeWidth={1.75} />
+                  </span>
+                  <span>{text}</span>
                 </li>
               ))}
             </ul>
           </div>
 
           <div className="auth-left-footer">
-            <div className="auth-testimonial">
-              <p className="auth-testimonial-text">"We went from paper cards to digital in one afternoon. Customers love it."</p>
-              <p className="auth-testimonial-author">— Cafe owner, Lahore</p>
-            </div>
+            <p className="auth-testimonial-text">"We went from paper cards to digital in one afternoon. Customers love it."</p>
+            <p className="auth-testimonial-author">— Cafe owner, Lahore</p>
           </div>
         </div>
       </div>
@@ -83,6 +83,7 @@ export default function AuthPage({ mode }) {
       {/* ── Right panel ── */}
       <div className="auth-right">
         <div className="auth-card">
+
           {/* Mobile logo */}
           <Link to="/" className="auth-mobile-brand">
             <img src="/decidr-logo.png" alt="decidr" className="auth-mobile-logo" />
@@ -95,17 +96,24 @@ export default function AuthPage({ mode }) {
           <p className="auth-sub">
             {isSignup
               ? 'Set up your cafe loyalty program in minutes.'
-              : 'Log in to your loyalty dashboard.'}
+              : 'Sign in to your loyalty dashboard.'}
           </p>
 
           <form onSubmit={submit} className="auth-form">
+
             {isSignup && (
               <div className="auth-field">
                 <label className="auth-label">Cafe / Business Name</label>
                 <div className="auth-input-wrap">
-                  <span className="auth-input-icon">🏪</span>
-                  <input className="auth-input auth-input--icon" name="cafeName" type="text"
-                    placeholder="e.g. Brew & Co." value={form.cafeName} onChange={change} required />
+                  <Store size={16} className="auth-icon" />
+                  <input
+                    className="auth-input"
+                    name="cafeName" type="text"
+                    placeholder="e.g. Brew & Co."
+                    value={form.cafeName}
+                    onChange={change}
+                    required
+                  />
                 </div>
               </div>
             )}
@@ -113,37 +121,58 @@ export default function AuthPage({ mode }) {
             <div className="auth-field">
               <label className="auth-label">Email Address</label>
               <div className="auth-input-wrap">
-                <span className="auth-input-icon">✉️</span>
-                <input className="auth-input auth-input--icon" name="email" type="email"
-                  placeholder="you@example.com" value={form.email} onChange={change} required />
+                <Mail size={16} className="auth-icon" />
+                <input
+                  className="auth-input"
+                  name="email" type="email"
+                  placeholder="you@example.com"
+                  value={form.email}
+                  onChange={change}
+                  required
+                />
               </div>
             </div>
 
             <div className="auth-field">
               <label className="auth-label">Password</label>
               <div className="auth-input-wrap">
-                <span className="auth-input-icon">🔒</span>
-                <input className="auth-input auth-input--icon" name="password"
+                <Lock size={16} className="auth-icon" />
+                <input
+                  className="auth-input auth-input--password"
+                  name="password"
                   type={showPass ? 'text' : 'password'}
                   placeholder={isSignup ? 'At least 8 characters' : '••••••••'}
-                  value={form.password} onChange={change} required />
-                <button type="button" className="auth-eye" onClick={() => setShowPass(s => !s)}
-                  aria-label={showPass ? 'Hide password' : 'Show password'}>
-                  {showPass ? '🙈' : '👁️'}
+                  value={form.password}
+                  onChange={change}
+                  required
+                />
+                <button
+                  type="button"
+                  className="auth-eye"
+                  onClick={() => setShowPass(s => !s)}
+                  aria-label={showPass ? 'Hide password' : 'Show password'}
+                  tabIndex={-1}
+                >
+                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
             {error && (
               <div className="auth-error">
-                <span>⚠️</span> {error}
+                <AlertCircle size={15} />
+                <span>{error}</span>
               </div>
             )}
 
             <button type="submit" className="auth-btn" disabled={loading}>
               {loading
-                ? <span className="auth-spinner" />
-                : isSignup ? 'Create account →' : 'Log in →'}
+                ? <Loader2 size={18} className="auth-spin" />
+                : <>
+                    {isSignup ? 'Create account' : 'Sign in'}
+                    <ArrowRight size={16} />
+                  </>
+              }
             </button>
           </form>
 
