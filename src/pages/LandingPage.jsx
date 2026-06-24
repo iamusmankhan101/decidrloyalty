@@ -125,48 +125,23 @@ const HOW = [
 ];
 
 function FeaturesSection() {
-  const cardRefs = React.useRef([]);
-  const [visible, setVisible] = React.useState(new Set());
-
-  React.useEffect(() => {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setVisible(prev => new Set([...prev, entry.target.dataset.idx]));
-          }
-        });
-      },
-      { threshold: 0.25 }
-    );
-    cardRefs.current.forEach(ref => ref && obs.observe(ref));
-    return () => obs.disconnect();
-  }, []);
-
   return (
     <section className="lp-features" id="features">
-      <div className="lp-features-wrap">
-        <div className="lp-features-left">
-          <span className="lp-features-badge">✦ Feature rich</span>
-          <h2 className="lp-features-heading">Everything your<br />cafe needs</h2>
-          <p className="lp-features-sub">Built specifically for independent cafes and small coffee shops that want to keep customers coming back.</p>
-        </div>
-        <div className="lp-features-right">
-          {FEATURES.map((f, i) => (
-            <div
-              key={f.title}
-              ref={el => cardRefs.current[i] = el}
-              data-idx={String(i)}
-              className={`lp-fcard${visible.has(String(i)) ? ' lp-fcard-visible' : ''}`}
-            >
-              <span className="lp-fcard-icon">{f.icon}</span>
-              <div className="lp-fcard-body">
-                <h3 className="lp-fcard-title">{f.title}</h3>
-                <p className="lp-fcard-desc">{f.desc}</p>
-              </div>
+      <div className="lp-features-header">
+        <span className="lp-features-badge">✦ Feature rich</span>
+        <h2 className="lp-features-heading">Everything your cafe needs</h2>
+        <p className="lp-features-sub">Built specifically for independent cafes and small coffee shops that want to keep customers coming back.</p>
+      </div>
+      <div className="lp-feat-stack">
+        {FEATURES.map((f, i) => (
+          <div key={f.title} className="lp-feat-card" style={{ '--i': i }}>
+            <div className="lp-feat-icon">{f.icon}</div>
+            <div className="lp-feat-body">
+              <h3 className="lp-feat-title">{f.title}</h3>
+              <p className="lp-feat-desc">{f.desc}</p>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </section>
   );
