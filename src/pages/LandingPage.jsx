@@ -188,7 +188,7 @@ function FeaturesSection() {
                 key={f.title}
                 ref={el => listRefs.current[i] = el}
                 data-idx={String(i)}
-                className={`lp-feat-item${visible.has(String(i)) ? ' lp-feat-visible' : ''}`}
+                className="lp-feat-item"
               >
                 <div className="lp-feat-icon">{f.icon}</div>
                 <div className="lp-feat-body">
