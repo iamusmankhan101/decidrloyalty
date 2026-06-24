@@ -36,7 +36,9 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="lp-hero">
-
+        <div className="lp-hero-lines" aria-hidden="true">
+          {Array.from({ length: 9 }, (_, i) => <span key={i} className="lp-line" />)}
+        </div>
         <div className="lp-hero-inner">
           <p className="lp-hero-eyebrow">Digital Loyalty Card</p>
           <h1 className="lp-hero-title">

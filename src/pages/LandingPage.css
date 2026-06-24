@@ -40,7 +40,43 @@
   text-align: center;
 }
 
-.lp-hero-inner { max-width: 760px; width: 100%; }
+/* Moving lines */
+.lp-hero-lines {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.lp-line {
+  position: absolute;
+  top: -45%;
+  width: 1px;
+  height: 45%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%);
+  animation: lineFlow linear infinite;
+  opacity: 0;
+}
+
+@keyframes lineFlow {
+  0%   { transform: translateY(0);    opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translateY(320%); opacity: 0; }
+}
+
+.lp-line:nth-child(1) { left:  6%; animation-duration: 7.0s; animation-delay:  0.0s; }
+.lp-line:nth-child(2) { left: 16%; animation-duration: 9.5s; animation-delay: -2.0s; width: 0.5px; }
+.lp-line:nth-child(3) { left: 27%; animation-duration: 8.0s; animation-delay: -5.5s; width: 1.5px; }
+.lp-line:nth-child(4) { left: 38%; animation-duration: 6.5s; animation-delay: -1.5s; }
+.lp-line:nth-child(5) { left: 50%; animation-duration: 8.8s; animation-delay: -4.0s; width: 0.5px; }
+.lp-line:nth-child(6) { left: 61%; animation-duration: 7.5s; animation-delay: -3.0s; width: 1.5px; }
+.lp-line:nth-child(7) { left: 73%; animation-duration: 9.2s; animation-delay: -6.5s; }
+.lp-line:nth-child(8) { left: 84%; animation-duration: 7.8s; animation-delay: -2.8s; width: 0.5px; }
+.lp-line:nth-child(9) { left: 93%; animation-duration: 8.4s; animation-delay: -4.8s; }
+
+.lp-hero-inner { position: relative; z-index: 1; max-width: 760px; width: 100%; }
 
 .lp-hero-eyebrow {
   font-size: 0.9rem;
