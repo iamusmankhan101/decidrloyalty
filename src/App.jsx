@@ -1,9 +1,11 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import LandingPage from './pages/LandingPage';
-import AuthPage    from './pages/AuthPage';
-import Dashboard   from './pages/Dashboard';
+import LandingPage        from './pages/LandingPage';
+import AuthPage           from './pages/AuthPage';
+import Dashboard          from './pages/Dashboard';
+import PrivacyPolicy      from './pages/PrivacyPolicy';
+import TermsAndConditions from './pages/TermsAndConditions';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -31,6 +33,8 @@ export default function App() {
           <Route path="/login"  element={<PublicRoute><AuthPage mode="login"  /></PublicRoute>} />
           <Route path="/signup" element={<PublicRoute><AuthPage mode="signup" /></PublicRoute>} />
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms"   element={<TermsAndConditions />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

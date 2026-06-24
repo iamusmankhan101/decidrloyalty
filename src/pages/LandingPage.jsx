@@ -358,13 +358,28 @@ function PricingSection() {
 
 export default function LandingPage() {
   const [statIdx, setStatIdx] = React.useState(0);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+
   React.useEffect(() => {
     const t = setInterval(() => setStatIdx(i => (i + 1) % HERO_STATS.length), 3000);
     return () => clearInterval(t);
   }, []);
 
+  const closeMenu = () => setMenuOpen(false);
+
   return (
     <div className="lp">
+      {/* Mobile menu overlay */}
+      {menuOpen && (
+        <div className="lp-mobile-menu">
+          <button className="lp-mobile-close" onClick={closeMenu} aria-label="Close menu">×</button>
+          <a href="#features" className="lp-mobile-link" onClick={closeMenu}>Features</a>
+          <a href="#how" className="lp-mobile-link" onClick={closeMenu}>How it works</a>
+          <Link to="/login" className="lp-mobile-link" onClick={closeMenu}>Log in</Link>
+          <Link to="/login" className="lp-mobile-cta" onClick={closeMenu}>Book a demo</Link>
+        </div>
+      )}
+
       {/* Nav */}
       <nav className="lp-nav">
         <div className="lp-nav-inner">
@@ -378,6 +393,9 @@ export default function LandingPage() {
             <Link to="/login"  className="lp-nav-link">Log in</Link>
             <Link to="/signup" className="lp-btn lp-btn-sm">Get started free</Link>
           </div>
+          <button className="lp-hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+            <span /><span /><span />
+          </button>
         </div>
       </nav>
 
@@ -511,7 +529,10 @@ export default function LandingPage() {
 
         <div className="lp-footer-bottom">
           <span>© 2026 decidr™ · All rights reserved</span>
-          <span>Built for cafes &amp; local businesses</span>
+          <span>
+            <Link to="/privacy" style={{ color: 'inherit', textDecoration: 'none', marginRight: '1rem' }}>Privacy Policy</Link>
+            <Link to="/terms"   style={{ color: 'inherit', textDecoration: 'none' }}>Terms &amp; Conditions</Link>
+          </span>
         </div>
       </footer>
     </div>
