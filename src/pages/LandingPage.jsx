@@ -124,7 +124,55 @@ const HOW = [
   { step: '4', title: 'Reward your regulars', desc: 'On the 9th stamp, they get a reward screen to show the cashier.' },
 ];
 
+const CARD_TYPES = [
+  { name: 'Stamp Card',   icon: '☕', value: '9 / 10',      desc: 'One more visit for a free coffee',   accent: '#f97316' },
+  { name: 'Cashback',     icon: '💰', value: 'PKR 340',     desc: '5% back on every purchase',          accent: '#6366f1' },
+  { name: 'Membership',   icon: '👑', value: 'Platinum',    desc: 'Unlimited refills · priority queue',  accent: '#8b5cf6' },
+  { name: 'Gift Card',    icon: '🎁', value: 'PKR 2,000',   desc: 'Send to a friend, redeem anywhere',  accent: '#ec4899' },
+  { name: 'Coupon',       icon: '🏷️', value: '30% OFF',    desc: 'Valid this weekend only',             accent: '#f59e0b' },
+  { name: 'Event Pass',   icon: '🎟️', value: 'Table #7',   desc: 'Brunch reservation · 11 AM slot',    accent: '#a855f7' },
+  { name: 'Punch Card',   icon: '🥐', value: '5 / 8',      desc: 'Free pastry after 8 punches',        accent: '#3b82f6' },
+  { name: 'Subscription', icon: '🔁', value: 'Active',      desc: 'Monthly flat white club · auto-renew', accent: '#10b981' },
+];
+
 const SCROLL_PER_CARD = 140;
+
+function CardTypesSection() {
+  return (
+    <section className="lp-ct">
+      <div className="lp-ct-glow lp-ct-glow-1" />
+      <div className="lp-ct-glow lp-ct-glow-2" />
+      <div className="lp-ct-inner">
+        <div className="lp-ct-header">
+          <span className="lp-ct-eyebrow">✦ 8 card types · one platform</span>
+          <h2 className="lp-ct-heading">
+            From stamp cards to memberships.<br />
+            <span className="lp-ct-accent">All in the wallet.</span>
+          </h2>
+        </div>
+        <div className="lp-ct-grid">
+          {CARD_TYPES.map(c => (
+            <div key={c.name} className="lp-ct-card" style={{ borderColor: `${c.accent}44` }}>
+              <div className="lp-ct-card-top">
+                <div>
+                  <p className="lp-ct-label">DECIDR</p>
+                  <p className="lp-ct-name">{c.name}</p>
+                </div>
+                <div className="lp-ct-icon" style={{ background: `linear-gradient(135deg, ${c.accent}, ${c.accent}99)` }}>
+                  {c.icon}
+                </div>
+              </div>
+              <div className="lp-ct-card-bottom">
+                <p className="lp-ct-value">{c.value}</p>
+                <p className="lp-ct-desc">{c.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function FeaturesSection() {
   const tunnelRef = React.useRef(null);
@@ -234,20 +282,31 @@ export default function LandingPage() {
 
       {/* How it works */}
       <section className="lp-how" id="how">
-        <div className="lp-section-inner">
-          <h2 className="lp-section-title">How it works</h2>
-          <p className="lp-section-sub">From setup to your first loyal customer in under 10 minutes.</p>
+        <div className="lp-how-inner">
+          <div className="lp-how-header">
+            <span className="lp-how-badge">✦ Simple process</span>
+            <h2 className="lp-how-title">How it works</h2>
+            <p className="lp-how-sub">From setup to your first loyal customer in under 10 minutes.</p>
+          </div>
           <div className="lp-how-steps">
-            {HOW.map(h => (
+            {HOW.map((h, i) => (
               <div key={h.step} className="lp-how-step">
-                <div className="lp-how-num">{h.step}</div>
-                <h3 className="lp-how-title">{h.title}</h3>
-                <p className="lp-how-desc">{h.desc}</p>
+                {i < HOW.length - 1 && <div className="lp-how-connector" />}
+                <div className="lp-how-card">
+                  <div className="lp-how-num">{h.step}</div>
+                  <h3 className="lp-how-step-title">{h.title}</h3>
+                  <p className="lp-how-desc">{h.desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
+
+      <CardTypesSection />
+
+      {/* Pricing */}
+      <PricingSection />
 
       {/* CTA */}
       <section className="lp-cta">
