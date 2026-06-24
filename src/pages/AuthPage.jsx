@@ -3,21 +3,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './AuthPage.css';
 
-export default function AuthPage({ mode }) {
-  const { login } = useAuth();
-  const navigate  = useNavigate();
-  const isSignup  = mode === 'signup';
+const PERKS = [
+  { icon: '📱', text: 'Digital stamp cards in Apple & Google Wallet' },
+  { icon: '⚡', text: 'Live in under 5 minutes — no app needed' },
+  { icon: '📊', text: 'Real-time customer analytics dashboard' },
+  { icon: '🎁', text: 'Automated rewards when stamps complete' },
+];
 
-  const [form, setForm]     = useState({ cafeName: '', email: '', password: '' });
-  const [error, setError]   = useState('');
+export default function AuthPage({ mode }) {
+  const { login }   = useAuth();
+  const navigate    = useNavigate();
+  const isSignup    = mode === 'signup';
+
+  const [form, setForm]       = useState({ cafeName: '', email: '', password: '' });
+  const [showPass, setShowPass] = useState(false);
+  const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
 
   function change(e) { setForm(f => ({ ...f, [e.target.name]: e.target.value })); setError(''); }
 
   async function submit(e) {
     e.preventDefault();
-    setLoading(true);
-    setError('');
+    setLoading(true); setError('');
     try {
       const body = isSignup
         ? { action: 'register', email: form.email, password: form.password, restaurantName: form.cafeName, role: 'restaurant' }
@@ -37,43 +44,123 @@ export default function AuthPage({ mode }) {
 
   return (
     <div className="auth-page">
-      <div className="auth-card">
-        <Link to="/" className="auth-logo">decidr <span className="auth-logo-badge">loyalty</span></Link>
 
-        <h1 className="auth-title">{isSignup ? 'Create your account' : 'Welcome back'}</h1>
-        <p className="auth-sub">
-          {isSignup ? 'Set up your cafe loyalty program in minutes.' : 'Log in to your loyalty dashboard.'}
-        </p>
-
-        <form onSubmit={submit} className="auth-form">
-          {isSignup && (
-            <div className="auth-field">
-              <label className="auth-label">Cafe Name</label>
-              <input className="auth-input" name="cafeName" type="text" placeholder="e.g. Brew & Co." value={form.cafeName} onChange={change} required />
-            </div>
-          )}
-          <div className="auth-field">
-            <label className="auth-label">Email</label>
-            <input className="auth-input" name="email" type="email" placeholder="you@example.com" value={form.email} onChange={change} required />
-          </div>
-          <div className="auth-field">
-            <label className="auth-label">Password</label>
-            <input className="auth-input" name="password" type="password" placeholder={isSignup ? 'At least 8 characters' : '••••••••'} value={form.password} onChange={change} required />
-          </div>
-
-          {error && <p className="auth-error">{error}</p>}
-
-          <button type="submit" className="auth-btn" disabled={loading}>
-            {loading ? '...' : isSignup ? 'Create account' : 'Log in'}
-          </button>
-        </form>
-
-        <p className="auth-switch">
-          {isSignup ? 'Already have an account? ' : "Don't have an account? "}
-          <Link to={isSignup ? '/login' : '/signup'} className="auth-switch-link">
-            {isSignup ? 'Log in' : 'Sign up free'}
+      {/* ── Left panel ── */}
+      <div className="auth-left">
+        <div className="auth-left-inner">
+          <Link to="/" className="auth-brand">
+            <img src="/decidr-logo.png" alt="decidr" className="auth-brand-img" />
+            <span className="auth-brand-badge">loyalty</span>
           </Link>
-        </p>
+
+          <div className="auth-left-body">
+            <h2 className="auth-left-headline">
+              Turn every purchase into a reason to come back.
+            </h2>
+            <p className="auth-left-sub">
+              The loyalty platform built for independent cafes and local businesses.
+            </p>
+
+            <ul className="auth-perks">
+              {PERKS.map(p => (
+                <li key={p.text} className="auth-perk">
+                  <span className="auth-perk-icon">{p.icon}</span>
+                  <span>{p.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="auth-left-footer">
+            <div className="auth-testimonial">
+              <p className="auth-testimonial-text">"We went from paper cards to digital in one afternoon. Customers love it."</p>
+              <p className="auth-testimonial-author">— Cafe owner, Lahore</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Right panel ── */}
+      <div className="auth-right">
+        <div className="auth-card">
+          {/* Mobile logo */}
+          <Link to="/" className="auth-mobile-brand">
+            <img src="/decidr-logo.png" alt="decidr" className="auth-mobile-logo" />
+            <span className="auth-brand-badge auth-brand-badge--dark">loyalty</span>
+          </Link>
+
+          <h1 className="auth-title">
+            {isSignup ? 'Create your account' : 'Welcome back'}
+          </h1>
+          <p className="auth-sub">
+            {isSignup
+              ? 'Set up your cafe loyalty program in minutes.'
+              : 'Log in to your loyalty dashboard.'}
+          </p>
+
+          <form onSubmit={submit} className="auth-form">
+            {isSignup && (
+              <div className="auth-field">
+                <label className="auth-label">Cafe / Business Name</label>
+                <div className="auth-input-wrap">
+                  <span className="auth-input-icon">🏪</span>
+                  <input className="auth-input auth-input--icon" name="cafeName" type="text"
+                    placeholder="e.g. Brew & Co." value={form.cafeName} onChange={change} required />
+                </div>
+              </div>
+            )}
+
+            <div className="auth-field">
+              <label className="auth-label">Email Address</label>
+              <div className="auth-input-wrap">
+                <span className="auth-input-icon">✉️</span>
+                <input className="auth-input auth-input--icon" name="email" type="email"
+                  placeholder="you@example.com" value={form.email} onChange={change} required />
+              </div>
+            </div>
+
+            <div className="auth-field">
+              <label className="auth-label">Password</label>
+              <div className="auth-input-wrap">
+                <span className="auth-input-icon">🔒</span>
+                <input className="auth-input auth-input--icon" name="password"
+                  type={showPass ? 'text' : 'password'}
+                  placeholder={isSignup ? 'At least 8 characters' : '••••••••'}
+                  value={form.password} onChange={change} required />
+                <button type="button" className="auth-eye" onClick={() => setShowPass(s => !s)}
+                  aria-label={showPass ? 'Hide password' : 'Show password'}>
+                  {showPass ? '🙈' : '👁️'}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <div className="auth-error">
+                <span>⚠️</span> {error}
+              </div>
+            )}
+
+            <button type="submit" className="auth-btn" disabled={loading}>
+              {loading
+                ? <span className="auth-spinner" />
+                : isSignup ? 'Create account →' : 'Log in →'}
+            </button>
+          </form>
+
+          <div className="auth-divider"><span>or</span></div>
+
+          <p className="auth-switch">
+            {isSignup ? 'Already have an account? ' : "Don't have an account? "}
+            <Link to={isSignup ? '/login' : '/signup'} className="auth-switch-link">
+              {isSignup ? 'Log in' : 'Start for free'}
+            </Link>
+          </p>
+
+          <p className="auth-terms">
+            By continuing you agree to our{' '}
+            <Link to="/terms">Terms</Link> and <Link to="/privacy">Privacy Policy</Link>.
+          </p>
+        </div>
       </div>
     </div>
   );
