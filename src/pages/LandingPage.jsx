@@ -284,6 +284,7 @@ const PLANS = [
       'Priority email & chat support',
     ],
     cta: 'Book a demo →',
+    ctaHref: 'https://wa.me/923712524553',
     ctaStyle: 'primary',
   },
   {
@@ -311,7 +312,7 @@ const PLANS = [
 function PricingSection() {
   const [annual, setAnnual] = React.useState(true);
   return (
-    <section className="lp-pricing">
+    <section className="lp-pricing" id="pricing">
       <div className="lp-pricing-inner">
         <div className="lp-pricing-header">
           <span className="lp-pricing-badge">✦ Simple pricing</span>
@@ -347,7 +348,10 @@ function PricingSection() {
                   </li>
                 ))}
               </ul>
-              <Link to="/signup" className={`lp-plan-cta${p.ctaStyle === 'primary' ? ' lp-plan-cta--primary' : ''}`}>{p.cta}</Link>
+              {p.ctaHref
+                ? <a href={p.ctaHref} target="_blank" rel="noreferrer" className={`lp-plan-cta${p.ctaStyle === 'primary' ? ' lp-plan-cta--primary' : ''}`}>{p.cta}</a>
+                : <Link to="/signup" className={`lp-plan-cta${p.ctaStyle === 'primary' ? ' lp-plan-cta--primary' : ''}`}>{p.cta}</Link>
+              }
             </div>
           ))}
         </div>
@@ -375,8 +379,7 @@ export default function LandingPage() {
           <button className="lp-mobile-close" onClick={closeMenu} aria-label="Close menu">×</button>
           <a href="#features" className="lp-mobile-link" onClick={closeMenu}>Features</a>
           <a href="#how" className="lp-mobile-link" onClick={closeMenu}>How it works</a>
-          <Link to="/login" className="lp-mobile-link" onClick={closeMenu}>Log in</Link>
-          <Link to="/login" className="lp-mobile-cta" onClick={closeMenu}>Book a demo</Link>
+          <a href="https://wa.me/923712524553" target="_blank" rel="noreferrer" className="lp-mobile-cta" onClick={closeMenu}>Book a demo</a>
         </div>
       )}
 
@@ -390,8 +393,7 @@ export default function LandingPage() {
           <div className="lp-nav-links">
             <a href="#features" className="lp-nav-link">Features</a>
             <a href="#how" className="lp-nav-link">How it works</a>
-            <Link to="/login"  className="lp-nav-link">Log in</Link>
-            <Link to="/signup" className="lp-btn lp-btn-sm">Get started free</Link>
+            <a href="https://wa.me/923712524553" target="_blank" rel="noreferrer" className="lp-btn lp-btn-sm">Book a demo</a>
           </div>
           <button className="lp-hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
             <span /><span /><span />
@@ -418,7 +420,7 @@ export default function LandingPage() {
               Upto <span className="lp-stat-accent">{HERO_STATS[statIdx]}</span>
             </p>
             <div className="lp-hero-cta">
-              <Link to="/login" className="lp-btn lp-btn-primary">Book a demo</Link>
+              <a href="https://wa.me/923712524553" target="_blank" rel="noreferrer" className="lp-btn lp-btn-primary">Book a demo</a>
             </div>
           </div>
           {/* Right: phone mockup */}
@@ -493,7 +495,7 @@ export default function LandingPage() {
               <li><a href="#features">Features</a></li>
               <li><a href="#how">How it works</a></li>
               <li><a href="#pricing">Pricing</a></li>
-              <li><Link to="/signup">Get started free</Link></li>
+              <li><a href="https://wa.me/923712524553" target="_blank" rel="noreferrer">Book a demo</a></li>
               <li><Link to="/login">Log in</Link></li>
             </ul>
           </div>
