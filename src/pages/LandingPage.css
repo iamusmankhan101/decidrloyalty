@@ -387,7 +387,7 @@
 ═══════════════════════════════════════════════ */
 .lp-features {
   background: #fff;
-  padding: 6rem 2rem 22rem;
+  padding: 6rem 2rem 4rem;
 }
 
 .lp-features-header {
@@ -432,31 +432,32 @@
 .lp-feat-stack {
   max-width: 680px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
 }
 
-/* Each card stacks on scroll */
+/* Slot gives each card scroll-travel room before the next one arrives */
+.lp-feat-slot {
+  height: 260px;
+}
+
+.lp-feat-slot:last-child {
+  height: 520px;
+}
+
+/* ALL cards sticky at the SAME top — they pile up on each other */
 .lp-feat-card {
   position: sticky;
-  top: calc(88px + var(--i) * 10px);
+  top: 100px;
   z-index: calc(var(--i) + 1);
   background: #fff;
-  border: 1px solid rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.09);
   border-radius: 20px;
   padding: 1.6rem 1.75rem;
   display: flex;
   align-items: flex-start;
   gap: 1.25rem;
-  margin-bottom: 14px;
   box-shadow:
     0 1px 3px rgba(0,0,0,0.04),
-    0 6px 20px rgba(0,0,0,0.06);
-  transition: box-shadow 0.2s;
-}
-
-.lp-feat-card:hover {
-  box-shadow: 0 4px 24px rgba(1,42,139,0.1);
+    0 8px 28px rgba(0,0,0,0.07);
 }
 
 .lp-feat-icon {

@@ -134,11 +134,13 @@ function FeaturesSection() {
       </div>
       <div className="lp-feat-stack">
         {FEATURES.map((f, i) => (
-          <div key={f.title} className="lp-feat-card" style={{ '--i': i }}>
-            <div className="lp-feat-icon">{f.icon}</div>
-            <div className="lp-feat-body">
-              <h3 className="lp-feat-title">{f.title}</h3>
-              <p className="lp-feat-desc">{f.desc}</p>
+          <div key={f.title} className="lp-feat-slot">
+            <div className="lp-feat-card" style={{ '--i': i }}>
+              <div className="lp-feat-icon">{f.icon}</div>
+              <div className="lp-feat-body">
+                <h3 className="lp-feat-title">{f.title}</h3>
+                <p className="lp-feat-desc">{f.desc}</p>
+              </div>
             </div>
           </div>
         ))}
