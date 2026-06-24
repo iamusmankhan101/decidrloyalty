@@ -124,6 +124,54 @@ const HOW = [
   { step: '4', title: 'Reward your regulars', desc: 'On the 9th stamp, they get a reward screen to show the cashier.' },
 ];
 
+function FeaturesSection() {
+  const cardRefs = React.useRef([]);
+  const [visible, setVisible] = React.useState(new Set());
+
+  React.useEffect(() => {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setVisible(prev => new Set([...prev, entry.target.dataset.idx]));
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+    cardRefs.current.forEach(ref => ref && obs.observe(ref));
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <section className="lp-features" id="features">
+      <div className="lp-features-wrap">
+        <div className="lp-features-left">
+          <span className="lp-features-badge">✦ Feature rich</span>
+          <h2 className="lp-features-heading">Everything your<br />cafe needs</h2>
+          <p className="lp-features-sub">Built specifically for independent cafes and small coffee shops that want to keep customers coming back.</p>
+        </div>
+        <div className="lp-features-right">
+          {FEATURES.map((f, i) => (
+            <div
+              key={f.title}
+              ref={el => cardRefs.current[i] = el}
+              data-idx={String(i)}
+              className={`lp-fcard${visible.has(String(i)) ? ' lp-fcard-visible' : ''}`}
+            >
+              <span className="lp-fcard-icon">{f.icon}</span>
+              <div className="lp-fcard-body">
+                <h3 className="lp-fcard-title">{f.title}</h3>
+                <p className="lp-fcard-desc">{f.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function LandingPage() {
   const [statIdx, setStatIdx] = React.useState(0);
   React.useEffect(() => {
@@ -193,22 +241,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="lp-features" id="features">
-        <div className="lp-section-inner">
-          <h2 className="lp-section-title">Everything your cafe needs</h2>
-          <p className="lp-section-sub">Built specifically for independent cafes and small coffee shops.</p>
-          <div className="lp-features-grid">
-            {FEATURES.map(f => (
-              <div key={f.title} className="lp-feature-card">
-                <span className="lp-feature-icon">{f.icon}</span>
-                <h3 className="lp-feature-title">{f.title}</h3>
-                <p className="lp-feature-desc">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FeaturesSection />
 
       {/* How it works */}
       <section className="lp-how" id="how">
