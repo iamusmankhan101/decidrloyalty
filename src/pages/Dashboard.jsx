@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Camera, Settings2, Users, BarChart3 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
 
@@ -384,10 +385,10 @@ function StatsTab({ stats, customers }) {
 
 /* ─── Main Dashboard ─────────────────────────────────────────── */
 const TABS = [
-  { id: 'scan',      icon: '📷', label: 'Scan'      },
-  { id: 'setup',     icon: '⚙️',  label: 'Setup'     },
-  { id: 'customers', icon: '👥',  label: 'Customers' },
-  { id: 'stats',     icon: '📊',  label: 'Analytics' },
+  { id: 'scan',      Icon: Camera,   label: 'Scan'      },
+  { id: 'setup',     Icon: Settings2, label: 'Setup'     },
+  { id: 'customers', Icon: Users,    label: 'Customers' },
+  { id: 'stats',     Icon: BarChart3, label: 'Analytics' },
 ];
 
 export default function Dashboard() {
@@ -479,7 +480,7 @@ export default function Dashboard() {
               className={`db-nav-item${tab === t.id ? ' active' : ''}`}
               onClick={() => setTab(t.id)}
             >
-              <span className="db-nav-icon">{t.icon}</span>
+              <span className="db-nav-icon"><t.Icon size={18} strokeWidth={1.75} /></span>
               {t.label}
             </button>
           ))}
@@ -534,7 +535,7 @@ export default function Dashboard() {
             className={`db-bottom-item${tab === t.id ? ' active' : ''}`}
             onClick={() => setTab(t.id)}
           >
-            <span className="db-bottom-icon">{t.icon}</span>
+            <span className="db-bottom-icon"><t.Icon size={22} strokeWidth={1.75} /></span>
             <span className="db-bottom-label">{t.label}</span>
           </button>
         ))}
