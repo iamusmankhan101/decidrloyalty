@@ -12,9 +12,13 @@ export function AuthProvider({ children }) {
   const [token, setToken]     = useState(() => localStorage.getItem('loyalty_token'));
   const [loading, setLoading] = useState(true);
 
+  // Runs once on mount only — verifies a stored token after a page refresh.
+  // Not re-triggered by login() changing token state.
   useEffect(() => {
-    if (!token) { setLoading(false); return; }
-    fetch('/api/auth', { headers: { Authorization: `Bearer ${token}` } })
+    const storedToken = localStorage.getItem('loyalty_token');
+    if (!storedToken) { setLoading(false); return; }
+
+    fetch('/api/auth', { headers: { Authorization: `Bearer ${storedToken}` } })
       .then(r => {
         if (r.status === 401) {
           setToken(null); setUser(null);
@@ -31,7 +35,7 @@ export function AuthProvider({ children }) {
         }
       })
       .finally(() => setLoading(false));
-  }, [token]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function login(tok, userData) {
     localStorage.setItem('loyalty_token', tok);
