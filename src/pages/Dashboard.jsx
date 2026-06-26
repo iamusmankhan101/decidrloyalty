@@ -1009,7 +1009,7 @@ X-API-Key: ${apiKey || 'YOUR_API_KEY'}
 Content-Type: application/json
 
 {
-  "restaurantId": "${rid}",
+  "businessId": "${rid}",
   "phone": "03001234567",
   "name": "Customer Name",
   "amountSpent": 2500
@@ -1018,7 +1018,7 @@ X-API-Key: ${apiKey || 'YOUR_API_KEY'}
 Content-Type: application/json
 
 {
-  "restaurantId": "${rid}",
+  "businessId": "${rid}",
   "phone": "03001234567",
   "name": "Customer Name"
 }`;
@@ -1049,8 +1049,8 @@ Content-Type: application/json
         <h1 className="db-title">POS Integration</h1>
         <p className="db-subtitle">
           {isCashback
-            ? 'Connect your salon POS to add cashback automatically on checkout.'
-            : 'Connect your salon POS to stamp customers automatically on checkout.'}
+            ? 'Connect your POS to add cashback automatically on checkout.'
+            : 'Connect your POS to stamp customers automatically on checkout.'}
         </p>
       </div>
 
@@ -1109,7 +1109,7 @@ Content-Type: application/json
             <div className="pos-step">
               <span className="pos-step-num">1</span>
               <div>
-                <strong>Customer visits salon</strong>
+                <strong>Customer checks out</strong>
                 <p>Staff enters the customer's phone number at checkout in the POS.</p>
               </div>
             </div>

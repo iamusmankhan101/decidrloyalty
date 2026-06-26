@@ -182,7 +182,7 @@ export default function AuthPage({ mode }) {
                     <input
                       className="auth-input"
                       name="businessName" type="text"
-                      placeholder="e.g. Glamour Salon"
+                      placeholder="e.g. Urban Rewards"
                       value={form.businessName}
                       onChange={change}
                       required
