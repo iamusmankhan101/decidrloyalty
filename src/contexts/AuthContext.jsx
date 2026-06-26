@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
     const storedToken = localStorage.getItem('loyalty_token');
     if (!storedToken) { setLoading(false); return; }
 
-    fetch('/api/auth', { headers: { Authorization: `Bearer ${storedToken}` } })
+    fetch('https://trydecidr.xyz/api/auth', { headers: { Authorization: `Bearer ${storedToken}` } })
       .then(r => {
         if (r.status === 401) {
           setToken(null); setUser(null);

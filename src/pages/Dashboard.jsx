@@ -4,7 +4,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
 
-const API = '/api/loyalty';
+const API = 'https://trydecidr.xyz/api/loyalty';
 
 /* ─── Scan Tab ─────────────────────────────────────────────── */
 function ScanTab({ rid, token, program }) {
