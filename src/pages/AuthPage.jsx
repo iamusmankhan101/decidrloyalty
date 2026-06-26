@@ -31,7 +31,7 @@ export default function AuthPage({ mode }) {
         ? { action: 'register', email: form.email, password: form.password, restaurantName: form.cafeName, role: 'restaurant' }
         : { action: 'login',    email: form.email, password: form.password };
 
-      const res  = await fetch('https://trydecidr.xyz/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const res  = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
       login(data.token, data.user);

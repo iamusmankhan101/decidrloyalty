@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import './StampPage.css';
 
-const API = 'https://trydecidr.xyz/api/loyalty';
+const API = '/api/loyalty';
 
 const STATES = { LOADING: 'loading', ENTER: 'enter', STAMPED: 'stamped', REWARD: 'reward', ERROR: 'error' };
 

@@ -223,6 +223,15 @@
 .db-color-row { display: flex; gap: 0.6rem; align-items: center; }
 .db-color-picker { width: 44px; height: 40px; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 2px; cursor: pointer; }
 
+.db-logo-upload { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.db-logo-preview-wrap { position: relative; display: inline-flex; }
+.db-logo-preview { width: 56px; height: 56px; object-fit: contain; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f8fafc; padding: 4px; }
+.db-logo-remove { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: #ef4444; color: #fff; border: none; cursor: pointer; font-size: 10px; display: flex; align-items: center; justify-content: center; line-height: 1; }
+.db-logo-label { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border: 1.5px dashed #cbd5e1; border-radius: 10px; font-size: 0.82rem; font-weight: 600; color: #475569; cursor: pointer; background: #f8fafc; transition: border-color 0.2s, color 0.2s; user-select: none; }
+.db-logo-label:hover { border-color: #022a8a; color: #022a8a; }
+.db-logo-label.uploading { opacity: 0.6; cursor: default; }
+.db-logo-input { display: none; }
+
 .db-save-row { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
 .db-save-msg { font-size: 0.82rem; font-weight: 600; }
 .db-save-msg.ok  { color: #10b981; }

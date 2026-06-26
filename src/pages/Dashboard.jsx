@@ -4,7 +4,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
 
-const API = 'https://trydecidr.xyz/api/loyalty';
+const API = '/api/loyalty';
 
 /* ─── Scan Tab ─────────────────────────────────────────────── */
 function ScanTab({ rid, token, program }) {
@@ -142,6 +142,8 @@ function ScanTab({ rid, token, program }) {
 function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, saveProgram }) {
   const stampUrl = `https://loyalty.trydecidr.xyz/stamp/${program?.slug || rid}`;
   const qrCanvasRef = useRef(null);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoError, setLogoError] = useState('');
 
   function downloadQR() {
     const canvas = qrCanvasRef.current?.querySelector('canvas');
@@ -151,6 +153,41 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
     a.href = url;
     a.download = 'loyalty-qr.png';
     a.click();
+  }
+
+  async function handleLogoUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setLogoUploading(true);
+    setLogoError('');
+    try {
+      const sigRes = await fetch('https://trydecidr.xyz/api/cloudinary-sign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'logo' }),
+      });
+      if (!sigRes.ok) throw new Error('Could not get upload signature');
+      const { signature, timestamp, folder, cloudName, apiKey } = await sigRes.json();
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('api_key', apiKey);
+      formData.append('timestamp', timestamp);
+      formData.append('signature', signature);
+      formData.append('folder', folder);
+
+      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!uploadRes.ok) throw new Error('Upload failed');
+      const { secure_url } = await uploadRes.json();
+      setForm(f => ({ ...f, logoUrl: secure_url }));
+    } catch (err) {
+      setLogoError(err.message);
+    } finally {
+      setLogoUploading(false);
+    }
   }
 
   return (
@@ -194,10 +231,23 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
           </div>
 
           <div className="db-field">
-            <label className="db-label">Logo URL <span className="db-optional">(optional)</span></label>
-            <input className="db-input" value={form.logoUrl}
-              onChange={e => setForm(f => ({ ...f, logoUrl: e.target.value }))}
-              placeholder="https://your-cafe.com/logo.png" />
+            <label className="db-label">Logo <span className="db-optional">(optional)</span></label>
+            <div className="db-logo-upload">
+              {form.logoUrl && (
+                <div className="db-logo-preview-wrap">
+                  <img src={form.logoUrl} alt="logo preview" className="db-logo-preview" />
+                  <button type="button" className="db-logo-remove"
+                    onClick={() => setForm(f => ({ ...f, logoUrl: '' }))}>✕</button>
+                </div>
+              )}
+              <label className={`db-logo-label${logoUploading ? ' uploading' : ''}`}>
+                <input type="file" accept="image/*" className="db-logo-input"
+                  onChange={handleLogoUpload} disabled={logoUploading} />
+                {logoUploading ? 'Uploading…' : form.logoUrl ? '↑ Replace logo' : '↑ Upload logo'}
+              </label>
+            </div>
+            {logoError && <span className="db-hint" style={{ color: '#ef4444' }}>{logoError}</span>}
+            <span className="db-hint">PNG or JPG, displayed on your stamp card</span>
           </div>
 
           <div className="db-field db-field-row">
