@@ -352,7 +352,8 @@ function CustomersTab({ customers, custLoading, loadCustomers, search, setSearch
             <table className="db-table">
               <thead>
                 <tr>
-                  <th>Customer</th>
+                  <th></th>
+                  <th>Name</th>
                   <th>Phone</th>
                   <th>Stamps</th>
                   <th>Rewards</th>
@@ -362,14 +363,12 @@ function CustomersTab({ customers, custLoading, loadCustomers, search, setSearch
               <tbody>
                 {filtered.map(c => (
                   <tr key={c.id}>
-                    <td>
-                      <div className="db-cust-row">
-                        <div className="db-cust-avatar" style={{ background: primaryColor || '#ff0000' }}>
-                          {(c.name?.[0] || c.phone?.[0] || '?').toUpperCase()}
-                        </div>
-                        <span className="db-td-name">{c.name || '—'}</span>
+                    <td style={{ width: 40, paddingRight: 0 }}>
+                      <div className="db-cust-avatar" style={{ background: primaryColor || '#ff0000' }}>
+                        {(c.name?.[0] || c.phone?.[0] || '?').toUpperCase()}
                       </div>
                     </td>
+                    <td className="db-td-name">{c.name || <span style={{ color: '#94a3b8' }}>—</span>}</td>
                     <td className="db-td-phone">{c.phone}</td>
                     <td>
                       <div className="db-mini-stamps">
