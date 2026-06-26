@@ -931,7 +931,7 @@ function CashbackTab({ rid, token, slug }) {
 }
 
 /* ─── POS Integration Tab ───────────────────────────────────── */
-function PosTab({ rid, token }) {
+function PosTab({ rid, token, cardType }) {
   const [apiKey, setApiKey]       = useState(null);
   const [loading, setLoading]     = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -1002,8 +1002,18 @@ function PosTab({ rid, token }) {
 
   const stampEndpoint  = `https://www.trydecidr.xyz/api/loyalty?action=stamp`;
   const cbEndpoint     = `https://www.trydecidr.xyz/api/loyalty?action=cashback-earn`;
+  const isCashback = cardType === 'cashback';
 
-  const codeSnippet = `POST ${stampEndpoint}
+  const codeSnippet = isCashback ? `POST ${cbEndpoint}
+X-API-Key: ${apiKey || 'YOUR_API_KEY'}
+Content-Type: application/json
+
+{
+  "restaurantId": "${rid}",
+  "phone": "03001234567",
+  "name": "Customer Name",
+  "amountSpent": 2500
+}` : `POST ${stampEndpoint}
 X-API-Key: ${apiKey || 'YOUR_API_KEY'}
 Content-Type: application/json
 
@@ -1013,7 +1023,15 @@ Content-Type: application/json
   "name": "Customer Name"
 }`;
 
-  const responseSnippet = `{
+  const responseSnippet = isCashback ? `{
+  "success": true,
+  "cashbackEarned": 125,
+  "balance": 425,
+  "customer": {
+    "name": "Sara",
+    "phone": "+923001234567"
+  }
+}` : `{
   "success": true,
   "rewarded": false,
   "stampCount": 3,
@@ -1029,7 +1047,11 @@ Content-Type: application/json
     <div className="db-content">
       <div className="db-header">
         <h1 className="db-title">POS Integration</h1>
-        <p className="db-subtitle">Connect your salon POS to stamp customers automatically on checkout.</p>
+        <p className="db-subtitle">
+          {isCashback
+            ? 'Connect your salon POS to add cashback automatically on checkout.'
+            : 'Connect your salon POS to stamp customers automatically on checkout.'}
+        </p>
       </div>
 
       <div className="db-grid-2">
@@ -1037,7 +1059,7 @@ Content-Type: application/json
         <div className="db-card">
           <h2 className="db-card-title">Your API Key</h2>
           <p className="db-card-sub" style={{ marginBottom: '1rem' }}>
-            Give this key to your POS provider. It lets them add stamps on your behalf — keep it secret.
+            Give this key to your POS provider. It lets them {isCashback ? 'add cashback' : 'add stamps'} on your behalf — keep it secret.
           </p>
 
           {loading ? (
@@ -1095,14 +1117,21 @@ Content-Type: application/json
               <span className="pos-step-num">2</span>
               <div>
                 <strong>POS calls our API</strong>
-                <p>On payment, the POS sends one HTTP request with the phone number and your API key.</p>
+                <p>
+                  On payment, the POS sends one HTTP request with the phone number,
+                  {isCashback ? ' bill amount,' : ''} and your API key.
+                </p>
               </div>
             </div>
             <div className="pos-step">
               <span className="pos-step-num">3</span>
               <div>
-                <strong>Stamp added automatically</strong>
-                <p>We stamp the card. If the customer hits the target, we return <code>rewarded: true</code> so the POS can show a reward alert.</p>
+                <strong>{isCashback ? 'Cashback added automatically' : 'Stamp added automatically'}</strong>
+                <p>
+                  {isCashback
+                    ? <>We add cashback to the customer's balance and return the updated balance for the POS receipt.</>
+                    : <>We stamp the card. If the customer hits the target, we return <code>rewarded: true</code> so the POS can show a reward alert.</>}
+                </p>
               </div>
             </div>
           </div>
@@ -1128,8 +1157,16 @@ Content-Type: application/json
         </div>
 
         <div className="pos-note">
-          <strong>Reward alert:</strong> When <code>rewarded: true</code> is returned, the customer has just earned their free reward.
-          Show a popup in the POS so staff can apply the discount.
+          {isCashback ? (
+            <>
+              <strong>Cashback receipt:</strong> Use <code>cashbackEarned</code> and <code>balance</code> to show the customer how much they earned and their updated balance.
+            </>
+          ) : (
+            <>
+              <strong>Reward alert:</strong> When <code>rewarded: true</code> is returned, the customer has just earned their free reward.
+              Show a popup in the POS so staff can apply the discount.
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -1288,7 +1325,7 @@ export default function Dashboard() {
           <StatsTab stats={stats} customers={customers} />
         )}
         {tab === 'pos' && (
-          <PosTab rid={rid} token={token} />
+          <PosTab rid={rid} token={token} cardType={cardType} />
         )}
       </main>
 

@@ -151,7 +151,7 @@ export default function CardPage() {
           <p className="sp-stamped-sub">
             {hasBalance
               ? <>You have <strong>PKR {balance.toLocaleString('en-PK')}</strong> cashback to redeem at the counter.</>
-              : 'You'll earn cashback on your next visit. Ask the staff to add it at checkout.'}
+              : "You'll earn cashback on your next visit. Ask the staff to add it at checkout."}
           </p>
 
           <div className="cb-stats-row">
