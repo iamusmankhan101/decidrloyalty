@@ -140,7 +140,7 @@ function ScanTab({ rid, token, program }) {
 
 /* ─── Setup Tab ─────────────────────────────────────────────── */
 function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, saveProgram }) {
-  const stampUrl = `https://loyalty.trydecidr.xyz/stamp/${program?.slug || rid}`;
+  const stampUrl = `https://loyalty.trydecidr.xyz/stamp/${rid}`;
   const qrCanvasRef = useRef(null);
   const [logoUploading, setLogoUploading] = useState(false);
   const [logoError, setLogoError] = useState('');
