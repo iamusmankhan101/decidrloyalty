@@ -182,7 +182,15 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
       });
       if (!uploadRes.ok) throw new Error('Upload failed');
       const { secure_url } = await uploadRes.json();
+
       setForm(f => ({ ...f, logoUrl: secure_url }));
+
+      // Auto-save so the logo persists on refresh and shows on the stamp page
+      await fetch('/api/loyalty?action=setup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ restaurantId: rid, ...form, logoUrl: secure_url }),
+      });
     } catch (err) {
       setLogoError(err.message);
     } finally {
@@ -237,7 +245,14 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
                 <div className="db-logo-preview-wrap">
                   <img src={form.logoUrl} alt="logo preview" className="db-logo-preview" />
                   <button type="button" className="db-logo-remove"
-                    onClick={() => setForm(f => ({ ...f, logoUrl: '' }))}>✕</button>
+                    onClick={() => {
+                      setForm(f => ({ ...f, logoUrl: '' }));
+                      fetch('/api/loyalty?action=setup', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                        body: JSON.stringify({ restaurantId: rid, ...form, logoUrl: '' }),
+                      });
+                    }}>✕</button>
                 </div>
               )}
               <label className={`db-logo-label${logoUploading ? ' uploading' : ''}`}>
