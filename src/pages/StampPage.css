@@ -264,6 +264,11 @@
 .sp-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
 .sp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+.sp-btn-outline-brand {
+  background: transparent !important;
+  border: 2px solid;
+}
+
 .sp-privacy {
   font-size: 0.72rem;
   color: #94a3b8;
