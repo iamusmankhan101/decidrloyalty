@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Camera, Settings2, Users, BarChart3 } from 'lucide-react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
 
@@ -140,7 +141,17 @@ function ScanTab({ rid, token, program }) {
 /* ─── Setup Tab ─────────────────────────────────────────────── */
 function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, saveProgram }) {
   const stampUrl = `https://loyalty.trydecidr.xyz/stamp/${program?.slug || rid}`;
-  const qrUrl    = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(stampUrl)}`;
+  const qrCanvasRef = useRef(null);
+
+  function downloadQR() {
+    const canvas = qrCanvasRef.current?.querySelector('canvas');
+    if (!canvas) return;
+    const url = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'loyalty-qr.png';
+    a.click();
+  }
 
   return (
     <div className="db-content">
@@ -212,14 +223,15 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
         <div className="db-card db-qr-card">
           <h2 className="db-card-title">Your Stamp QR Code</h2>
           <p className="db-card-sub">Print and place this at your counter. Customers scan it to collect stamps — no app needed.</p>
-          <div className="db-qr-wrap">
-            <img src={qrUrl} alt="QR Code" className="db-qr-img" />
+          <div className="db-qr-wrap" ref={qrCanvasRef}>
+            <QRCodeCanvas value={stampUrl} size={240} includeMargin={true} />
           </div>
           <p className="db-qr-url">{stampUrl}</p>
-          <a href={qrUrl} download="loyalty-qr.png" className="db-btn-outline"
-            style={{ display: 'block', textAlign: 'center', marginTop: '0.75rem' }}>
+          <button className="db-btn-outline"
+            style={{ display: 'block', width: '100%', textAlign: 'center', marginTop: '0.75rem', cursor: 'pointer' }}
+            onClick={downloadQR}>
             ↓ Download QR Code
-          </a>
+          </button>
 
           {/* Card preview */}
           <div className="db-pass-preview" style={{ background: form.primaryColor }}>
