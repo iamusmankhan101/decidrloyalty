@@ -481,7 +481,7 @@ function StatsTab({ stats, customers }) {
 /* ─── Cashback Tab ──────────────────────────────────────────── */
 const CB_API = '/api/loyalty';
 
-function CashbackTab({ rid, token }) {
+function CashbackTab({ rid, token, slug }) {
   const [program, setProgram]     = useState(null);
   const [progLoading, setProgLoading] = useState(true);
   const [view, setView]           = useState('earn'); // 'earn' | 'redeem' | 'customers' | 'setup'
@@ -911,6 +911,19 @@ function CashbackTab({ rid, token }) {
               <span className={`db-save-msg${cbSaveMsg === 'Saved!' ? ' ok' : ' err'}`}>{cbSaveMsg}</span>
             )}
           </div>
+
+          {slug && (
+            <div className="db-card db-qr-card" style={{ marginTop: '1.5rem', background: '#f0fdf4', border: '1px solid #6ee7b7' }}>
+              <h2 className="db-card-title" style={{ color: '#065f46' }}>Customer Card QR Code</h2>
+              <p className="db-qr-hint" style={{ color: '#047857' }}>
+                Print this and place it at your counter. Customers scan it to view their cashback balance and add their card to Google Wallet.
+              </p>
+              <div className="db-qr-wrap" style={{ margin: '1rem auto' }}>
+                <QRCodeCanvas value={`https://loyalty.trydecidr.xyz/card/${slug}`} size={200} includeMargin={true} />
+              </div>
+              <p className="db-qr-url">{`loyalty.trydecidr.xyz/card/${slug}`}</p>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -1269,7 +1282,7 @@ export default function Dashboard() {
           />
         )}
         {tab === 'cashback' && (
-          <CashbackTab rid={rid} token={token} />
+          <CashbackTab rid={rid} token={token} slug={user?.slug} />
         )}
         {tab === 'stats' && (
           <StatsTab stats={stats} customers={customers} />

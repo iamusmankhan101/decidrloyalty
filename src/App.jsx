@@ -7,6 +7,7 @@ import Dashboard          from './pages/Dashboard';
 import PrivacyPolicy      from './pages/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
 import StampPage          from './pages/StampPage';
+import CardPage           from './pages/CardPage';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/signup" element={<PublicRoute><AuthPage mode="signup" /></PublicRoute>} />
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/stamp/:slug" element={<StampPage />} />
+          <Route path="/card/:slug"  element={<CardPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms"   element={<TermsAndConditions />} />
           <Route path="*" element={<Navigate to="/" replace />} />
