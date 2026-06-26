@@ -16,10 +16,13 @@ export default function StampPage() {
   const [error, setError]   = useState('');
   const inputRef = useRef(null);
 
+  const isNumericId = /^\d+$/.test(slug);
+  const programParam = isNumericId ? `restaurantId=${slug}` : `slug=${slug}`;
+
   // Load program branding
   useEffect(() => {
     if (!slug) { setView(STATES.ERROR); return; }
-    fetch(`${API}?action=program&slug=${slug}`)
+    fetch(`${API}?action=program&${programParam}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data?.program) {
@@ -30,7 +33,7 @@ export default function StampPage() {
         }
       })
       .catch(() => setView(STATES.ERROR));
-  }, [slug]);
+  }, [slug, programParam]);
 
   useEffect(() => {
     if (view === STATES.ENTER) setTimeout(() => inputRef.current?.focus(), 200);
@@ -44,7 +47,10 @@ export default function StampPage() {
       const res = await fetch(`${API}?action=stamp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug, phone: phone.trim() }),
+        body: JSON.stringify({
+          ...(isNumericId ? { restaurantId: slug } : { slug }),
+          phone: phone.trim(),
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
