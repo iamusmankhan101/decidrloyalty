@@ -934,13 +934,14 @@ function CashbackTab({ rid, token, slug }) {
 
 /* ─── POS Integration Tab ───────────────────────────────────── */
 function PosTab({ rid, token, cardType }) {
-  const [apiKey, setApiKey]       = useState(null);
-  const [loading, setLoading]     = useState(true);
-  const [generating, setGenerating] = useState(false);
-  const [revoking, setRevoking]   = useState(false);
-  const [copied, setCopied]       = useState(false);
-  const [showKey, setShowKey]     = useState(false);
-  const [error, setError]         = useState('');
+  const [apiKey, setApiKey]             = useState(null);
+  const [loading, setLoading]           = useState(true);
+  const [generating, setGenerating]     = useState(false);
+  const [revoking, setRevoking]         = useState(false);
+  const [copied, setCopied]             = useState(false);
+  const [showKey, setShowKey]           = useState(false);
+  const [error, setError]               = useState('');
+  const [detectedType, setDetectedType] = useState(null);
 
   useEffect(() => {
     if (!rid) return;
@@ -950,6 +951,15 @@ function PosTab({ rid, token, cardType }) {
       .then(r => r.ok ? r.json() : { apiKey: null })
       .then(d => setApiKey(d.apiKey || null))
       .finally(() => setLoading(false));
+
+    // Detect actual card type from programs — overrides stale user.cardType
+    Promise.all([
+      fetch(`${API}?action=cashback-program&restaurantId=${rid}`).then(r => r.ok ? r.json() : null),
+      fetch(`${API}?action=program&restaurantId=${rid}`).then(r => r.ok ? r.json() : null),
+    ]).then(([cbData, stData]) => {
+      if (cbData?.program) setDetectedType('cashback');
+      else if (stData?.program) setDetectedType('stamp');
+    }).catch(() => {});
   }, [rid, token]);
 
   async function handleGenerate() {
@@ -1004,7 +1014,8 @@ function PosTab({ rid, token, cardType }) {
 
   const stampEndpoint  = `https://www.trydecidr.xyz/api/loyalty?action=stamp`;
   const cbEndpoint     = `https://www.trydecidr.xyz/api/loyalty?action=cashback-earn`;
-  const isCashback = cardType === 'cashback';
+  // detectedType comes from actual programs in DB — overrides stale cardType from user profile
+  const isCashback = (detectedType ?? cardType) === 'cashback';
 
   const codeSnippet = isCashback ? `POST ${cbEndpoint}
 X-API-Key: ${apiKey || 'YOUR_API_KEY'}
@@ -1187,9 +1198,21 @@ const ALL_TABS = [
 
 export default function Dashboard() {
   const { user, token, logout } = useAuth();
-  const cardType = user?.cardType || 'stamp';
+  // Detect effective card type from live program data — overrides stale user.cardType from localStorage
+  const [liveCardType, setLiveCardType] = useState(user?.cardType || 'stamp');
+  const cardType = liveCardType;
   const TABS = ALL_TABS.filter(t => t.types.includes(cardType));
   const [tab, setTab] = useState(cardType === 'cashback' ? 'cashback' : 'scan');
+
+  // Correct tab if card type resolves differently after live detection
+  const prevCardType = React.useRef(cardType);
+  useEffect(() => {
+    if (prevCardType.current !== cardType) {
+      prevCardType.current = cardType;
+      const validIds = ALL_TABS.filter(t => t.types.includes(cardType)).map(t => t.id);
+      if (!validIds.includes(tab)) setTab(cardType === 'cashback' ? 'cashback' : 'scan');
+    }
+  }, [cardType, tab]);
 
   const [program, setProgram] = useState(null);
   const [form, setForm] = useState({
@@ -1212,6 +1235,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!rid) return;
+    // Determine live card type from which programs exist in DB
+    fetch(`${API}?action=cashback-program&restaurantId=${rid}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.program) setLiveCardType('cashback'); })
+      .catch(() => {});
+
     fetch(`${API}?action=program&restaurantId=${rid}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
