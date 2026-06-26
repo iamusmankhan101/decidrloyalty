@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Camera, Settings2, Users, BarChart3 } from 'lucide-react';
+import { Camera, Settings2, Users, BarChart3, Zap } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
@@ -478,12 +478,218 @@ function StatsTab({ stats, customers }) {
   );
 }
 
+/* ─── POS Integration Tab ───────────────────────────────────── */
+function PosTab({ rid, token }) {
+  const [apiKey, setApiKey]       = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [revoking, setRevoking]   = useState(false);
+  const [copied, setCopied]       = useState(false);
+  const [showKey, setShowKey]     = useState(false);
+  const [error, setError]         = useState('');
+
+  useEffect(() => {
+    if (!rid) return;
+    fetch(`${API}?action=get-key&restaurantId=${rid}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.ok ? r.json() : { apiKey: null })
+      .then(d => setApiKey(d.apiKey || null))
+      .finally(() => setLoading(false));
+  }, [rid, token]);
+
+  async function handleGenerate() {
+    setGenerating(true); setError('');
+    try {
+      const res = await fetch(`${API}?action=generate-key`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ restaurantId: rid }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setApiKey(data.apiKey);
+      setShowKey(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setGenerating(false);
+    }
+  }
+
+  async function handleRevoke() {
+    if (!window.confirm('Revoke this API key? The POS will stop working immediately until you generate a new one.')) return;
+    setRevoking(true); setError('');
+    try {
+      const res = await fetch(`${API}?action=revoke-key`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ restaurantId: rid }),
+      });
+      if (!res.ok) throw new Error('Failed to revoke');
+      setApiKey(null);
+      setShowKey(false);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setRevoking(false);
+    }
+  }
+
+  function handleCopy() {
+    if (!apiKey) return;
+    navigator.clipboard.writeText(apiKey).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  const maskedKey = apiKey
+    ? 'dlk_' + '•'.repeat(32) + apiKey.slice(-8)
+    : null;
+
+  const stampEndpoint = `https://www.trydecidr.xyz/api/loyalty?action=stamp`;
+
+  const codeSnippet = `POST ${stampEndpoint}
+X-API-Key: ${apiKey || 'YOUR_API_KEY'}
+Content-Type: application/json
+
+{
+  "restaurantId": "${rid}",
+  "phone": "03001234567",
+  "name": "Customer Name"
+}`;
+
+  const responseSnippet = `{
+  "success": true,
+  "rewarded": false,
+  "stampCount": 3,
+  "stampsRequired": 9,
+  "rewardName": "Free Haircut",
+  "customer": {
+    "name": "Sara",
+    "phone": "+923001234567"
+  }
+}`;
+
+  return (
+    <div className="db-content">
+      <div className="db-header">
+        <h1 className="db-title">POS Integration</h1>
+        <p className="db-subtitle">Connect your salon POS to stamp customers automatically on checkout.</p>
+      </div>
+
+      <div className="db-grid-2">
+        {/* API Key card */}
+        <div className="db-card">
+          <h2 className="db-card-title">Your API Key</h2>
+          <p className="db-card-sub" style={{ marginBottom: '1rem' }}>
+            Give this key to your POS provider. It lets them add stamps on your behalf — keep it secret.
+          </p>
+
+          {loading ? (
+            <div className="db-loading"><div className="db-spinner" /></div>
+          ) : apiKey ? (
+            <>
+              <div className="pos-key-row">
+                <code className="pos-key-code">
+                  {showKey ? apiKey : maskedKey}
+                </code>
+                <button className="db-btn-outline pos-key-btn" onClick={() => setShowKey(v => !v)}>
+                  {showKey ? 'Hide' : 'Show'}
+                </button>
+                <button className="db-btn-outline pos-key-btn" onClick={handleCopy}>
+                  {copied ? '✓ Copied' : 'Copy'}
+                </button>
+              </div>
+              <div className="pos-key-actions">
+                <button className="db-btn-primary" onClick={handleGenerate} disabled={generating}>
+                  {generating ? 'Generating…' : '↻ Regenerate Key'}
+                </button>
+                <button className="db-btn-outline" style={{ color: '#ef4444', borderColor: '#ef4444' }}
+                  onClick={handleRevoke} disabled={revoking}>
+                  {revoking ? 'Revoking…' : 'Revoke'}
+                </button>
+              </div>
+              <p className="db-hint" style={{ marginTop: '0.5rem' }}>
+                Regenerating creates a new key and immediately invalidates the old one.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="db-hint" style={{ marginBottom: '1rem' }}>No API key yet. Generate one to get started.</p>
+              <button className="db-btn-primary" onClick={handleGenerate} disabled={generating}>
+                {generating ? 'Generating…' : '+ Generate API Key'}
+              </button>
+            </>
+          )}
+
+          {error && <p className="db-scan-error" style={{ marginTop: '0.75rem' }}>{error}</p>}
+        </div>
+
+        {/* How it works */}
+        <div className="db-card">
+          <h2 className="db-card-title">How it works</h2>
+          <div className="pos-steps">
+            <div className="pos-step">
+              <span className="pos-step-num">1</span>
+              <div>
+                <strong>Customer visits salon</strong>
+                <p>Staff enters the customer's phone number at checkout in the POS.</p>
+              </div>
+            </div>
+            <div className="pos-step">
+              <span className="pos-step-num">2</span>
+              <div>
+                <strong>POS calls our API</strong>
+                <p>On payment, the POS sends one HTTP request with the phone number and your API key.</p>
+              </div>
+            </div>
+            <div className="pos-step">
+              <span className="pos-step-num">3</span>
+              <div>
+                <strong>Stamp added automatically</strong>
+                <p>We stamp the card. If the customer hits the target, we return <code>rewarded: true</code> so the POS can show a reward alert.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Code snippets */}
+      <div className="db-card" style={{ marginTop: '1.5rem' }}>
+        <h2 className="db-card-title">Integration Code</h2>
+        <p className="db-card-sub" style={{ marginBottom: '1rem' }}>
+          Share this with the POS developer. One API call per checkout is all it takes.
+        </p>
+
+        <div className="db-grid-2">
+          <div>
+            <p className="db-label" style={{ marginBottom: '0.4rem' }}>Request</p>
+            <pre className="pos-code-block">{codeSnippet}</pre>
+          </div>
+          <div>
+            <p className="db-label" style={{ marginBottom: '0.4rem' }}>Response</p>
+            <pre className="pos-code-block">{responseSnippet}</pre>
+          </div>
+        </div>
+
+        <div className="pos-note">
+          <strong>Reward alert:</strong> When <code>rewarded: true</code> is returned, the customer has just earned their free reward.
+          Show a popup in the POS so staff can apply the discount.
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Main Dashboard ─────────────────────────────────────────── */
 const TABS = [
-  { id: 'scan',      Icon: Camera,   label: 'Scan'      },
+  { id: 'scan',      Icon: Camera,    label: 'Scan'      },
   { id: 'setup',     Icon: Settings2, label: 'Setup'     },
-  { id: 'customers', Icon: Users,    label: 'Customers' },
+  { id: 'customers', Icon: Users,     label: 'Customers' },
   { id: 'stats',     Icon: BarChart3, label: 'Analytics' },
+  { id: 'pos',       Icon: Zap,       label: 'POS'       },
 ];
 
 export default function Dashboard() {
@@ -621,6 +827,9 @@ export default function Dashboard() {
         )}
         {tab === 'stats' && (
           <StatsTab stats={stats} customers={customers} />
+        )}
+        {tab === 'pos' && (
+          <PosTab rid={rid} token={token} />
         )}
       </main>
 
