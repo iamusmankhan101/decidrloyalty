@@ -640,6 +640,8 @@ function CashbackTab({ rid, token, slug }) {
 
   if (progLoading) return <div className="db-content"><div className="db-loading"><div className="db-spinner" /></div></div>;
 
+  const customerCardId = rid || slug;
+
   // ── Sub-nav ──
   const subViews = [
     { id: 'earn',      label: '+ Earn' },
@@ -912,16 +914,16 @@ function CashbackTab({ rid, token, slug }) {
             )}
           </div>
 
-          {slug && (
+          {customerCardId && (
             <div className="db-card db-qr-card" style={{ marginTop: '1.5rem', background: '#f0fdf4', border: '1px solid #6ee7b7' }}>
               <h2 className="db-card-title" style={{ color: '#065f46' }}>Customer Card QR Code</h2>
               <p className="db-qr-hint" style={{ color: '#047857' }}>
                 Print this and place it at your counter. Customers scan it to view their cashback balance and add their card to Google Wallet.
               </p>
               <div className="db-qr-wrap" style={{ margin: '1rem auto' }}>
-                <QRCodeCanvas value={`https://loyalty.trydecidr.xyz/card/${slug}`} size={200} includeMargin={true} />
+                <QRCodeCanvas value={`https://loyalty.trydecidr.xyz/card/${customerCardId}`} size={200} includeMargin={true} />
               </div>
-              <p className="db-qr-url">{`loyalty.trydecidr.xyz/card/${slug}`}</p>
+              <p className="db-qr-url">{`loyalty.trydecidr.xyz/card/${customerCardId}`}</p>
             </div>
           )}
         </div>

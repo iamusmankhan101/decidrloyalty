@@ -56,10 +56,14 @@ export default function CardPage() {
   const [error, setError]               = useState('');
   const [showWallet, setShowWallet]     = useState(false);
   const inputRef = useRef(null);
+  const isNumericId = /^\d+$/.test(slug || '');
+  const programParam = isNumericId
+    ? `restaurantId=${encodeURIComponent(slug)}`
+    : `slug=${encodeURIComponent(slug || '')}`;
 
   useEffect(() => {
     if (!slug) { setView(STATES.ERROR); return; }
-    fetch(`${API}?action=program&slug=${encodeURIComponent(slug)}`)
+    fetch(`${API}?action=program&${programParam}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data?.program) {
@@ -71,7 +75,7 @@ export default function CardPage() {
         }
       })
       .catch(() => setView(STATES.ERROR));
-  }, [slug]);
+  }, [slug, programParam]);
 
   useEffect(() => {
     if (view === STATES.ENTER) setTimeout(() => inputRef.current?.focus(), 200);
@@ -85,7 +89,11 @@ export default function CardPage() {
       const res = await fetch(`${API}?action=cashback-view`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug, phone: phone.trim(), name: name.trim() }),
+        body: JSON.stringify({
+          ...(isNumericId ? { restaurantId: slug } : { slug }),
+          phone: phone.trim(),
+          name: name.trim(),
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
