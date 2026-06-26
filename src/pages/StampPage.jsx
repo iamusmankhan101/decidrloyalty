@@ -11,6 +11,7 @@ export default function StampPage() {
   const [program, setProgram] = useState(null);
   const [view, setView]     = useState(STATES.LOADING);
   const [phone, setPhone]   = useState('');
+  const [name, setName]     = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError]   = useState('');
@@ -50,6 +51,7 @@ export default function StampPage() {
         body: JSON.stringify({
           ...(isNumericId ? { restaurantId: slug } : { slug }),
           phone: phone.trim(),
+          name: name.trim(),
         }),
       });
       const data = await res.json();
@@ -64,7 +66,7 @@ export default function StampPage() {
   }
 
   function stampAgain() {
-    setPhone(''); setResult(null); setError('');
+    setPhone(''); setName(''); setResult(null); setError('');
     setView(STATES.ENTER);
   }
 
@@ -210,7 +212,17 @@ export default function StampPage() {
         </div>
 
         <form className="sp-form" onSubmit={handleSubmit}>
-          <label className="sp-label">Your phone number</label>
+          <label className="sp-label">Your name <span className="sp-optional">(optional)</span></label>
+          <input
+            className="sp-input"
+            type="text"
+            placeholder="e.g. Sara"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            autoComplete="given-name"
+            style={{ '--focus-color': color }}
+          />
+          <label className="sp-label" style={{ marginTop: '0.75rem' }}>Your phone number</label>
           <input
             ref={inputRef}
             className="sp-input"

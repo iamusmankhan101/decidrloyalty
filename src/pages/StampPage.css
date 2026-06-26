@@ -173,6 +173,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+.sp-optional { font-weight: 400; text-transform: none; color: #9ca3af; }
 
 .sp-input {
   padding: 1rem 1.1rem;
