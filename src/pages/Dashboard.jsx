@@ -479,7 +479,7 @@ function StatsTab({ stats, customers }) {
 }
 
 /* ─── Cashback Tab ──────────────────────────────────────────── */
-const CB_API = '/api/cashback';
+const CB_API = '/api/loyalty';
 
 function CashbackTab({ rid, token }) {
   const [program, setProgram]     = useState(null);
@@ -516,7 +516,7 @@ function CashbackTab({ rid, token }) {
 
   useEffect(() => {
     if (!rid) return;
-    fetch(`${CB_API}?action=program&restaurantId=${rid}`)
+    fetch(`${CB_API}?action=cashback-program&restaurantId=${rid}`)
       .then(r => r.ok ? r.json() : { program: null })
       .then(d => {
         if (d.program) {
@@ -538,7 +538,7 @@ function CashbackTab({ rid, token }) {
 
   function loadCbCustomers() {
     setCbCustLoading(true);
-    fetch(`${CB_API}?action=customers&restaurantId=${rid}`, {
+    fetch(`${CB_API}?action=cashback-customers&restaurantId=${rid}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.ok ? r.json() : { customers: [], stats: null })
@@ -549,7 +549,7 @@ function CashbackTab({ rid, token }) {
   async function saveCbProgram() {
     setCbSaving(true); setCbSaveMsg('');
     try {
-      const res = await fetch(`${CB_API}?action=setup`, {
+      const res = await fetch(`${CB_API}?action=cashback-setup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ restaurantId: rid, ...cbForm }),
@@ -571,7 +571,7 @@ function CashbackTab({ rid, token }) {
     if (!earnPhone.trim() || !earnAmount) return;
     setEarning(true); setEarnError(''); setEarnResult(null);
     try {
-      const res = await fetch(`${CB_API}?action=earn`, {
+      const res = await fetch(`${CB_API}?action=cashback-earn`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ restaurantId: rid, phone: earnPhone.trim(), name: earnName.trim(), amountSpent: Number(earnAmount) }),
@@ -601,7 +601,7 @@ function CashbackTab({ rid, token }) {
       setCheckingBal(true);
       redeemPhoneCheckRef.current = setTimeout(async () => {
         try {
-          const r = await fetch(`${CB_API}?action=balance&phone=${encodeURIComponent(val.trim())}&restaurantId=${rid}`, {
+          const r = await fetch(`${CB_API}?action=cashback-balance&phone=${encodeURIComponent(val.trim())}&restaurantId=${rid}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const d = await r.json();
@@ -617,7 +617,7 @@ function CashbackTab({ rid, token }) {
     if (!redeemPhone.trim() || !redeemAmount) return;
     setRedeeming(true); setRedeemError(''); setRedeemResult(null);
     try {
-      const res = await fetch(`${CB_API}?action=redeem`, {
+      const res = await fetch(`${CB_API}?action=cashback-redeem`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ restaurantId: rid, phone: redeemPhone.trim(), amountToRedeem: Number(redeemAmount) }),
@@ -987,7 +987,8 @@ function PosTab({ rid, token }) {
     ? 'dlk_' + '•'.repeat(32) + apiKey.slice(-8)
     : null;
 
-  const stampEndpoint = `https://www.trydecidr.xyz/api/loyalty?action=stamp`;
+  const stampEndpoint  = `https://www.trydecidr.xyz/api/loyalty?action=stamp`;
+  const cbEndpoint     = `https://www.trydecidr.xyz/api/loyalty?action=cashback-earn`;
 
   const codeSnippet = `POST ${stampEndpoint}
 X-API-Key: ${apiKey || 'YOUR_API_KEY'}

@@ -1,6 +1,5 @@
 {
   "rewrites": [
-    { "source": "/api/cashback", "destination": "https://www.trydecidr.xyz/api/cashback" },
     { "source": "/api/:path*", "destination": "https://www.trydecidr.xyz/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
