@@ -6,6 +6,23 @@ const API = '/api/loyalty';
 
 const STATES = { LOADING: 'loading', ENTER: 'enter', STAMPED: 'stamped', REWARD: 'reward', ERROR: 'error' };
 
+function WalletButtons({ walletUrl }) {
+  if (!walletUrl) return null;
+  return (
+    <div className="sp-wallet-wrap">
+      <a href={walletUrl} target="_blank" rel="noopener noreferrer" className="sp-wallet-btn">
+        <svg className="sp-wallet-icon" viewBox="0 0 24 24" fill="none">
+          <path d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" fill="#4285F4"/>
+          <path d="M20 4H4C2.9 4 2 4.9 2 6v2h20V6c0-1.1-.9-2-2-2z" fill="#1A73E8"/>
+          <circle cx="16" cy="14" r="3" fill="#FBBC04"/>
+          <path d="M16 11v6M13 14h6" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
+        Save to Google Wallet
+      </a>
+    </div>
+  );
+}
+
 export default function StampPage() {
   const { slug }            = useParams();
   const [program, setProgram] = useState(null);
@@ -112,6 +129,7 @@ export default function StampPage() {
           <p className="sp-reward-note">
             {result?.customer?.name ? `Well done, ${result.customer.name}!` : 'Well done!'} Your stamps have been reset and you're ready to collect again.
           </p>
+          <WalletButtons walletUrl={result?.walletUrl} color={color} />
           <button className="sp-btn" style={{ background: color }} onClick={stampAgain}>
             Start Again
           </button>
@@ -176,6 +194,7 @@ export default function StampPage() {
             <span>Reward: <strong>{reward}</strong></span>
           </div>
 
+          <WalletButtons walletUrl={result?.walletUrl} color={color} />
           <button className="sp-btn" style={{ background: color }} onClick={stampAgain}>
             Done
           </button>

@@ -405,3 +405,26 @@
     background: #f1f5f9;
   }
 }
+
+/* ── Wallet button ── */
+.sp-wallet-wrap {
+  margin: 0.75rem 0;
+  width: 100%;
+}
+.sp-wallet-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #1a1a1a;
+  color: #fff;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.sp-wallet-btn:hover { background: #333; }
+.sp-wallet-icon { width: 22px; height: 22px; flex-shrink: 0; }
