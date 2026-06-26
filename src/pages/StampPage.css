@@ -173,7 +173,9 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.sp-optional { font-weight: 400; text-transform: none; color: #9ca3af; }
+.sp-optional  { font-weight: 400; text-transform: none; color: #9ca3af; }
+.sp-required  { font-weight: 700; text-transform: none; color: #dc2626; }
+.sp-checking  { font-size: 0.78rem; color: #94a3b8; text-align: center; margin: -0.25rem 0 0; }
 
 .sp-input {
   padding: 1rem 1.1rem;

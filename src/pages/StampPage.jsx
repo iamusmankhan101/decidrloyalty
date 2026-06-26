@@ -32,7 +32,10 @@ export default function StampPage() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError]   = useState('');
-  const inputRef = useRef(null);
+  const [isReturning, setIsReturning] = useState(null); // null=unknown true=returning false=new
+  const [checkingPhone, setCheckingPhone] = useState(false);
+  const inputRef    = useRef(null);
+  const phoneCheckRef = useRef(null);
 
   const isNumericId = /^\d+$/.test(slug);
   const programParam = isNumericId ? `restaurantId=${slug}` : `slug=${slug}`;
@@ -57,9 +60,37 @@ export default function StampPage() {
     if (view === STATES.ENTER) setTimeout(() => inputRef.current?.focus(), 200);
   }, [view]);
 
+  function handlePhoneChange(e) {
+    const val = e.target.value;
+    setPhone(val);
+    setIsReturning(null);
+    clearTimeout(phoneCheckRef.current);
+    const cleaned = val.replace(/\s+/g, '');
+    if (cleaned.length >= 10) {
+      setCheckingPhone(true);
+      phoneCheckRef.current = setTimeout(async () => {
+        try {
+          const r = await fetch(`${API}?action=card&phone=${encodeURIComponent(val.trim())}&${programParam}`);
+          const d = await r.json();
+          setIsReturning(d.card ? true : false);
+        } catch {
+          setIsReturning(false);
+        } finally {
+          setCheckingPhone(false);
+        }
+      }, 600);
+    } else {
+      setCheckingPhone(false);
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!phone.trim()) return;
+    if (isReturning === false && !name.trim()) {
+      setError('Please enter your name — it\'s required for your first visit.');
+      return;
+    }
     setSubmitting(true); setError('');
     try {
       const res = await fetch(`${API}?action=stamp`, {
@@ -84,6 +115,7 @@ export default function StampPage() {
 
   function stampAgain() {
     setPhone(''); setName(''); setResult(null); setError('');
+    setIsReturning(null); setCheckingPhone(false);
     setView(STATES.ENTER);
   }
 
@@ -231,17 +263,7 @@ export default function StampPage() {
         </div>
 
         <form className="sp-form" onSubmit={handleSubmit}>
-          <label className="sp-label">Your name <span className="sp-optional">(optional)</span></label>
-          <input
-            className="sp-input"
-            type="text"
-            placeholder="e.g. Sara"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            autoComplete="given-name"
-            style={{ '--focus-color': color }}
-          />
-          <label className="sp-label" style={{ marginTop: '0.75rem' }}>Your phone number</label>
+          <label className="sp-label">Your phone number</label>
           <input
             ref={inputRef}
             className="sp-input"
@@ -249,15 +271,38 @@ export default function StampPage() {
             inputMode="numeric"
             placeholder="03XX XXXXXXX"
             value={phone}
-            onChange={e => setPhone(e.target.value)}
+            onChange={handlePhoneChange}
             autoComplete="tel"
             style={{ '--focus-color': color }}
           />
+
+          {checkingPhone && (
+            <p className="sp-checking">Checking…</p>
+          )}
+
+          {isReturning === false && (
+            <>
+              <label className="sp-label" style={{ marginTop: '0.75rem' }}>
+                Your name <span className="sp-required">*</span>
+              </label>
+              <input
+                className="sp-input"
+                type="text"
+                placeholder="e.g. Sara"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                autoComplete="given-name"
+                autoFocus
+                style={{ '--focus-color': color }}
+              />
+            </>
+          )}
+
           {error && <p className="sp-error-msg">{error}</p>}
           <button
             className="sp-btn"
             type="submit"
-            disabled={submitting || !phone.trim()}
+            disabled={submitting || !phone.trim() || checkingPhone}
             style={{ background: color }}
           >
             {submitting ? 'Adding stamp…' : '＋ Get My Stamp'}
