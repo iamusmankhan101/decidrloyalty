@@ -46,7 +46,7 @@ function WalletSheet({ walletUrl, onDismiss }) {
 
 export default function CardPage() {
   const { slug } = useParams();
-  const [salon, setSalon]               = useState(null);
+  const [business, setBusiness]         = useState(null);
   const [program, setProgram]           = useState(null);
   const [view, setView]                 = useState(STATES.LOADING);
   const [phone, setPhone]               = useState('');
@@ -59,11 +59,11 @@ export default function CardPage() {
 
   useEffect(() => {
     if (!slug) { setView(STATES.ERROR); return; }
-    fetch(`${API}?action=cashback-salon&slug=${encodeURIComponent(slug)}`)
+    fetch(`${API}?action=program&slug=${encodeURIComponent(slug)}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
-        if (data?.restaurant) {
-          setSalon(data.restaurant);
+        if (data?.program) {
+          setBusiness(data.restaurant || data.business || data.program);
           setProgram(data.program);
           setView(STATES.ENTER);
         } else {
@@ -132,7 +132,7 @@ export default function CardPage() {
       <div className="sp" style={{ '--brand': '#059669' }}>
         <div className="cb-card-header">
           <div className="cb-card-header-top">
-            <p className="cb-salon-name">{salon?.name}</p>
+            <p className="cb-business-name">{business?.name || business?.businessName}</p>
             <span className="cb-badge">Cashback Card</span>
           </div>
           <div className="cb-balance-hero">
@@ -196,7 +196,7 @@ export default function CardPage() {
     <div className="sp" style={{ '--brand': '#059669' }}>
       <div className="cb-card-header">
         <div className="cb-card-header-top">
-          <p className="cb-salon-name">{salon?.name}</p>
+          <p className="cb-business-name">{business?.name || business?.businessName}</p>
           <span className="cb-badge">Cashback Card</span>
         </div>
         <div className="cb-balance-hero">
