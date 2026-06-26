@@ -60,10 +60,11 @@ export default function CardPage() {
   const programParam = isNumericId
     ? `restaurantId=${encodeURIComponent(slug)}`
     : `slug=${encodeURIComponent(slug || '')}`;
+  const programAction = isNumericId ? 'cashback-program' : 'program';
 
   useEffect(() => {
     if (!slug) { setView(STATES.ERROR); return; }
-    fetch(`${API}?action=program&${programParam}`)
+    fetch(`${API}?action=${programAction}&${programParam}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data?.program) {
@@ -75,7 +76,7 @@ export default function CardPage() {
         }
       })
       .catch(() => setView(STATES.ERROR));
-  }, [slug, programParam]);
+  }, [slug, programAction, programParam]);
 
   useEffect(() => {
     if (view === STATES.ENTER) setTimeout(() => inputRef.current?.focus(), 200);
@@ -86,18 +87,19 @@ export default function CardPage() {
     if (!phone.trim()) return;
     setSubmitting(true); setError('');
     try {
-      const res = await fetch(`${API}?action=cashback-view`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...(isNumericId ? { restaurantId: slug } : { slug }),
-          phone: phone.trim(),
-          name: name.trim(),
-        }),
-      });
+      const viewParam = isNumericId ? `restaurantId=${encodeURIComponent(slug)}` : `slug=${encodeURIComponent(slug)}`;
+      const nameParam = name.trim() ? `&name=${encodeURIComponent(name.trim())}` : '';
+      const res = await fetch(`${API}?action=cashback-balance&${viewParam}&phone=${encodeURIComponent(phone.trim())}${nameParam}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
-      setResult(data);
+      setResult({
+        ...data,
+        account: data.account || {
+          balance: data.balance ?? 0,
+          totalEarned: data.totalEarned ?? 0,
+          totalRedeemed: data.totalRedeemed ?? 0,
+        },
+      });
       setView(STATES.CARD);
       if (data.walletUrl) setTimeout(() => setShowWallet(true), 600);
     } catch (err) {
