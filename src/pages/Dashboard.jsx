@@ -161,7 +161,7 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
     setLogoUploading(true);
     setLogoError('');
     try {
-      const sigRes = await fetch('https://trydecidr.xyz/api/cloudinary-sign', {
+      const sigRes = await fetch('/api/cloudinary-sign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'logo' }),
