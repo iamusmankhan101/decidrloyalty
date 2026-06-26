@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Camera, Settings2, Users, BarChart3, Zap } from 'lucide-react';
+import { Camera, Settings2, Users, BarChart3, Zap, Banknote } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
@@ -478,6 +478,445 @@ function StatsTab({ stats, customers }) {
   );
 }
 
+/* ─── Cashback Tab ──────────────────────────────────────────── */
+const CB_API = '/api/cashback';
+
+function CashbackTab({ rid, token }) {
+  const [program, setProgram]     = useState(null);
+  const [progLoading, setProgLoading] = useState(true);
+  const [view, setView]           = useState('earn'); // 'earn' | 'redeem' | 'customers' | 'setup'
+
+  // Cashback program setup form
+  const [cbForm, setCbForm] = useState({ cashbackRate: 5, minSpendToEarn: 0, minBalanceToRedeem: 0, active: true });
+  const [cbSaving, setCbSaving] = useState(false);
+  const [cbSaveMsg, setCbSaveMsg] = useState('');
+
+  // Earn state
+  const [earnPhone, setEarnPhone]       = useState('');
+  const [earnName, setEarnName]         = useState('');
+  const [earnAmount, setEarnAmount]     = useState('');
+  const [earnResult, setEarnResult]     = useState(null);
+  const [earnError, setEarnError]       = useState('');
+  const [earning, setEarning]           = useState(false);
+
+  // Redeem state
+  const [redeemPhone, setRedeemPhone]   = useState('');
+  const [redeemAmount, setRedeemAmount] = useState('');
+  const [redeemBalance, setRedeemBalance] = useState(null);
+  const [checkingBal, setCheckingBal]   = useState(false);
+  const [redeemResult, setRedeemResult] = useState(null);
+  const [redeemError, setRedeemError]   = useState('');
+  const [redeeming, setRedeeming]       = useState(false);
+  const redeemPhoneRef = useRef(null);
+
+  // Customers state
+  const [cbCustomers, setCbCustomers]   = useState([]);
+  const [cbStats, setCbStats]           = useState(null);
+  const [cbCustLoading, setCbCustLoading] = useState(false);
+
+  useEffect(() => {
+    if (!rid) return;
+    fetch(`${CB_API}?action=program&restaurantId=${rid}`)
+      .then(r => r.ok ? r.json() : { program: null })
+      .then(d => {
+        if (d.program) {
+          setProgram(d.program);
+          setCbForm({
+            cashbackRate:       d.program.cashbackRate       ?? 5,
+            minSpendToEarn:     d.program.minSpendToEarn     ?? 0,
+            minBalanceToRedeem: d.program.minBalanceToRedeem ?? 0,
+            active:             !!d.program.active,
+          });
+        }
+      })
+      .finally(() => setProgLoading(false));
+  }, [rid]);
+
+  useEffect(() => {
+    if (view === 'customers') loadCbCustomers();
+  }, [view]);
+
+  function loadCbCustomers() {
+    setCbCustLoading(true);
+    fetch(`${CB_API}?action=customers&restaurantId=${rid}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.ok ? r.json() : { customers: [], stats: null })
+      .then(d => { setCbCustomers(d.customers || []); setCbStats(d.stats || null); })
+      .finally(() => setCbCustLoading(false));
+  }
+
+  async function saveCbProgram() {
+    setCbSaving(true); setCbSaveMsg('');
+    try {
+      const res = await fetch(`${CB_API}?action=setup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ restaurantId: rid, ...cbForm }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setProgram({ ...cbForm });
+      setCbSaveMsg('Saved!');
+      setTimeout(() => { setCbSaveMsg(''); setView('earn'); }, 1500);
+    } catch (err) {
+      setCbSaveMsg(err.message);
+    } finally {
+      setCbSaving(false);
+    }
+  }
+
+  async function handleEarn(e) {
+    e.preventDefault();
+    if (!earnPhone.trim() || !earnAmount) return;
+    setEarning(true); setEarnError(''); setEarnResult(null);
+    try {
+      const res = await fetch(`${CB_API}?action=earn`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ restaurantId: rid, phone: earnPhone.trim(), name: earnName.trim(), amountSpent: Number(earnAmount) }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setEarnResult(data);
+    } catch (err) {
+      setEarnError(err.message);
+    } finally {
+      setEarning(false);
+    }
+  }
+
+  function resetEarn() {
+    setEarnPhone(''); setEarnName(''); setEarnAmount(''); setEarnResult(null); setEarnError('');
+  }
+
+  // Auto-lookup balance as phone is typed in redeem view
+  const redeemPhoneCheckRef = useRef(null);
+  function handleRedeemPhoneChange(val) {
+    setRedeemPhone(val);
+    setRedeemBalance(null); setRedeemResult(null); setRedeemError('');
+    clearTimeout(redeemPhoneCheckRef.current);
+    const cleaned = val.replace(/\s+/g, '');
+    if (cleaned.length >= 10) {
+      setCheckingBal(true);
+      redeemPhoneCheckRef.current = setTimeout(async () => {
+        try {
+          const r = await fetch(`${CB_API}?action=balance&phone=${encodeURIComponent(val.trim())}&restaurantId=${rid}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const d = await r.json();
+          setRedeemBalance(d);
+        } catch { setRedeemBalance(null); }
+        finally { setCheckingBal(false); }
+      }, 600);
+    }
+  }
+
+  async function handleRedeem(e) {
+    e.preventDefault();
+    if (!redeemPhone.trim() || !redeemAmount) return;
+    setRedeeming(true); setRedeemError(''); setRedeemResult(null);
+    try {
+      const res = await fetch(`${CB_API}?action=redeem`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ restaurantId: rid, phone: redeemPhone.trim(), amountToRedeem: Number(redeemAmount) }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setRedeemResult(data);
+      setRedeemBalance(b => b ? { ...b, balance: data.newBalance } : null);
+    } catch (err) {
+      setRedeemError(err.message);
+    } finally {
+      setRedeeming(false);
+    }
+  }
+
+  function resetRedeem() {
+    setRedeemPhone(''); setRedeemAmount(''); setRedeemBalance(null);
+    setRedeemResult(null); setRedeemError('');
+  }
+
+  if (progLoading) return <div className="db-content"><div className="db-loading"><div className="db-spinner" /></div></div>;
+
+  // ── Sub-nav ──
+  const subViews = [
+    { id: 'earn',      label: '+ Earn' },
+    { id: 'redeem',    label: '− Redeem' },
+    { id: 'customers', label: 'Customers' },
+    { id: 'setup',     label: 'Setup' },
+  ];
+
+  return (
+    <div className="db-content">
+      <div className="db-header">
+        <h1 className="db-title">Cashback Card</h1>
+        <p className="db-subtitle">
+          {program
+            ? `${program.cashbackRate}% cashback on every visit · Rs. balance per customer`
+            : 'Set up your cashback program below.'}
+        </p>
+      </div>
+
+      {/* Sub-nav */}
+      <div className="cb-subnav">
+        {subViews.map(v => (
+          <button key={v.id} className={`cb-subnav-btn${view === v.id ? ' active' : ''}`} onClick={() => setView(v.id)}>
+            {v.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Earn view ── */}
+      {view === 'earn' && (
+        !program ? (
+          <div className="db-card cb-empty-card">
+            <p className="db-empty-icon">💳</p>
+            <p>No cashback program yet.</p>
+            <button className="db-btn-primary" style={{ marginTop: '1rem' }} onClick={() => setView('setup')}>
+              Set up cashback →
+            </button>
+          </div>
+        ) : earnResult ? (
+          <div className="db-card cb-result-card">
+            <div className="cb-result-icon">✓</div>
+            <h2 className="cb-result-title">Rs. {earnResult.cashbackEarned} earned!</h2>
+            <p className="cb-result-sub">
+              {earnResult.customer.name ? `${earnResult.customer.name} · ` : ''}
+              {earnResult.customer.phone}
+            </p>
+            <div className="cb-balance-display">
+              <span className="cb-balance-label">Total balance</span>
+              <span className="cb-balance-value">Rs. {earnResult.balance}</span>
+            </div>
+            <button className="db-btn-outline" style={{ marginTop: '1.25rem' }} onClick={resetEarn}>
+              Next Customer →
+            </button>
+          </div>
+        ) : (
+          <div className="db-card" style={{ maxWidth: 480 }}>
+            <h2 className="db-card-title">Add Cashback</h2>
+            <p className="db-card-sub" style={{ marginBottom: '1rem' }}>
+              Enter the customer's phone and bill amount. They earn {program.cashbackRate}% back.
+            </p>
+            <form onSubmit={handleEarn}>
+              <div className="db-field">
+                <label className="db-label">Phone number</label>
+                <input className="db-input" type="tel" inputMode="numeric" placeholder="03XX XXXXXXX"
+                  value={earnPhone} onChange={e => setEarnPhone(e.target.value)} autoComplete="off" />
+              </div>
+              <div className="db-field">
+                <label className="db-label">Customer name <span className="db-optional">(optional)</span></label>
+                <input className="db-input" type="text" placeholder="e.g. Sara"
+                  value={earnName} onChange={e => setEarnName(e.target.value)} />
+              </div>
+              <div className="db-field">
+                <label className="db-label">Bill amount (Rs.)</label>
+                <input className="db-input cb-amount-input" type="number" min="1" placeholder="e.g. 2500"
+                  value={earnAmount} onChange={e => setEarnAmount(e.target.value)} />
+                {earnAmount && Number(earnAmount) > 0 && (
+                  <span className="db-hint cb-preview-hint">
+                    Cashback: <strong>Rs. {Math.round((Number(earnAmount) * program.cashbackRate) / 100)}</strong>
+                  </span>
+                )}
+              </div>
+              {earnError && <p className="db-scan-error">{earnError}</p>}
+              <button className="db-btn-primary db-btn-lg" type="submit"
+                disabled={earning || !earnPhone.trim() || !earnAmount}
+                style={{ width: '100%', marginTop: '0.5rem' }}>
+                {earning ? 'Adding…' : '+ Add Cashback'}
+              </button>
+            </form>
+          </div>
+        )
+      )}
+
+      {/* ── Redeem view ── */}
+      {view === 'redeem' && (
+        !program ? (
+          <div className="db-card cb-empty-card">
+            <p className="db-empty-icon">💳</p>
+            <p>No cashback program yet.</p>
+            <button className="db-btn-primary" style={{ marginTop: '1rem' }} onClick={() => setView('setup')}>
+              Set up cashback →
+            </button>
+          </div>
+        ) : redeemResult ? (
+          <div className="db-card cb-result-card">
+            <div className="cb-result-icon cb-result-icon--redeem">−</div>
+            <h2 className="cb-result-title">Rs. {redeemResult.amountRedeemed} redeemed</h2>
+            <p className="cb-result-sub">
+              {redeemResult.customer.name ? `${redeemResult.customer.name} · ` : ''}
+              {redeemResult.customer.phone}
+            </p>
+            <div className="cb-balance-display">
+              <span className="cb-balance-label">Remaining balance</span>
+              <span className="cb-balance-value">Rs. {redeemResult.newBalance}</span>
+            </div>
+            <button className="db-btn-outline" style={{ marginTop: '1.25rem' }} onClick={resetRedeem}>
+              Next Customer →
+            </button>
+          </div>
+        ) : (
+          <div className="db-card" style={{ maxWidth: 480 }}>
+            <h2 className="db-card-title">Redeem Cashback</h2>
+            <p className="db-card-sub" style={{ marginBottom: '1rem' }}>
+              Enter the customer's phone to check their balance, then apply a redemption.
+            </p>
+            <form onSubmit={handleRedeem}>
+              <div className="db-field">
+                <label className="db-label">Phone number</label>
+                <input className="db-input" type="tel" inputMode="numeric" placeholder="03XX XXXXXXX"
+                  ref={redeemPhoneRef}
+                  value={redeemPhone} onChange={e => handleRedeemPhoneChange(e.target.value)} autoComplete="off" />
+                {checkingBal && <span className="db-hint">Checking balance…</span>}
+              </div>
+
+              {redeemBalance && (
+                <div className="cb-balance-chip">
+                  <span>{redeemBalance.customer?.name || redeemPhone}</span>
+                  <span className="cb-balance-chip-val">
+                    {redeemBalance.balance > 0
+                      ? `Rs. ${redeemBalance.balance} available`
+                      : 'No balance'}
+                  </span>
+                </div>
+              )}
+
+              <div className="db-field">
+                <label className="db-label">Amount to redeem (Rs.)</label>
+                <input className="db-input cb-amount-input" type="number" min="1"
+                  max={redeemBalance?.balance || undefined}
+                  placeholder={redeemBalance?.balance ? `Max Rs. ${redeemBalance.balance}` : 'e.g. 500'}
+                  value={redeemAmount} onChange={e => setRedeemAmount(e.target.value)} />
+              </div>
+
+              {redeemError && <p className="db-scan-error">{redeemError}</p>}
+              <button className="db-btn-primary db-btn-lg" type="submit"
+                disabled={redeeming || !redeemPhone.trim() || !redeemAmount || !redeemBalance?.balance}
+                style={{ width: '100%', marginTop: '0.5rem', background: '#10b981' }}>
+                {redeeming ? 'Processing…' : '− Redeem Cashback'}
+              </button>
+            </form>
+          </div>
+        )
+      )}
+
+      {/* ── Customers view ── */}
+      {view === 'customers' && (
+        <div className="db-card">
+          <div className="db-table-toolbar">
+            <span className="db-card-title" style={{ marginBottom: 0 }}>
+              {cbStats?.totalCustomers ?? 0} customer{cbStats?.totalCustomers !== 1 ? 's' : ''}
+            </span>
+            <button className="db-btn-outline" onClick={loadCbCustomers}>↻ Refresh</button>
+          </div>
+
+          {cbStats && (
+            <div className="cb-mini-stats">
+              {[
+                { label: 'Outstanding balance', value: `Rs. ${cbStats.totalBalance}` },
+                { label: 'Total earned',         value: `Rs. ${cbStats.totalEarned}` },
+                { label: 'Total redeemed',        value: `Rs. ${cbStats.totalRedeemed}` },
+              ].map(s => (
+                <div key={s.label} className="cb-mini-stat">
+                  <span className="cb-mini-stat-val">{s.value}</span>
+                  <span className="cb-mini-stat-label">{s.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {cbCustLoading ? (
+            <div className="db-loading"><div className="db-spinner" /></div>
+          ) : cbCustomers.length === 0 ? (
+            <div className="db-empty">
+              <p className="db-empty-icon">💳</p>
+              <p>No customers yet.</p>
+            </div>
+          ) : (
+            <div className="db-table-wrap">
+              <table className="db-table">
+                <thead>
+                  <tr><th></th><th>Name</th><th>Phone</th><th>Balance</th><th>Total Earned</th><th>Redeemed</th></tr>
+                </thead>
+                <tbody>
+                  {cbCustomers.map((c, i) => (
+                    <tr key={i}>
+                      <td style={{ width: 40 }}>
+                        <div className="db-cust-avatar" style={{ background: '#10b981' }}>
+                          {(c.name?.[0] || c.phone?.[0] || '?').toUpperCase()}
+                        </div>
+                      </td>
+                      <td className="db-td-name">{c.name || <span style={{ color: '#94a3b8' }}>—</span>}</td>
+                      <td className="db-td-phone">{c.phone}</td>
+                      <td><strong style={{ color: '#10b981' }}>Rs. {c.balance}</strong></td>
+                      <td className="db-td-date">Rs. {c.totalEarned}</td>
+                      <td className="db-td-date">Rs. {c.totalRedeemed}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Setup view ── */}
+      {view === 'setup' && (
+        <div className="db-card" style={{ maxWidth: 480 }}>
+          <h2 className="db-card-title">{program ? 'Cashback Settings' : 'Set Up Cashback'}</h2>
+
+          <div className="db-field">
+            <label className="db-label">Cashback Rate (%)</label>
+            <input className="db-input" type="number" min="1" max="50" step="0.5"
+              value={cbForm.cashbackRate}
+              onChange={e => setCbForm(f => ({ ...f, cashbackRate: Number(e.target.value) }))} />
+            <span className="db-hint">
+              Customer spends Rs. 1,000 → earns Rs. {Math.round((1000 * cbForm.cashbackRate) / 100)} cashback
+            </span>
+          </div>
+
+          <div className="db-field">
+            <label className="db-label">Minimum spend to earn <span className="db-optional">(optional)</span></label>
+            <input className="db-input" type="number" min="0" placeholder="0 = no minimum"
+              value={cbForm.minSpendToEarn}
+              onChange={e => setCbForm(f => ({ ...f, minSpendToEarn: Number(e.target.value) }))} />
+            <span className="db-hint">Leave 0 to earn cashback on any purchase amount</span>
+          </div>
+
+          <div className="db-field">
+            <label className="db-label">Minimum balance to redeem <span className="db-optional">(optional)</span></label>
+            <input className="db-input" type="number" min="0" placeholder="0 = no minimum"
+              value={cbForm.minBalanceToRedeem}
+              onChange={e => setCbForm(f => ({ ...f, minBalanceToRedeem: Number(e.target.value) }))} />
+            <span className="db-hint">Leave 0 to allow redemption of any balance amount</span>
+          </div>
+
+          <div className="db-field db-field-row">
+            <label className="db-label" style={{ marginBottom: 0 }}>Program Active</label>
+            <label className="db-toggle">
+              <input type="checkbox" checked={cbForm.active}
+                onChange={e => setCbForm(f => ({ ...f, active: e.target.checked }))} />
+              <span className="db-toggle-slider" />
+            </label>
+          </div>
+
+          <div className="db-save-row">
+            <button className="db-btn-primary" onClick={saveCbProgram} disabled={cbSaving}>
+              {cbSaving ? 'Saving…' : program ? 'Save Changes' : 'Activate Cashback'}
+            </button>
+            {cbSaveMsg && (
+              <span className={`db-save-msg${cbSaveMsg === 'Saved!' ? ' ok' : ' err'}`}>{cbSaveMsg}</span>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ─── POS Integration Tab ───────────────────────────────────── */
 function PosTab({ rid, token }) {
   const [apiKey, setApiKey]       = useState(null);
@@ -686,6 +1125,7 @@ Content-Type: application/json
 /* ─── Main Dashboard ─────────────────────────────────────────── */
 const TABS = [
   { id: 'scan',      Icon: Camera,    label: 'Scan'      },
+  { id: 'cashback',  Icon: Banknote,  label: 'Cashback'  },
   { id: 'setup',     Icon: Settings2, label: 'Setup'     },
   { id: 'customers', Icon: Users,     label: 'Customers' },
   { id: 'stats',     Icon: BarChart3, label: 'Analytics' },
@@ -824,6 +1264,9 @@ export default function Dashboard() {
             stampsRequired={form.stampsRequired}
             primaryColor={form.primaryColor}
           />
+        )}
+        {tab === 'cashback' && (
+          <CashbackTab rid={rid} token={token} />
         )}
         {tab === 'stats' && (
           <StatsTab stats={stats} customers={customers} />
