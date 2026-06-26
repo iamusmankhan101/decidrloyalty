@@ -1124,18 +1124,20 @@ Content-Type: application/json
 }
 
 /* ─── Main Dashboard ─────────────────────────────────────────── */
-const TABS = [
-  { id: 'scan',      Icon: Camera,    label: 'Scan'      },
-  { id: 'cashback',  Icon: Banknote,  label: 'Cashback'  },
-  { id: 'setup',     Icon: Settings2, label: 'Setup'     },
-  { id: 'customers', Icon: Users,     label: 'Customers' },
-  { id: 'stats',     Icon: BarChart3, label: 'Analytics' },
-  { id: 'pos',       Icon: Zap,       label: 'POS'       },
+const ALL_TABS = [
+  { id: 'scan',      Icon: Camera,    label: 'Scan',      types: ['stamp'] },
+  { id: 'cashback',  Icon: Banknote,  label: 'Cashback',  types: ['cashback'] },
+  { id: 'setup',     Icon: Settings2, label: 'Setup',     types: ['stamp'] },
+  { id: 'customers', Icon: Users,     label: 'Customers', types: ['stamp', 'cashback'] },
+  { id: 'stats',     Icon: BarChart3, label: 'Analytics', types: ['stamp', 'cashback'] },
+  { id: 'pos',       Icon: Zap,       label: 'POS',       types: ['stamp', 'cashback'] },
 ];
 
 export default function Dashboard() {
   const { user, token, logout } = useAuth();
-  const [tab, setTab] = useState('scan');
+  const cardType = user?.cardType || 'stamp';
+  const TABS = ALL_TABS.filter(t => t.types.includes(cardType));
+  const [tab, setTab] = useState(cardType === 'cashback' ? 'cashback' : 'scan');
 
   const [program, setProgram] = useState(null);
   const [form, setForm] = useState({
