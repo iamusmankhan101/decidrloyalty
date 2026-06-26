@@ -73,6 +73,7 @@ export default function StampPage() {
   const [isReturning, setIsReturning] = useState(null); // null=unknown true=returning false=new
   const [checkingPhone, setCheckingPhone] = useState(false);
   const [showWalletSheet, setShowWalletSheet] = useState(false);
+  const [pin, setPin] = useState('');
   const inputRef    = useRef(null);
   const phoneCheckRef = useRef(null);
 
@@ -130,6 +131,10 @@ export default function StampPage() {
       setError('Please enter your name — it\'s required for your first visit.');
       return;
     }
+    if (program?.staffPin && !pin.trim()) {
+      setError('Staff PIN is required to add a stamp.');
+      return;
+    }
     setSubmitting(true); setError('');
     try {
       const res = await fetch(`${API}?action=stamp`, {
@@ -139,6 +144,7 @@ export default function StampPage() {
           ...(isNumericId ? { restaurantId: slug } : { slug }),
           phone: phone.trim(),
           name: name.trim(),
+          staffPin: pin,
         }),
       });
       const data = await res.json();
@@ -157,7 +163,7 @@ export default function StampPage() {
 
   function stampAgain() {
     setPhone(''); setName(''); setResult(null); setError('');
-    setIsReturning(null); setCheckingPhone(false); setShowWalletSheet(false);
+    setIsReturning(null); setCheckingPhone(false); setShowWalletSheet(false); setPin('');
     setView(STATES.ENTER);
   }
 
@@ -352,6 +358,26 @@ export default function StampPage() {
             </>
           )}
 
+          {program?.staffPin && (
+            <div className="sp-staff-section">
+              <div className="sp-staff-divider"><span>Staff only</span></div>
+              <label className="sp-label">
+                🔒 Staff PIN <span className="sp-required">*</span>
+              </label>
+              <input
+                className="sp-input sp-pin-input"
+                type="password"
+                inputMode="numeric"
+                maxLength={6}
+                placeholder="••••"
+                value={pin}
+                onChange={e => setPin(e.target.value.replace(/\D/g, ''))}
+                autoComplete="off"
+                style={{ '--focus-color': color }}
+              />
+            </div>
+          )}
+
           {error && <p className="sp-error-msg">{error}</p>}
           <button
             className="sp-btn"
@@ -359,7 +385,7 @@ export default function StampPage() {
             disabled={submitting || !phone.trim() || checkingPhone}
             style={{ background: color }}
           >
-            {submitting ? 'Adding stamp…' : '＋ Get My Stamp'}
+            {submitting ? 'Adding stamp…' : '＋ Add Stamp'}
           </button>
         </form>
 

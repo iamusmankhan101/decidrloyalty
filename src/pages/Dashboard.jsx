@@ -265,6 +265,25 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
             <span className="db-hint">PNG or JPG, displayed on your stamp card</span>
           </div>
 
+          <div className="db-field">
+            <label className="db-label">Staff PIN <span className="db-optional">(recommended)</span></label>
+            <input
+              className="db-input"
+              type="password"
+              inputMode="numeric"
+              maxLength={6}
+              value={form.staffPin}
+              onChange={e => setForm(f => ({ ...f, staffPin: e.target.value.replace(/\D/g, '') }))}
+              placeholder="e.g. 1234"
+              autoComplete="off"
+            />
+            <span className="db-hint">
+              {program?.staffPin
+                ? 'PIN is active — enter a new value to change it, or leave blank to remove it.'
+                : 'Staff must enter this PIN to add a stamp. Leave blank to disable.'}
+            </span>
+          </div>
+
           <div className="db-field db-field-row">
             <label className="db-label" style={{ marginBottom: 0 }}>Program Active</label>
             <label className="db-toggle">
@@ -477,6 +496,7 @@ export default function Dashboard() {
     logoUrl: '',
     rewardName: 'Free Coffee',
     stampsRequired: 9,
+    staffPin: '',
     active: true,
   });
   const [saving, setSaving]   = useState(false);
@@ -501,6 +521,7 @@ export default function Dashboard() {
             logoUrl:        data.program.logoUrl        || '',
             rewardName:     data.program.rewardName     || 'Free Coffee',
             stampsRequired: data.program.stampsRequired || 9,
+            staffPin:       '',
             active:         !!data.program.active,
           });
         }
