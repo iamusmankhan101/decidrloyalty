@@ -374,6 +374,170 @@
   letter-spacing: -0.3px;
 }
 
+/* Counter flow */
+.lp-counter {
+  background: #ffffff;
+  padding: 4.5rem 2rem 3.5rem;
+}
+
+.lp-counter-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.lp-counter-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(2,42,138,0.07);
+  color: #022a8a;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 13px;
+  border-radius: 99px;
+  border: 1px solid rgba(2,42,138,0.12);
+  margin-bottom: 1rem;
+}
+
+.lp-counter-copy h2 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.05;
+  color: #0f172a;
+  margin-bottom: 1rem;
+}
+
+.lp-counter-copy p {
+  font-family: 'Montserrat', sans-serif;
+  color: #64748b;
+  line-height: 1.75;
+  max-width: 520px;
+  font-size: 0.95rem;
+}
+
+.lp-business-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 1.35rem;
+}
+
+.lp-business-tags span {
+  background: #fff;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  border-radius: 99px;
+  padding: 7px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.05);
+}
+
+.lp-counter-demo {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.lp-counter-ticket,
+.lp-flow-list {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 18px 45px rgba(15,23,42,0.08);
+}
+
+.lp-counter-ticket {
+  padding: 1.1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lp-ticket-label {
+  color: #0f172a;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.85rem;
+}
+
+.lp-ticket-qr {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  margin: 0 auto 0.9rem;
+  width: 155px;
+  height: 155px;
+  box-shadow: 0 1px 0 rgba(15,23,42,0.05);
+}
+
+.lp-ticket-url {
+  color: #64748b;
+  font-size: 0.72rem;
+  word-break: break-word;
+}
+
+.lp-flow-list {
+  padding: 0.9rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.lp-flow-item {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.lp-flow-num {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #ff0000;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(255,0,0,0.2);
+}
+
+.lp-flow-label {
+  color: #022a8a;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+}
+
+.lp-flow-item h3 {
+  color: #0f172a;
+  font-size: 0.96rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.lp-flow-item p:last-child {
+  font-family: 'Montserrat', sans-serif;
+  color: #64748b;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
 /* ═══════════════════════════════════════════════
    Sections
 ═══════════════════════════════════════════════ */
@@ -1259,6 +1423,11 @@
   .lp-hero-cta { justify-content: center; }
   .lp-hero-title { font-size: 2.4rem; }
   .lp-hero-stat { font-size: 1.9rem; }
+  .lp-counter-inner { grid-template-columns: 1fr; }
+  .lp-counter-copy { text-align: center; }
+  .lp-counter-copy p { margin-left: auto; margin-right: auto; }
+  .lp-business-tags { justify-content: center; }
+  .lp-counter-demo { max-width: 680px; margin: 0 auto; }
   .lp-how-steps { grid-template-columns: 1fr 1fr; }
   .lp-ct-grid { grid-template-columns: repeat(2, 1fr); }
   .lp-pricing-grid { grid-template-columns: 1fr; max-width: 460px; margin-left: auto; margin-right: auto; }
@@ -1278,11 +1447,19 @@
   /* Hero */
   .lp-hero { padding: 5rem 1.25rem 3rem; }
   .lp-hero-title { font-size: 1.55rem; letter-spacing: -0.5px; }
+  .lp-hero-title br { display: none; }
   .lp-hero-stat { font-size: 1.4rem; }
   .lp-hero-sub { font-size: 0.78rem; }
   .lp-hero-cta { background: transparent; border: none; box-shadow: none; padding: 0; justify-content: center; }
   .lp-phone { width: 210px; }
   .lp-trusted-logos { gap: 1.25rem; }
+
+  /* Counter flow */
+  .lp-counter { padding: 3rem 1.25rem 2.5rem; }
+  .lp-counter-copy h2 { font-size: 1.8rem; }
+  .lp-counter-demo { grid-template-columns: 1fr; }
+  .lp-ticket-qr { width: 140px; height: 140px; }
+  .lp-flow-item { padding: 0.9rem; }
 
   /* Features — disable sticky scroll tunnel on mobile */
   .lp-feat-tunnel { height: auto !important; }

@@ -131,11 +131,13 @@ const PhoneMockup = () => (
   </div>
 );
 
-const HERO_STATS = ['+40% Revenue', '2x Customer Retention'];
+const HERO_STATS = ['+40% Repeat Visits', '2x Customer Retention'];
+
+const BUSINESS_TYPES = ['Cafes', 'Restaurants', 'Salons', 'Retail stores', 'Gyms', 'Services'];
 
 const FEATURES = [
   { icon: '📱', title: 'Digital Stamp Cards', desc: 'Replace paper cards with a seamless digital experience customers actually use.' },
-  { icon: '👛', title: 'Google Wallet Ready', desc: 'Customers save their loyalty card to Google Wallet. Stamps update automatically.' },
+  { icon: '👛', title: 'Wallet Ready', desc: 'Customers can save their card to Google Wallet. Apple Wallet support is coming soon.' },
   { icon: '🎨', title: 'Your Brand', desc: 'Fully customized with your logo, colors, and reward name.' },
   { icon: '📊', title: 'Real-time Analytics', desc: 'See who your regulars are, how many stamps are issued, and rewards redeemed.' },
   { icon: '⚡', title: '5-Minute Setup', desc: 'Set up your loyalty program, print your QR code, and go live today.' },
@@ -143,14 +145,59 @@ const FEATURES = [
 ];
 
 const HOW = [
-  { step: '1', title: 'Set up your program', desc: 'Add your logo, brand color, and choose your reward (e.g. Free Coffee after 9 stamps).' },
+  { step: '1', title: 'Set up your program', desc: 'Add your logo, brand color, and choose your reward or cashback rate.' },
   { step: '2', title: 'Print your QR code', desc: 'Download and display your unique QR code at the counter.' },
-  { step: '3', title: 'Customers scan & collect', desc: 'They enter their phone number to add a stamp. No account needed.' },
-  { step: '4', title: 'Reward your regulars', desc: 'On the 9th stamp, they get a reward screen to show the cashier.' },
+  { step: '3', title: 'Customers scan & join', desc: 'They enter name and phone, then see their digital reward card instantly.' },
+  { step: '4', title: 'Reward your regulars', desc: 'Staff adds stamps or cashback from the dashboard, POS, or API.' },
 ];
 
+const COUNTER_FLOW = [
+  { label: 'Counter QR', title: 'Display one QR at checkout', desc: 'Works on printed stands, receipts, table tents, and social links.' },
+  { label: 'Customer page', title: 'Name and phone capture', desc: 'Customers open a branded page and save their loyalty profile.' },
+  { label: 'Digital card', title: 'Reward card appears instantly', desc: 'Show stamp progress, cashback balance, and wallet actions.' },
+];
+
+function CounterFlowSection() {
+  return (
+    <section className="lp-counter">
+      <div className="lp-counter-inner">
+        <div className="lp-counter-copy">
+          <span className="lp-counter-badge">Built for the front counter</span>
+          <h2>One scan turns walk-ins into returning customers.</h2>
+          <p>
+            Put your QR code where customers already pay. They enter their name and phone, see the card immediately, and can add it to Google Wallet.
+          </p>
+          <div className="lp-business-tags">
+            {BUSINESS_TYPES.map(type => <span key={type}>{type}</span>)}
+          </div>
+        </div>
+
+        <div className="lp-counter-demo" aria-hidden="true">
+          <div className="lp-counter-ticket">
+            <p className="lp-ticket-label">Scan at counter</p>
+            <div className="lp-ticket-qr"><QRMockup /></div>
+            <p className="lp-ticket-url">loyalty.trydecidr.xyz/card/5</p>
+          </div>
+          <div className="lp-flow-list">
+            {COUNTER_FLOW.map((step, idx) => (
+              <div className="lp-flow-item" key={step.label}>
+                <span className="lp-flow-num">{idx + 1}</span>
+                <div>
+                  <p className="lp-flow-label">{step.label}</p>
+                  <h3>{step.title}</h3>
+                  <p>{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const CARD_TYPES = [
-  { name: 'Stamp Card',   icon: '☕', value: '9 / 10',      desc: 'One more visit for a free coffee',   accent: '#f97316' },
+  { name: 'Stamp Card',   icon: '☕', value: '9 / 10',      desc: 'One more visit for a free reward',   accent: '#f97316' },
   { name: 'Cashback',     icon: '💰', value: 'PKR 340',     desc: '5% back on every purchase',          accent: '#6366f1' },
   { name: 'Membership',   icon: '👑', value: 'Platinum',    desc: 'Unlimited refills · priority queue',  accent: '#8b5cf6' },
   { name: 'Gift Card',    icon: '🎁', value: 'PKR 2,000',   desc: 'Send to a friend, redeem anywhere',  accent: '#ec4899' },
@@ -221,8 +268,8 @@ function FeaturesSection() {
         <div className="lp-feat-pin">
           <div className="lp-features-header">
             <span className="lp-features-badge">✦ Feature rich</span>
-            <h2 className="lp-features-heading">Everything your cafe needs</h2>
-            <p className="lp-features-sub">Built specifically for independent cafes and small coffee shops that want to keep customers coming back.</p>
+            <h2 className="lp-features-heading">Everything your business needs</h2>
+            <p className="lp-features-sub">Built for local teams that want a simple loyalty system customers can use in seconds.</p>
           </div>
           <div className="lp-feat-stack">
             {FEATURES.map((f, i) => (
@@ -256,7 +303,7 @@ const PLANS = [
     features: [
       '1 card type (stamps or cashback)',
       'Up to 3,500 active customers',
-      'Apple & Google Wallet',
+      'Google Wallet live · Apple Wallet coming soon',
       'Staff web app for stamping (tablet at counter)',
       'Zero POS integration needed',
       'Push notifications on stamp & reward',
@@ -276,7 +323,7 @@ const PLANS = [
     features: [
       '3 card types (stamps, cashback, membership)',
       'Up to 3,500 active customers',
-      'Apple & Google Wallet',
+      'Google Wallet live · Apple Wallet coming soon',
       'Receipt QR code per transaction',
       'Works with any POS that prints receipts',
       'Push notifications & reward campaigns',
@@ -409,14 +456,13 @@ export default function LandingPage() {
         <div className="lp-hero-content">
           {/* Left: text */}
           <div className="lp-hero-inner">
-            <p className="lp-hero-eyebrow">Digital Loyalty Card</p>
+            <p className="lp-hero-eyebrow">Digital Loyalty for Local Businesses</p>
             <h1 className="lp-hero-title">
-              The <span className="lp-accent">#1 Digital Loyalty Card</span><br />
-              for Local Businesses
+              QR loyalty cards<br />
+              for <span className="lp-accent">restaurants, cafes, salons</span>
             </h1>
             <p className="lp-hero-sub">
-              Boost customer retention and increase visit frequency with a branded{' '}
-              <strong>digital stamp card</strong> that lives in your customers' Apple and Google Wallets.
+              Customers scan your counter QR, enter name and phone, and instantly get a branded stamp or cashback card with wallet options.
             </p>
             <p key={statIdx} className="lp-hero-stat lp-stat-anim">
               Upto <span className="lp-stat-accent">{HERO_STATS[statIdx]}</span>
@@ -431,6 +477,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      <CounterFlowSection />
 
       <FeaturesSection />
 
@@ -473,7 +521,7 @@ export default function LandingPage() {
               <img src="/decidr-logo.png" alt="decidr" className="lp-footer-logo-img" />
               <span className="lp-footer-logo-badge">loyalty</span>
             </div>
-            <p className="lp-footer-tagline">Digital loyalty cards for cafes and local businesses. No app needed — just scan and earn.</p>
+            <p className="lp-footer-tagline">Digital loyalty cards for restaurants, cafes, salons, retail, and local services. No app needed — just scan and earn.</p>
             <div className="lp-footer-socials">
               <a href="#" className="lp-footer-social" aria-label="Facebook">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
