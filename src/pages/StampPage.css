@@ -269,6 +269,18 @@
   border: 2px solid;
 }
 
+.sp-customer-link {
+  display: block;
+  color: #64748b;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  margin-top: 0.85rem;
+}
+
+.sp-customer-link:hover { color: var(--brand, #ff0000); }
+
 .sp-privacy {
   font-size: 0.72rem;
   color: #94a3b8;

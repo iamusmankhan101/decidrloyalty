@@ -379,6 +379,7 @@ export default function LandingPage() {
           <button className="lp-mobile-close" onClick={closeMenu} aria-label="Close menu">×</button>
           <a href="#features" className="lp-mobile-link" onClick={closeMenu}>Features</a>
           <a href="#how" className="lp-mobile-link" onClick={closeMenu}>How it works</a>
+          <Link to="/customer" className="lp-mobile-link" onClick={closeMenu}>Customer app</Link>
           <a href="https://wa.me/923712524553" target="_blank" rel="noreferrer" className="lp-mobile-cta" onClick={closeMenu}>Book a demo</a>
         </div>
       )}
@@ -393,6 +394,7 @@ export default function LandingPage() {
           <div className="lp-nav-links">
             <a href="#features" className="lp-nav-link">Features</a>
             <a href="#how" className="lp-nav-link">How it works</a>
+            <Link to="/customer" className="lp-nav-link">Customer app</Link>
             <a href="https://wa.me/923712524553" target="_blank" rel="noreferrer" className="lp-btn lp-btn-sm">Book a demo</a>
           </div>
           <button className="lp-hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">

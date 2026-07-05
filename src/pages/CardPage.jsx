@@ -1,12 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import './StampPage.css';
 import './CardPage.css';
 
 const API = '/api/loyalty';
 const STATES = { LOADING: 'loading', ENTER: 'enter', CARD: 'card', ERROR: 'error' };
+const CUSTOMER_PHONE_KEY = 'decidr_customer_phone';
+const CUSTOMER_CARDS_KEY = 'decidr_customer_cards';
 
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+function saveCustomerCard(card, phone) {
+  try {
+    const cards = JSON.parse(localStorage.getItem(CUSTOMER_CARDS_KEY) || '[]');
+    const list = Array.isArray(cards) ? cards : [];
+    const next = { ...card, savedAt: Date.now() };
+    localStorage.setItem(CUSTOMER_PHONE_KEY, phone);
+    localStorage.setItem(
+      CUSTOMER_CARDS_KEY,
+      JSON.stringify([next, ...list.filter(c => !(String(c.id) === String(next.id) && c.type === next.type))])
+    );
+  } catch {}
+}
 
 function WalletSheet({ walletUrl, onDismiss }) {
   if (!walletUrl) return null;
@@ -100,6 +115,11 @@ export default function CardPage() {
           totalRedeemed: data.totalRedeemed ?? 0,
         },
       });
+      saveCustomerCard({
+        id: slug,
+        type: 'cashback',
+        businessName: business?.name || business?.businessName || 'Cashback Card',
+      }, phone.trim());
       setView(STATES.CARD);
       if (data.walletUrl) setTimeout(() => setShowWallet(true), 600);
     } catch (err) {
@@ -191,6 +211,7 @@ export default function CardPage() {
           <button className="sp-btn sp-btn-outline-brand" style={{ borderColor: '#059669', color: '#059669', marginTop: '0.75rem' }} onClick={goBack}>
             Done
           </button>
+          <Link className="sp-customer-link" to="/customer">View all my cards</Link>
         </div>
 
         {showWallet && <WalletSheet walletUrl={result.walletUrl} onDismiss={() => setShowWallet(false)} />}

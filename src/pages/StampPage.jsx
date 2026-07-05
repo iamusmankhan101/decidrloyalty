@@ -1,12 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import './StampPage.css';
 
 const API = '/api/loyalty';
 const STATES = { LOADING: 'loading', ENTER: 'enter', CARD: 'card', ERROR: 'error' };
+const CUSTOMER_PHONE_KEY = 'decidr_customer_phone';
+const CUSTOMER_CARDS_KEY = 'decidr_customer_cards';
 
 const isIOS     = /iphone|ipad|ipod/i.test(navigator.userAgent);
 const isAndroid = /android/i.test(navigator.userAgent);
+
+function saveCustomerCard(card, phone) {
+  try {
+    const cards = JSON.parse(localStorage.getItem(CUSTOMER_CARDS_KEY) || '[]');
+    const list = Array.isArray(cards) ? cards : [];
+    const next = { ...card, savedAt: Date.now() };
+    localStorage.setItem(CUSTOMER_PHONE_KEY, phone);
+    localStorage.setItem(
+      CUSTOMER_CARDS_KEY,
+      JSON.stringify([next, ...list.filter(c => !(String(c.id) === String(next.id) && c.type === next.type))])
+    );
+  } catch {}
+}
 
 function WalletSheet({ walletUrl, applePassUrl, onDismiss }) {
   if (!walletUrl && !applePassUrl) return null;
@@ -133,6 +148,11 @@ export default function StampPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
+      saveCustomerCard({
+        id: slug,
+        type: 'stamp',
+        businessName: program?.name || 'Loyalty Card',
+      }, phone.trim());
       setResult(data);
       setView(STATES.CARD);
       if (data.walletUrl || data.applePassUrl) {
@@ -226,6 +246,7 @@ export default function StampPage() {
           <button className="sp-btn sp-btn-outline-brand" style={{ borderColor: color, color }} onClick={goBack}>
             Done
           </button>
+          <Link className="sp-customer-link" to="/customer">View all my cards</Link>
         </div>
 
         {showWalletSheet && (
