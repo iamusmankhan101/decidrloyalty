@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Camera, Settings2, Users, BarChart3, Zap, Banknote } from 'lucide-react';
+import { Camera, Settings2, Users, BarChart3, Zap, Banknote, Store, QrCode, Phone, Gift, LogOut, CheckCircle2 } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
@@ -76,30 +76,61 @@ function ScanTab({ rid, token, program }) {
   return (
     <div className="db-content db-scan-content">
       <div className="db-header">
+        <span className="db-eyebrow">Counter workflow</span>
         <h1 className="db-title">Stamp a Customer</h1>
-        <p className="db-subtitle">Enter the customer's phone number to add a stamp.</p>
+        <p className="db-subtitle">Enter the customer's phone number, add a stamp, and keep the line moving.</p>
       </div>
 
-      <form className="db-scan-form" onSubmit={handleStamp}>
-        <input
-          ref={inputRef}
-          className="db-scan-input"
-          type="tel"
-          placeholder="03XX XXXXXXX"
-          value={phone}
-          onChange={e => setPhone(e.target.value)}
-          inputMode="numeric"
-          autoComplete="off"
-        />
-        {error && <p className="db-scan-error">{error}</p>}
-        <button
-          className="db-btn-primary db-btn-lg db-scan-btn"
-          type="submit"
-          disabled={stamping || !phone.trim()}
-        >
-          {stamping ? 'Adding stamp…' : '＋ Add Stamp'}
-        </button>
-      </form>
+      <div className="db-scan-hero">
+        <section className="db-card db-scan-panel">
+          <div className="db-panel-kicker">
+            <span className="db-panel-icon"><Phone size={18} /></span>
+            Phone lookup
+          </div>
+          <form className="db-scan-form" onSubmit={handleStamp}>
+            <label className="db-label" htmlFor="stamp-phone">Customer phone number</label>
+            <input
+              id="stamp-phone"
+              ref={inputRef}
+              className="db-scan-input"
+              type="tel"
+              placeholder="03XX XXXXXXX"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              inputMode="numeric"
+              autoComplete="off"
+            />
+            {error && <p className="db-scan-error">{error}</p>}
+            <button
+              className="db-btn-primary db-btn-lg db-scan-btn"
+              type="submit"
+              disabled={stamping || !phone.trim()}
+            >
+              {stamping ? 'Adding stamp...' : 'Add Stamp'}
+            </button>
+          </form>
+        </section>
+
+        <aside className="db-card db-quick-panel">
+          <div className="db-quick-row">
+            <span className="db-quick-icon"><Gift size={18} /></span>
+            <div>
+              <strong>{program?.rewardName || 'Reward'}</strong>
+              <p>Reward after {stampsRequired} stamps</p>
+            </div>
+          </div>
+          <div className="db-quick-row">
+            <span className="db-quick-icon"><QrCode size={18} /></span>
+            <div>
+              <strong>Customer QR</strong>
+              <p>Place the QR at the counter for self sign-up.</p>
+            </div>
+          </div>
+          <div className="db-counter-preview">
+            <QRCodeCanvas value={`https://loyalty.trydecidr.xyz/stamp/${rid || ''}`} size={132} includeMargin={true} />
+          </div>
+        </aside>
+      </div>
 
       {result && !result.rewarded && (
         <div className="db-scan-result">
@@ -130,7 +161,7 @@ function ScanTab({ rid, token, program }) {
               : `${program?.rewardName || 'Reward'} ready!`}
           </p>
           <button className="db-btn-outline db-scan-next" onClick={reset}>
-            Next Customer →
+            Next Customer
           </button>
         </div>
       )}
@@ -1232,6 +1263,9 @@ export default function Dashboard() {
   const [search, setSearch]         = useState('');
 
   const rid = user?.restaurantId;
+  const activeTab = TABS.find(t => t.id === tab);
+  const businessName = program?.name || user?.restaurantName || user?.businessName || user?.name || 'Your business';
+  const accountInitial = (businessName?.[0] || user?.email?.[0] || 'U').toUpperCase();
 
   useEffect(() => {
     if (!rid) return;
@@ -1300,7 +1334,16 @@ export default function Dashboard() {
           <span className="db-brand-badge">loyalty</span>
         </div>
 
+        <div className="db-business-card">
+          <div className="db-business-icon"><Store size={18} /></div>
+          <div>
+            <p className="db-business-name">{businessName}</p>
+            <p className="db-business-meta">{cardType === 'cashback' ? 'Cashback card' : 'Stamp card'}</p>
+          </div>
+        </div>
+
         <nav className="db-nav">
+          <p className="db-nav-label">Workspace</p>
           {TABS.map(t => (
             <button
               key={t.id}
@@ -1321,12 +1364,26 @@ export default function Dashboard() {
               <p className="db-user-role">Owner</p>
             </div>
           </div>
-          <button className="db-logout" onClick={logout}>Log out</button>
+          <button className="db-logout" onClick={logout}><LogOut size={16} /> Log out</button>
         </div>
       </aside>
 
       {/* ── Main ── */}
       <main className="db-main">
+        <header className="db-topbar">
+          <div>
+            <p className="db-topbar-label">{activeTab?.label || 'Dashboard'}</p>
+            <h2>{businessName}</h2>
+          </div>
+          <div className="db-topbar-actions">
+            <span className="db-status-pill">
+              <CheckCircle2 size={15} />
+              {program?.active === false ? 'Inactive' : 'Live'}
+            </span>
+            <div className="db-topbar-avatar">{accountInitial}</div>
+          </div>
+        </header>
+
         {tab === 'scan' && (
           <ScanTab rid={rid} token={token} program={program} />
         )}
