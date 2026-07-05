@@ -5,10 +5,12 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f8fafc;
+  background: #f7f5fb;
   font-family: 'Montserrat', sans-serif;
   max-width: 480px;
   margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
 }
 
 /* ── Loading ── */
@@ -441,6 +443,325 @@
 }
 
 .sp-footer strong { color: #94a3b8; }
+
+/* ═══════════════════════════════════════════════
+   DRUTO-STYLE CUSTOMER APP CARD
+═══════════════════════════════════════════════ */
+.sp-app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255,255,255,0.95) 0 9%, transparent 10%),
+    linear-gradient(180deg, #f7f3fb 0%, #fff 100%);
+  padding-bottom: 8.5rem;
+}
+
+.sp-progress-hero {
+  color: #fff;
+  padding: 1.2rem 1.3rem 2.3rem;
+  border-radius: 0 0 34px 34px;
+  box-shadow: 0 22px 42px rgba(53, 7, 18, 0.22);
+}
+
+.sp-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1.7rem;
+}
+
+.sp-brand-chip {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.55rem;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sp-brand-chip img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  border: 2px solid rgba(255,255,255,0.65);
+}
+
+.sp-brand-chip span {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sp-premium {
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.sp-hello {
+  color: rgba(255,255,255,0.78);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.sp-progress-hero h1 {
+  color: #fff;
+  font-size: clamp(2.2rem, 12vw, 3.8rem);
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin: 0 0 1.35rem;
+}
+
+.sp-progress-line {
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.22);
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.sp-progress-line span {
+  display: block;
+  height: 100%;
+  min-width: 10%;
+  border-radius: inherit;
+  background: #fff;
+  box-shadow: 0 0 12px rgba(255,255,255,0.45);
+}
+
+.sp-app-body {
+  padding: 1.1rem 1rem 0;
+}
+
+.sp-next-treat,
+.sp-stamp-card-panel {
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(226,232,240,0.82);
+  border-radius: 26px;
+  box-shadow: 0 16px 36px rgba(42, 30, 75, 0.09);
+}
+
+.sp-next-treat {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.95rem;
+  margin-top: -0.4rem;
+  margin-bottom: 1rem;
+}
+
+.sp-treat-art {
+  width: 70px;
+  height: 70px;
+  border-radius: 20px;
+  background: #fef2f2;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.sp-treat-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sp-next-treat p,
+.sp-section-label {
+  color: #22c55e;
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.24rem;
+}
+
+.sp-next-treat h2 {
+  color: #151826;
+  font-size: 1.25rem;
+  line-height: 1.15;
+  font-weight: 900;
+  margin-bottom: 0.25rem;
+}
+
+.sp-next-treat span {
+  color: #9aa0ad;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.sp-stamp-card-panel {
+  padding: 1.35rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.sp-section-label {
+  color: #8e93a1;
+  margin-bottom: 1rem;
+}
+
+.sp-stamp-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.sp-app-stamp {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px dashed rgba(127, 29, 29, 0.26);
+  color: #fff;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.sp-app-stamp.filled {
+  border-style: solid;
+  box-shadow: 0 10px 22px rgba(127, 29, 29, 0.2);
+}
+
+.sp-app-stamp.reward {
+  color: rgba(127, 29, 29, 0.42);
+  font-size: 1.2rem;
+}
+
+.sp-away {
+  color: #8d929f;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.35;
+  margin-bottom: 1.25rem;
+}
+
+.sp-claim-btn,
+.sp-review-btn {
+  width: 100%;
+  min-height: 58px;
+  border: none;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  font-family: inherit;
+  font-size: 1.08rem;
+  font-weight: 900;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 12px 24px rgba(85, 14, 25, 0.18);
+}
+
+.sp-claim-btn:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.sp-review-btn {
+  color: #6f3b00;
+  background: #fbbf24;
+  margin-bottom: 0.9rem;
+  box-shadow: 0 12px 24px rgba(245, 158, 11, 0.24);
+}
+
+.sp-card-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.2rem;
+}
+
+.sp-text-btn {
+  border: none;
+  background: transparent;
+  color: #8e93a1;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sp-tabbar {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  width: min(450px, calc(100% - 1.4rem));
+  display: grid;
+  grid-template-columns: 1fr 76px 1fr;
+  gap: 0.55rem;
+  align-items: end;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.sp-tabbar-side {
+  min-height: 78px;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid rgba(226,232,240,0.84);
+  border-radius: 26px;
+  box-shadow: 0 14px 34px rgba(42, 30, 75, 0.14);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.sp-tab-item {
+  color: #667085;
+  display: grid;
+  place-items: center;
+  gap: 0.1rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.sp-tab-item span {
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.sp-tab-item.active { color: #111827; }
+
+.sp-scan-fab {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 7px solid rgba(255,255,255,0.8);
+  background: var(--brand, #a40818);
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 900;
+  box-shadow: 0 16px 34px rgba(42, 30, 75, 0.22);
+  pointer-events: auto;
+}
+
+.sp-footer-floating {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6.7rem;
+  padding: 0;
+}
 
 /* ═══════════════════════════════════════════════
    RESPONSIVE — larger screens center the card

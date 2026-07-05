@@ -84,9 +84,11 @@ function CustomerCard({ card, phone, onRemove }) {
   const isCashback = card.type === 'cashback';
   const href = isCashback ? `/card/${card.id}` : `/stamp/${card.id}`;
   const progress = card.stampsRequired ? Math.min(100, ((card.stampCount || 0) / card.stampsRequired) * 100) : 0;
+  const color = isCashback ? '#059669' : (card.color || '#a40818');
+  const remaining = Math.max(0, (card.stampsRequired || 9) - (card.stampCount || 0));
 
   return (
-    <article className={`cp-card cp-card--${card.type}`}>
+    <article className={`cp-card cp-card--${card.type}`} style={{ '--card-color': color }}>
       <div className="cp-card-top">
         <div>
           <p className="cp-card-kicker">{isCashback ? 'Cashback' : 'Stamp card'}</p>
@@ -105,11 +107,18 @@ function CustomerCard({ card, phone, onRemove }) {
         </div>
       ) : (
         <div className="cp-stamp-panel">
+          <div className="cp-stamp-dots">
+            {Array.from({ length: Math.min(card.stampsRequired || 9, 8) }, (_, i) => (
+              <span key={i} className={i < (card.stampCount || 0) ? 'filled' : ''}>
+                {i < (card.stampCount || 0) ? '✓' : ''}
+              </span>
+            ))}
+          </div>
           <div className="cp-progress-track">
-            <span style={{ width: `${progress}%`, background: card.color || '#ff0000' }} />
+            <span style={{ width: `${progress}%` }} />
           </div>
           <p><strong>{card.stampCount || 0}</strong> / {card.stampsRequired || 9} stamps</p>
-          <small>{card.rewardName || 'Reward'} reward</small>
+          <small>{remaining > 0 ? `${remaining} more for ${card.rewardName || 'Reward'}` : `${card.rewardName || 'Reward'} ready`}</small>
         </div>
       )}
 
@@ -209,9 +218,9 @@ export default function CustomerPage() {
 
       <main className="cp-main">
         <section className="cp-hero">
-          <p className="cp-eyebrow">Customer app</p>
-          <h1>Your rewards in one place</h1>
-          <p>Enter your phone once, then keep your stamp and cashback cards together.</p>
+          <p className="cp-eyebrow">Customer rewards</p>
+          <h1>Your cards, rewards, and treats</h1>
+          <p>Keep every business card in one simple mobile wallet-style app.</p>
         </section>
 
         {!hasPhone ? (

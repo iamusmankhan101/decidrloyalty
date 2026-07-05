@@ -10,6 +10,37 @@ const CUSTOMER_CARDS_KEY = 'decidr_customer_cards';
 const isIOS     = /iphone|ipad|ipod/i.test(navigator.userAgent);
 const isAndroid = /android/i.test(navigator.userAgent);
 
+function BottomNav({ active = 'home' }) {
+  const items = [
+    { id: 'home', icon: '⌂', label: 'Home' },
+    { id: 'explore', icon: '◇', label: 'Explore' },
+    { id: 'reward', icon: '🎁', label: 'Reward' },
+    { id: 'profile', icon: '○', label: 'Profile' },
+  ];
+
+  return (
+    <nav className="sp-tabbar" aria-label="Customer navigation">
+      <div className="sp-tabbar-side">
+        {items.slice(0, 2).map(item => (
+          <span key={item.id} className={`sp-tab-item${active === item.id ? ' active' : ''}`}>
+            <span>{item.icon}</span>
+            {item.label}
+          </span>
+        ))}
+      </div>
+      <button type="button" className="sp-scan-fab" aria-label="Scan QR">⌗</button>
+      <div className="sp-tabbar-side">
+        {items.slice(2).map(item => (
+          <span key={item.id} className={`sp-tab-item${active === item.id ? ' active' : ''}`}>
+            <span>{item.icon}</span>
+            {item.label}
+          </span>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
 function saveCustomerCard(card, phone) {
   try {
     const cards = JSON.parse(localStorage.getItem(CUSTOMER_CARDS_KEY) || '[]');
@@ -192,56 +223,75 @@ export default function StampPage() {
   /* ── Card registered ── */
   if (view === STATES.CARD) {
     const count = result?.card?.stampCount ?? 0;
-    const remaining = stamps - count;
+    const remaining = Math.max(0, stamps - count);
+    const progress = Math.min(100, (count / stamps) * 100);
+    const customerName = result?.customer?.name || name || 'Customer';
     return (
       <div className="sp" style={{ '--brand': color }}>
-        <div className="sp-header" style={{ background: color }}>
-          {program.logoUrl
-            ? <img src={program.logoUrl} alt={program.name} className="sp-logo" />
-            : <p className="sp-cafe-name">{program.name || 'Loyalty Card'}</p>
-          }
-        </div>
-
-        <div className="sp-body">
-          <div className="sp-success-icon">✓</div>
-          <h2 className="sp-stamped-title">
-            {result?.customer?.name ? `Hi ${result.customer.name}!` : 'Card saved!'}
-          </h2>
-          <p className="sp-stamped-sub">
-            {count === 0
-              ? 'Your loyalty card is ready. Staff will stamp it each visit.'
-              : remaining > 0
-                ? <><strong>{count} stamp{count !== 1 ? 's' : ''}</strong> collected — {remaining} more until your {reward}.</>
-                : <>You have <strong>{count} stamps</strong> — reward ready!</>
-            }
-          </p>
-
-          <div className="sp-dots-wrap">
-            <div className="sp-dots">
-              {Array.from({ length: stamps }, (_, i) => (
-                <span
-                  key={i}
-                  className={`sp-dot${i < count ? ' filled' : ''}`}
-                  style={i < count ? { background: color, borderColor: color, boxShadow: `0 2px 8px ${color}55` } : {}}
-                >
-                  {i < count && <span className="sp-dot-check">✓</span>}
-                </span>
-              ))}
+        <div className="sp-app-shell">
+          <section className="sp-progress-hero" style={{ background: color }}>
+            <div className="sp-hero-top">
+              <div className="sp-brand-chip">
+                {program.logoUrl && <img src={program.logoUrl} alt="" />}
+                <span>{program.name || 'Loyalty Card'}</span>
+              </div>
+              <span className="sp-premium">Premium Partner</span>
             </div>
-            <p className="sp-dots-label">{count} / {stamps} stamps · earn {reward}</p>
-          </div>
+            <p className="sp-hello">Hi, {customerName}</p>
+            <h1>{count} of {stamps} Stamps</h1>
+            <div className="sp-progress-line">
+              <span style={{ width: `${progress}%` }} />
+            </div>
+          </section>
 
-          <div className="sp-reward-info" style={{ borderColor: color + '33', background: color + '08' }}>
-            <span style={{ color }}>🎁</span>
-            <span>Reward: <strong>{reward}</strong></span>
-          </div>
+          <main className="sp-app-body">
+            <section className="sp-next-treat">
+              <div className="sp-treat-art">
+                {program.logoUrl ? <img src={program.logoUrl} alt="" /> : <span>🎁</span>}
+              </div>
+              <div>
+                <p>Your next treat</p>
+                <h2>{reward}</h2>
+                <span>{remaining > 0 ? `Collect ${remaining} more stamp${remaining === 1 ? '' : 's'}` : 'Ready to claim at the counter'}</span>
+              </div>
+            </section>
 
-          <WalletActions walletUrl={result?.walletUrl} />
+            <section className="sp-stamp-card-panel">
+              <p className="sp-section-label">Stamp Card</p>
+              <div className="sp-stamp-row">
+                {Array.from({ length: stamps }, (_, i) => (
+                  <span
+                    key={i}
+                    className={`sp-app-stamp${i < count ? ' filled' : ''}${i === stamps - 1 ? ' reward' : ''}`}
+                    style={i < count ? { background: color, borderColor: color } : {}}
+                  >
+                    {i < count ? '✓' : i === stamps - 1 ? '🎁' : ''}
+                  </span>
+                ))}
+              </div>
+              <p className="sp-away">
+                {remaining > 0
+                  ? <>You're <strong style={{ color }}>{remaining} stamp{remaining === 1 ? '' : 's'}</strong> away from your treat!</>
+                  : <>Your reward is ready!</>}
+              </p>
+              <button className="sp-claim-btn" disabled={remaining > 0} style={{ background: color }}>
+                <span>🎁</span> Claim Reward
+              </button>
+            </section>
 
-          <button className="sp-btn sp-btn-outline-brand" style={{ borderColor: color, color }} onClick={goBack}>
-            Done
-          </button>
-          <Link className="sp-customer-link" to="/customer">View all my cards</Link>
+            <a className="sp-review-btn" href="https://www.google.com/search?q=google+review" target="_blank" rel="noopener noreferrer">
+              <span>★</span> Rate us on Google
+            </a>
+
+            <WalletActions walletUrl={result?.walletUrl} />
+
+            <div className="sp-card-links">
+              <button className="sp-text-btn" onClick={goBack}>Done</button>
+              <Link className="sp-text-btn" to="/customer">View all cards</Link>
+            </div>
+          </main>
+
+          <BottomNav active="home" />
         </div>
 
         {showWalletSheet && (
@@ -251,7 +301,7 @@ export default function StampPage() {
           />
         )}
 
-        <div className="sp-footer">
+        <div className="sp-footer sp-footer-floating">
           <p>Powered by <strong>decidr loyalty</strong></p>
         </div>
       </div>

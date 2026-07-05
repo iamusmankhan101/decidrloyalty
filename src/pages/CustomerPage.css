@@ -1,7 +1,10 @@
 .cp {
   min-height: 100vh;
-  background: #f6f8fb;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.95) 0 12%, transparent 13%),
+    linear-gradient(180deg, #f7f3fb 0%, #fff 100%);
   color: #0f172a;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .cp-header {
@@ -11,7 +14,7 @@
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #e2e8f0;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.82);
   backdrop-filter: blur(14px);
   position: sticky;
   top: 0;
@@ -47,13 +50,13 @@
 }
 
 .cp-main {
-  width: min(960px, calc(100% - 2rem));
+  width: min(900px, calc(100% - 2rem));
   margin: 0 auto;
   padding: 2rem 0 4rem;
 }
 
 .cp-hero {
-  padding: 1.5rem 0 1rem;
+  padding: 1.2rem 0 1rem;
 }
 
 .cp-eyebrow {
@@ -67,9 +70,10 @@
 
 .cp-hero h1 {
   font-family: 'Clash Display', sans-serif;
-  font-size: clamp(2rem, 7vw, 4rem);
-  line-height: 1;
+  font-size: clamp(2rem, 7vw, 3.8rem);
+  line-height: 0.98;
   margin-bottom: 0.75rem;
+  letter-spacing: 0;
 }
 
 .cp-hero p {
@@ -82,8 +86,8 @@
 .cp-panel {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+  border-radius: 24px;
+  box-shadow: 0 16px 36px rgba(42, 30, 75, 0.08);
 }
 
 .cp-phone-form {
@@ -106,7 +110,7 @@
 .cp-add-form input {
   width: 100%;
   border: 1.5px solid #dbe3ef;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 0.95rem 1rem;
   font: inherit;
   color: #0f172a;
@@ -124,7 +128,7 @@
 .cp-toolbar button,
 .cp-add-row button {
   border: none;
-  border-radius: 8px;
+  border-radius: 999px;
   background: #ff0000;
   color: #fff;
   font: inherit;
@@ -174,14 +178,14 @@
   display: inline-flex;
   padding: 4px;
   background: #f1f5f9;
-  border-radius: 8px;
+  border-radius: 999px;
 }
 
 .cp-type-switch button {
   border: none;
   background: transparent;
   color: #64748b;
-  border-radius: 6px;
+  border-radius: 999px;
   padding: 0.5rem 0.8rem;
   font: inherit;
   font-weight: 800;
@@ -215,9 +219,25 @@
 .cp-empty {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 26px;
   padding: 1rem;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 16px 36px rgba(42, 30, 75, 0.09);
+  overflow: hidden;
+  position: relative;
+}
+
+.cp-card::before {
+  content: '';
+  display: block;
+  height: 92px;
+  margin: -1rem -1rem 1rem;
+  background: var(--card-color, #a40818);
+}
+
+.cp-card-top {
+  margin-top: -5.8rem;
+  min-height: 76px;
+  color: #fff;
 }
 
 .cp-card-top {
@@ -229,7 +249,7 @@
 }
 
 .cp-card-kicker {
-  color: #64748b;
+  color: rgba(255,255,255,0.78);
   font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -240,21 +260,25 @@
 .cp-card h2 {
   font-size: 1.1rem;
   line-height: 1.25;
-  color: #0f172a;
+  color: #fff;
 }
 
 .cp-icon-link {
   text-decoration: none;
-  color: #ff0000;
+  color: #fff;
   font-weight: 800;
   font-size: 0.86rem;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.24);
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
 }
 
 .cp-cashback-panel,
 .cp-stamp-panel {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 22px;
   padding: 1rem;
   margin-bottom: 1rem;
 }
@@ -268,7 +292,7 @@
 
 .cp-cashback-panel strong {
   display: block;
-  color: #047857;
+  color: var(--card-color, #047857);
   font-size: 2rem;
   line-height: 1.1;
   margin: 0.35rem 0;
@@ -286,6 +310,32 @@
   display: block;
   height: 100%;
   border-radius: inherit;
+  background: var(--card-color, #a40818);
+}
+
+.cp-stamp-dots {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.cp-stamp-dots span {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px dashed rgba(127, 29, 29, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 900;
+}
+
+.cp-stamp-dots span.filled {
+  background: var(--card-color, #a40818);
+  border-style: solid;
+  border-color: var(--card-color, #a40818);
 }
 
 .cp-stamp-panel p {
@@ -297,7 +347,7 @@
   color: #b91c1c;
   background: #fef2f2;
   border: 1px solid #fecaca;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 0.85rem;
   margin-bottom: 1rem;
 }
@@ -324,6 +374,8 @@
   text-align: center;
   padding: 2.5rem 1rem;
 }
+
+.cp-empty::before { display: none; }
 
 .cp-empty h2 {
   font-size: 1.35rem;
