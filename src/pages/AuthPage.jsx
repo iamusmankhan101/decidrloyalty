@@ -15,6 +15,55 @@ const CARD_TYPES = [
   { id: 'gift',         emoji: '🎁', name: 'Gift Card',       desc: 'Prepaid digital gift cards',            live: false },
 ];
 
+const AUTH_ATTEMPT_KEY = 'loyalty_auth_attempts';
+const MAX_AUTH_ATTEMPTS = 5;
+const AUTH_LOCK_MS = 10 * 60 * 1000;
+const AUTH_TIMEOUT_MS = 15000;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function normalizeEmail(email) {
+  return email.trim().toLowerCase();
+}
+
+function authAttemptId(mode, email) {
+  return `${mode}:${normalizeEmail(email) || 'unknown'}`;
+}
+
+function readAuthAttempts() {
+  try { return JSON.parse(localStorage.getItem(AUTH_ATTEMPT_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+function getAuthLock(mode, email) {
+  const record = readAuthAttempts()[authAttemptId(mode, email)];
+  if (!record?.lockedUntil || record.lockedUntil <= Date.now()) return null;
+  return record.lockedUntil;
+}
+
+function recordAuthFailure(mode, email) {
+  const attempts = readAuthAttempts();
+  const id = authAttemptId(mode, email);
+  const current = attempts[id] || { count: 0, lockedUntil: 0 };
+  const nextCount = current.lockedUntil > Date.now() ? current.count : current.count + 1;
+  attempts[id] = {
+    count: nextCount,
+    lockedUntil: nextCount >= MAX_AUTH_ATTEMPTS ? Date.now() + AUTH_LOCK_MS : 0,
+  };
+  localStorage.setItem(AUTH_ATTEMPT_KEY, JSON.stringify(attempts));
+  return attempts[id].lockedUntil;
+}
+
+function clearAuthFailures(mode, email) {
+  const attempts = readAuthAttempts();
+  delete attempts[authAttemptId(mode, email)];
+  localStorage.setItem(AUTH_ATTEMPT_KEY, JSON.stringify(attempts));
+}
+
+function lockMessage(lockedUntil) {
+  const mins = Math.max(1, Math.ceil((lockedUntil - Date.now()) / 60000));
+  return `Too many attempts. Please try again in ${mins} minute${mins === 1 ? '' : 's'}.`;
+}
+
 export default function AuthPage({ mode }) {
   const { login } = useAuth();
   const navigate  = useNavigate();
@@ -42,20 +91,65 @@ export default function AuthPage({ mode }) {
 
   async function submit(e) {
     e.preventDefault();
+    const email = normalizeEmail(form.email);
+    const password = form.password;
+    const businessName = form.businessName.trim();
+    const liveCardType = CARD_TYPES.some(t => t.id === cardType && t.live);
+    const lockedUntil = getAuthLock(mode, email);
+
+    if (lockedUntil) {
+      setError(lockMessage(lockedUntil));
+      return;
+    }
+    if (!EMAIL_RE.test(email)) {
+      setError('Enter a valid email address.');
+      return;
+    }
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    if (isSignup && businessName.length < 2) {
+      setError('Enter your business name.');
+      return;
+    }
+    if (isSignup && !liveCardType) {
+      setError('Choose a valid card type.');
+      return;
+    }
+
     setLoading(true); setError('');
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), AUTH_TIMEOUT_MS);
     try {
       const body = isSignup
-        ? { action: 'register', email: form.email, password: form.password, restaurantName: form.businessName, role: 'restaurant', cardType }
-        : { action: 'login',    email: form.email, password: form.password };
+        ? { action: 'register', email, password, restaurantName: businessName, role: 'restaurant', cardType }
+        : { action: 'login', email, password };
 
-      const res  = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Something went wrong');
+      const res  = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const nextLock = [401, 403, 409, 422, 429].includes(res.status)
+          ? recordAuthFailure(mode, email)
+          : 0;
+        if (nextLock) throw new Error(lockMessage(nextLock));
+        if (res.status === 429) throw new Error('Too many attempts. Please wait before trying again.');
+        if (isSignup && res.status === 409) throw new Error('Unable to create this account. Try signing in or use a different email.');
+        throw new Error(isSignup ? 'Unable to create account. Check your details and try again.' : 'Invalid email or password.');
+      }
+      clearAuthFailures(mode, email);
       login(data.token, data.user);
       navigate('/dashboard', { replace: true });
     } catch (err) {
-      setError(err.message);
+      if (err.name === 'AbortError') setError('Request timed out. Please try again.');
+      else setError(err.message || 'Something went wrong. Please try again.');
     } finally {
+      clearTimeout(timer);
       setLoading(false);
     }
   }
@@ -185,6 +279,9 @@ export default function AuthPage({ mode }) {
                       placeholder="e.g. Urban Rewards"
                       value={form.businessName}
                       onChange={change}
+                      minLength={2}
+                      maxLength={80}
+                      autoComplete="organization"
                       required
                     />
                   </div>
@@ -201,6 +298,9 @@ export default function AuthPage({ mode }) {
                     placeholder="you@example.com"
                     value={form.email}
                     onChange={change}
+                    maxLength={254}
+                    autoComplete="email"
+                    spellCheck="false"
                     required
                   />
                 </div>
@@ -217,6 +317,9 @@ export default function AuthPage({ mode }) {
                     placeholder={isSignup ? 'At least 8 characters' : '••••••••'}
                     value={form.password}
                     onChange={change}
+                    minLength={8}
+                    maxLength={128}
+                    autoComplete={isSignup ? 'new-password' : 'current-password'}
                     required
                   />
                   <button type="button" className="auth-eye" onClick={() => setShowPass(s => !s)} tabIndex={-1}>

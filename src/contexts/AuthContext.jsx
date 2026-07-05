@@ -1,29 +1,41 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
+const TOKEN_KEY = 'loyalty_token';
+const USER_KEY = 'loyalty_user';
+
+function readStoredItem(key) {
+  return sessionStorage.getItem(key) || localStorage.getItem(key);
+}
+
+function clearStoredAuth() {
+  sessionStorage.removeItem(TOKEN_KEY);
+  sessionStorage.removeItem(USER_KEY);
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
+}
 
 function readUser() {
-  try { const s = localStorage.getItem('loyalty_user'); return s ? JSON.parse(s) : null; }
+  try { const s = readStoredItem(USER_KEY); return s ? JSON.parse(s) : null; }
   catch { return null; }
 }
 
 export function AuthProvider({ children }) {
   const [user, setUser]       = useState(readUser);
-  const [token, setToken]     = useState(() => localStorage.getItem('loyalty_token'));
+  const [token, setToken]     = useState(() => readStoredItem(TOKEN_KEY));
   const [loading, setLoading] = useState(true);
 
   // Runs once on mount only — verifies a stored token after a page refresh.
   // Not re-triggered by login() changing token state.
   useEffect(() => {
-    const storedToken = localStorage.getItem('loyalty_token');
+    const storedToken = readStoredItem(TOKEN_KEY);
     if (!storedToken) { setLoading(false); return; }
 
     fetch('/api/auth', { headers: { Authorization: `Bearer ${storedToken}` } })
       .then(r => {
         if (r.status === 401) {
           setToken(null); setUser(null);
-          localStorage.removeItem('loyalty_token');
-          localStorage.removeItem('loyalty_user');
+          clearStoredAuth();
           return null;
         }
         return r.ok ? r.json() : null;
@@ -31,22 +43,26 @@ export function AuthProvider({ children }) {
       .then(data => {
         if (data?.user) {
           setUser(data.user);
-          localStorage.setItem('loyalty_user', JSON.stringify(data.user));
+          sessionStorage.setItem(TOKEN_KEY, storedToken);
+          sessionStorage.setItem(USER_KEY, JSON.stringify(data.user));
+          localStorage.removeItem(TOKEN_KEY);
+          localStorage.removeItem(USER_KEY);
         }
       })
       .finally(() => setLoading(false));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function login(tok, userData) {
-    localStorage.setItem('loyalty_token', tok);
-    localStorage.setItem('loyalty_user', JSON.stringify(userData));
+    sessionStorage.setItem(TOKEN_KEY, tok);
+    sessionStorage.setItem(USER_KEY, JSON.stringify(userData));
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
     setToken(tok);
     setUser(userData);
   }
 
   function logout() {
-    localStorage.removeItem('loyalty_token');
-    localStorage.removeItem('loyalty_user');
+    clearStoredAuth();
     setToken(null);
     setUser(null);
   }
