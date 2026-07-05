@@ -527,8 +527,30 @@
 }
 .sp-wallet-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
+.sp-wallet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 0.9rem;
+}
+
 .sp-gwallet-btn { background: #1a1a1a; color: #fff; }
 .sp-awallet-btn { background: #000; color: #fff; }
+
+.sp-wallet-disabled {
+  border: none;
+  opacity: 0.48;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.sp-wallet-disabled span {
+  color: rgba(255,255,255,0.72);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 
 .sp-wallet-icon { width: 22px; height: 22px; flex-shrink: 0; }
 
