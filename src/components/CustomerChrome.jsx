@@ -3,10 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Compass, Gift, Home, QrCode, UserRound } from 'lucide-react';
 import './CustomerChrome.css';
 
-export function CustomerBackButton({ fallback = '/customer', label = 'Back' }) {
+export function CustomerBackButton({ fallback = '/customer', label = 'Back', onBack }) {
   const navigate = useNavigate();
 
   function goBack() {
+    if (onBack) {
+      onBack();
+      return;
+    }
     if (window.history.length > 1) navigate(-1);
     else navigate(fallback);
   }

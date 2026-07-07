@@ -202,7 +202,7 @@ export default function StampPage() {
     const customerName = result?.customer?.name || name || 'Customer';
     return (
       <div className="sp" style={{ '--brand': color }}>
-        <CustomerBackButton />
+        <CustomerBackButton onBack={goBack} />
         <div className="sp-app-shell">
           <section className="sp-progress-hero" style={{ background: color }}>
             <div className="sp-hero-top">
