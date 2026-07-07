@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { Compass, Gift, Home, QrCode, UserRound } from 'lucide-react';
 import './StampPage.css';
 
 const API = '/api/loyalty';
@@ -10,32 +11,43 @@ const CUSTOMER_CARDS_KEY = 'decidr_customer_cards';
 const isIOS     = /iphone|ipad|ipod/i.test(navigator.userAgent);
 const isAndroid = /android/i.test(navigator.userAgent);
 
-function BottomNav({ active = 'home' }) {
+function BottomNav({ active = 'home', onReward }) {
   const items = [
-    { id: 'home', icon: '⌂', label: 'Home' },
-    { id: 'explore', icon: '◇', label: 'Explore' },
-    { id: 'reward', icon: '🎁', label: 'Reward' },
-    { id: 'profile', icon: '○', label: 'Profile' },
+    { id: 'home', Icon: Home, label: 'Home', href: '/customer' },
+    { id: 'explore', Icon: Compass, label: 'Explore', href: '/' },
+    { id: 'reward', Icon: Gift, label: 'Reward', onClick: onReward },
+    { id: 'profile', Icon: UserRound, label: 'Profile', href: '/customer' },
   ];
+
+  function renderItem(item) {
+    const content = (
+      <>
+        <item.Icon size={24} strokeWidth={2.25} />
+        {item.label}
+      </>
+    );
+    const className = `sp-tab-item${active === item.id ? ' active' : ''}`;
+
+    if (item.href) {
+      return <Link key={item.id} to={item.href} className={className}>{content}</Link>;
+    }
+    return (
+      <button key={item.id} type="button" className={className} onClick={item.onClick}>
+        {content}
+      </button>
+    );
+  }
 
   return (
     <nav className="sp-tabbar" aria-label="Customer navigation">
       <div className="sp-tabbar-side">
-        {items.slice(0, 2).map(item => (
-          <span key={item.id} className={`sp-tab-item${active === item.id ? ' active' : ''}`}>
-            <span>{item.icon}</span>
-            {item.label}
-          </span>
-        ))}
+        {items.slice(0, 2).map(renderItem)}
       </div>
-      <button type="button" className="sp-scan-fab" aria-label="Scan QR">⌗</button>
+      <Link to="/customer" className="sp-scan-fab" aria-label="Scan or add QR card">
+        <QrCode size={30} strokeWidth={2.4} />
+      </Link>
       <div className="sp-tabbar-side">
-        {items.slice(2).map(item => (
-          <span key={item.id} className={`sp-tab-item${active === item.id ? ' active' : ''}`}>
-            <span>{item.icon}</span>
-            {item.label}
-          </span>
-        ))}
+        {items.slice(2).map(renderItem)}
       </div>
     </nav>
   );
@@ -109,6 +121,7 @@ export default function StampPage() {
   const [showWalletSheet, setShowWalletSheet] = useState(false);
   const inputRef     = useRef(null);
   const phoneCheckRef = useRef(null);
+  const rewardRef = useRef(null);
 
   const isNumericId  = /^\d+$/.test(slug);
   const programParam = isNumericId ? `restaurantId=${slug}` : `slug=${slug}`;
@@ -195,6 +208,10 @@ export default function StampPage() {
     setView(STATES.ENTER);
   }
 
+  function scrollToReward() {
+    rewardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
   const color  = program?.primaryColor || '#ff0000';
   const stamps = program?.stampsRequired || 9;
   const reward = program?.rewardName || 'Free Reward';
@@ -264,7 +281,7 @@ export default function StampPage() {
               </div>
             </section>
 
-            <section className="sp-stamp-card-panel">
+            <section className="sp-stamp-card-panel" ref={rewardRef}>
               <p className="sp-section-label">Stamp Card</p>
               <div className="sp-stamp-row">
                 {Array.from({ length: stamps }, (_, i) => (
@@ -299,7 +316,7 @@ export default function StampPage() {
             </div>
           </main>
 
-          <BottomNav active="home" />
+          <BottomNav active="home" onReward={scrollToReward} />
         </div>
 
         {showWalletSheet && (
