@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { CustomerBackButton, CustomerBottomNav } from '../components/CustomerChrome';
 import './CustomerPage.css';
 
 const API = '/api/loyalty';
@@ -138,6 +139,7 @@ export default function CustomerPage() {
   const [cardType, setCardType] = useState('cashback');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const cardsRef = useRef(null);
 
   const hasPhone = phone.trim().length > 0;
   const sortedCards = useMemo(() => [...cards].sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)), [cards]);
@@ -206,8 +208,13 @@ export default function CustomerPage() {
     setPhoneDraft('');
   }
 
+  function scrollToCards() {
+    cardsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   return (
     <div className="cp">
+      <CustomerBackButton fallback="/" />
       <header className="cp-header">
         <Link to="/" className="cp-brand">
           <img src="/decidr-logo.png" alt="decidr" />
@@ -265,7 +272,7 @@ export default function CustomerPage() {
               {message && <p className="cp-message">{message}</p>}
             </form>
 
-            <section className="cp-cards">
+            <section className="cp-cards" ref={cardsRef}>
               {sortedCards.length === 0 ? (
                 <div className="cp-empty">
                   <h2>No cards yet</h2>
@@ -285,6 +292,7 @@ export default function CustomerPage() {
           </>
         )}
       </main>
+      <CustomerBottomNav active="home" onReward={scrollToCards} />
     </div>
   );
 }

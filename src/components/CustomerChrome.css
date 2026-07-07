@@ -1,0 +1,103 @@
+.customer-back-btn {
+  position: fixed;
+  top: max(0.9rem, env(safe-area-inset-top));
+  left: max(0.9rem, env(safe-area-inset-left));
+  z-index: 90;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.36);
+  background: rgba(15, 23, 42, 0.56);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+  backdrop-filter: blur(14px);
+}
+
+.customer-back-btn:hover {
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.customer-back-btn svg {
+  color: currentColor;
+}
+
+.sp-tabbar {
+  position: fixed;
+  left: 50%;
+  bottom: max(0.85rem, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(450px, calc(100% - 1.4rem));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 74px minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: end;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.sp-tabbar-side {
+  min-height: 74px;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid rgba(226,232,240,0.84);
+  border-radius: 28px;
+  box-shadow: 0 14px 34px rgba(42, 30, 75, 0.14);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.sp-tab-item {
+  color: #667085;
+  display: grid;
+  place-items: center;
+  gap: 0.28rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+  border: none;
+  background: transparent;
+  text-decoration: none;
+  font-family: inherit;
+  cursor: pointer;
+  min-height: 62px;
+  padding: 0.45rem 0.25rem;
+}
+
+.sp-tab-item svg {
+  color: currentColor;
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.08));
+}
+
+.sp-tab-item.active {
+  color: #111827;
+}
+
+.sp-scan-fab {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  border: 7px solid rgba(255,255,255,0.8);
+  background: var(--brand, #a40818);
+  color: #fff;
+  box-shadow: 0 16px 34px rgba(42, 30, 75, 0.22);
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.sp-scan-fab svg {
+  color: currentColor;
+}
+
+@media (max-width: 380px) {
+  .customer-back-btn {
+    width: 42px;
+    height: 42px;
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { CustomerBackButton, CustomerBottomNav } from '../components/CustomerChrome';
 import './StampPage.css';
 import './CardPage.css';
 
@@ -72,6 +73,7 @@ export default function CardPage() {
   const [error, setError]               = useState('');
   const [showWallet, setShowWallet]     = useState(false);
   const inputRef = useRef(null);
+  const rewardRef = useRef(null);
   const isNumericId = /^\d+$/.test(slug || '');
   const programParam = isNumericId
     ? `restaurantId=${encodeURIComponent(slug)}`
@@ -135,6 +137,10 @@ export default function CardPage() {
     setView(STATES.ENTER);
   }
 
+  function scrollToReward() {
+    rewardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
   if (view === STATES.LOADING) {
     return (
       <div className="sp-loading">
@@ -161,6 +167,7 @@ export default function CardPage() {
     const hasBalance   = balance > 0;
     return (
       <div className="sp" style={{ '--brand': '#059669' }}>
+        <CustomerBackButton />
         <div className="cb-card-header">
           <div className="cb-card-header-top">
             <p className="cb-business-name">{business?.name || business?.businessName}</p>
@@ -185,7 +192,7 @@ export default function CardPage() {
               : "You'll earn cashback on your next visit. Ask the staff to add it at checkout."}
           </p>
 
-          <div className="cb-stats-row">
+          <div className="cb-stats-row" ref={rewardRef}>
             <div className="cb-stat">
               <div className="cb-stat-value">PKR {totalEarned.toLocaleString('en-PK')}</div>
               <div className="cb-stat-label">Total Earned</div>
@@ -210,12 +217,14 @@ export default function CardPage() {
         <div className="sp-footer">
           <p>Powered by <strong>decidr loyalty</strong></p>
         </div>
+        <CustomerBottomNav active="reward" onReward={scrollToReward} />
       </div>
     );
   }
 
   return (
     <div className="sp" style={{ '--brand': '#059669' }}>
+      <CustomerBackButton />
       <div className="cb-card-header">
         <div className="cb-card-header-top">
           <p className="cb-business-name">{business?.name || business?.businessName}</p>
@@ -281,6 +290,7 @@ export default function CardPage() {
       <div className="sp-footer">
         <p>Powered by <strong>decidr loyalty</strong></p>
       </div>
+      <CustomerBottomNav active="home" />
     </div>
   );
 }

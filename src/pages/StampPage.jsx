@@ -1,57 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Compass, Gift, Home, QrCode, UserRound } from 'lucide-react';
+import { CustomerBackButton, CustomerBottomNav } from '../components/CustomerChrome';
 import './StampPage.css';
 
 const API = '/api/loyalty';
 const STATES = { LOADING: 'loading', ENTER: 'enter', CARD: 'card', ERROR: 'error' };
 const CUSTOMER_PHONE_KEY = 'decidr_customer_phone';
 const CUSTOMER_CARDS_KEY = 'decidr_customer_cards';
-
-const isIOS     = /iphone|ipad|ipod/i.test(navigator.userAgent);
-const isAndroid = /android/i.test(navigator.userAgent);
-
-function BottomNav({ active = 'home', onReward }) {
-  const items = [
-    { id: 'home', Icon: Home, label: 'Home', href: '/customer' },
-    { id: 'explore', Icon: Compass, label: 'Explore', href: '/' },
-    { id: 'reward', Icon: Gift, label: 'Reward', onClick: onReward },
-    { id: 'profile', Icon: UserRound, label: 'Profile', href: '/customer' },
-  ];
-
-  function renderItem(item) {
-    const content = (
-      <>
-        <item.Icon size={24} strokeWidth={2.25} />
-        {item.label}
-      </>
-    );
-    const className = `sp-tab-item${active === item.id ? ' active' : ''}`;
-
-    if (item.href) {
-      return <Link key={item.id} to={item.href} className={className}>{content}</Link>;
-    }
-    return (
-      <button key={item.id} type="button" className={className} onClick={item.onClick}>
-        {content}
-      </button>
-    );
-  }
-
-  return (
-    <nav className="sp-tabbar" aria-label="Customer navigation">
-      <div className="sp-tabbar-side">
-        {items.slice(0, 2).map(renderItem)}
-      </div>
-      <Link to="/customer" className="sp-scan-fab" aria-label="Scan or add QR card">
-        <QrCode size={30} strokeWidth={2.4} />
-      </Link>
-      <div className="sp-tabbar-side">
-        {items.slice(2).map(renderItem)}
-      </div>
-    </nav>
-  );
-}
 
 function saveCustomerCard(card, phone) {
   try {
@@ -247,6 +202,7 @@ export default function StampPage() {
     const customerName = result?.customer?.name || name || 'Customer';
     return (
       <div className="sp" style={{ '--brand': color }}>
+        <CustomerBackButton />
         <div className="sp-app-shell">
           <section className="sp-progress-hero" style={{ background: color }}>
             <div className="sp-hero-top">
@@ -316,7 +272,7 @@ export default function StampPage() {
             </div>
           </main>
 
-          <BottomNav active="home" onReward={scrollToReward} />
+          <CustomerBottomNav active="home" onReward={scrollToReward} />
         </div>
 
         {showWalletSheet && (
@@ -336,6 +292,7 @@ export default function StampPage() {
   /* ── Enter details ── */
   return (
     <div className="sp" style={{ '--brand': color }}>
+      <CustomerBackButton />
       <div className="sp-header" style={{ background: color }}>
         {program.logoUrl
           ? <img src={program.logoUrl} alt={program.name} className="sp-logo" />
@@ -409,6 +366,7 @@ export default function StampPage() {
       <div className="sp-footer">
         <p>Powered by <strong>decidr loyalty</strong></p>
       </div>
+      <CustomerBottomNav active="home" />
     </div>
   );
 }

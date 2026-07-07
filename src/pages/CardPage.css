@@ -11,6 +11,11 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1.25rem;
+  padding-left: 3.35rem;
+}
+
+@media (max-width: 380px) {
+  .cb-card-header-top { padding-left: 3rem; }
 }
 
 .cb-business-name {

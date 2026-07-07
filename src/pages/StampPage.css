@@ -93,7 +93,7 @@
 ═══════════════════════════════════════════════ */
 .sp-body {
   flex: 1;
-  padding: 2rem 1.5rem;
+  padding: 2rem 1.5rem 8.5rem;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -482,6 +482,7 @@
   justify-content: space-between;
   gap: 0.8rem;
   margin-bottom: 1.7rem;
+  padding-left: 3.35rem;
 }
 
 .sp-logo-lockup {
@@ -831,6 +832,7 @@
   .sp-progress-hero h1 { font-size: 2.25rem; }
   .sp-premium { font-size: 0.58rem; }
   .sp-logo-lockup > span { max-width: 110px; }
+  .sp-hero-top { padding-left: 3rem; }
   .sp-stamp-row { gap: 0.5rem; }
   .sp-away { font-size: 0.95rem; }
   .sp-claim-btn,
