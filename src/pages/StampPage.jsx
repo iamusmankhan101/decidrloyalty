@@ -198,6 +198,8 @@ export default function StampPage() {
   const color  = program?.primaryColor || '#ff0000';
   const stamps = program?.stampsRequired || 9;
   const reward = program?.rewardName || 'Free Reward';
+  const businessName = program?.name || 'Loyalty Card';
+  const businessInitial = (businessName[0] || 'L').toUpperCase();
 
   /* ── Loading ── */
   if (view === STATES.LOADING) {
@@ -231,11 +233,15 @@ export default function StampPage() {
         <div className="sp-app-shell">
           <section className="sp-progress-hero" style={{ background: color }}>
             <div className="sp-hero-top">
-              <div className="sp-brand-chip">
-                {program.logoUrl && <img src={program.logoUrl} alt="" />}
-                <span>{program.name || 'Loyalty Card'}</span>
+              <div className="sp-logo-lockup">
+                <div className="sp-restaurant-logo">
+                  {program.logoUrl
+                    ? <img src={program.logoUrl} alt={`${businessName} logo`} />
+                    : <span>{businessInitial}</span>}
+                </div>
+                <span>Loyalty Card</span>
               </div>
-              <span className="sp-premium">Premium Partner</span>
+              <span className="sp-premium">Premium Partner ✓</span>
             </div>
             <p className="sp-hello">Hi, {customerName}</p>
             <h1>{count} of {stamps} Stamps</h1>
@@ -246,8 +252,10 @@ export default function StampPage() {
 
           <main className="sp-app-body">
             <section className="sp-next-treat">
-              <div className="sp-treat-art">
-                {program.logoUrl ? <img src={program.logoUrl} alt="" /> : <span>🎁</span>}
+              <div className="sp-treat-art sp-treat-logo">
+                {program.logoUrl
+                  ? <img src={program.logoUrl} alt={`${businessName} logo`} />
+                  : <span>{businessInitial}</span>}
               </div>
               <div>
                 <p>Your next treat</p>

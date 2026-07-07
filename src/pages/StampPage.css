@@ -450,16 +450,30 @@
 .sp-app-shell {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 12% 10%, rgba(255,255,255,0.95) 0 9%, transparent 10%),
-    linear-gradient(180deg, #f7f3fb 0%, #fff 100%);
-  padding-bottom: 8.5rem;
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,0.82) 0 8%, transparent 9%),
+    radial-gradient(circle at 92% 18%, rgba(255,255,255,0.58) 0 7%, transparent 8%),
+    linear-gradient(180deg, #f8f4fb 0%, #fff 68%);
+  padding-bottom: 12rem;
 }
 
 .sp-progress-hero {
   color: #fff;
-  padding: 1.2rem 1.3rem 2.3rem;
-  border-radius: 0 0 34px 34px;
-  box-shadow: 0 22px 42px rgba(53, 7, 18, 0.22);
+  padding: 1.35rem 1.35rem 2.35rem;
+  border-radius: 0 0 38px 38px;
+  box-shadow: 0 26px 54px rgba(53, 7, 18, 0.26);
+  position: relative;
+  overflow: hidden;
+}
+
+.sp-progress-hero::after {
+  content: '';
+  position: absolute;
+  inset: auto -18% -42% 36%;
+  height: 160px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.13);
+  transform: rotate(-8deg);
+  pointer-events: none;
 }
 
 .sp-hero-top {
@@ -470,27 +484,49 @@
   margin-bottom: 1.7rem;
 }
 
-.sp-brand-chip {
+.sp-logo-lockup {
   display: inline-flex;
   align-items: center;
   min-width: 0;
-  gap: 0.55rem;
+  gap: 0.72rem;
   font-size: 0.74rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  position: relative;
+  z-index: 1;
 }
 
-.sp-brand-chip img {
-  width: 34px;
-  height: 34px;
+.sp-restaurant-logo {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  object-fit: cover;
-  background: #fff;
-  border: 2px solid rgba(255,255,255,0.65);
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.52);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.14), inset 0 0 0 1px rgba(255,255,255,0.18);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  backdrop-filter: blur(10px);
 }
 
-.sp-brand-chip span {
+.sp-restaurant-logo img {
+  width: 82%;
+  height: 82%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.24));
+}
+
+.sp-restaurant-logo span {
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.sp-logo-lockup > span {
   max-width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -502,8 +538,10 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  opacity: 0.8;
+  opacity: 0.86;
   white-space: nowrap;
+  position: relative;
+  z-index: 1;
 }
 
 .sp-hello {
@@ -511,6 +549,8 @@
   font-size: 0.9rem;
   font-weight: 700;
   margin-bottom: 0.25rem;
+  position: relative;
+  z-index: 1;
 }
 
 .sp-progress-hero h1 {
@@ -520,6 +560,8 @@
   font-weight: 900;
   letter-spacing: 0;
   margin: 0 0 1.35rem;
+  position: relative;
+  z-index: 1;
 }
 
 .sp-progress-line {
@@ -528,6 +570,8 @@
   background: rgba(255,255,255,0.22);
   overflow: hidden;
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 1;
 }
 
 .sp-progress-line span {
@@ -540,43 +584,52 @@
 }
 
 .sp-app-body {
-  padding: 1.1rem 1rem 0;
+  padding: 1.25rem 1rem 0;
 }
 
 .sp-next-treat,
 .sp-stamp-card-panel {
   background: rgba(255,255,255,0.94);
   border: 1px solid rgba(226,232,240,0.82);
-  border-radius: 26px;
-  box-shadow: 0 16px 36px rgba(42, 30, 75, 0.09);
+  border-radius: 30px;
+  box-shadow: 0 18px 42px rgba(42, 30, 75, 0.11);
+  backdrop-filter: blur(14px);
 }
 
 .sp-next-treat {
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  padding: 0.95rem;
+  padding: 1rem;
   margin-top: -0.4rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
 }
 
 .sp-treat-art {
   width: 70px;
   height: 70px;
-  border-radius: 20px;
-  background: #fef2f2;
+  border-radius: 22px;
+  background: var(--brand, #a40818);
   flex-shrink: 0;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
+  color: #fff;
+  font-weight: 900;
+  box-shadow: 0 12px 26px rgba(83, 15, 24, 0.16);
+}
+
+.sp-treat-logo {
+  border: 1px solid rgba(255,255,255,0.7);
 }
 
 .sp-treat-art img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 82%;
+  height: 82%;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.22));
 }
 
 .sp-next-treat p,
@@ -604,8 +657,8 @@
 }
 
 .sp-stamp-card-panel {
-  padding: 1.35rem 1rem;
-  margin-bottom: 1rem;
+  padding: 1.45rem 1.05rem 1.55rem;
+  margin-bottom: 1.15rem;
 }
 
 .sp-section-label {
@@ -616,8 +669,8 @@
 .sp-stamp-row {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
+  gap: 0.72rem;
+  margin-bottom: 1.35rem;
 }
 
 .sp-app-stamp {
@@ -629,13 +682,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 5vw, 1.55rem);
   font-weight: 900;
 }
 
 .sp-app-stamp.filled {
   border-style: solid;
-  box-shadow: 0 10px 22px rgba(127, 29, 29, 0.2);
+  box-shadow: 0 12px 24px rgba(127, 29, 29, 0.22);
 }
 
 .sp-app-stamp.reward {
@@ -649,7 +702,7 @@
   font-weight: 700;
   text-align: center;
   line-height: 1.35;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.35rem;
 }
 
 .sp-claim-btn,
@@ -678,7 +731,7 @@
 .sp-review-btn {
   color: #6f3b00;
   background: #fbbf24;
-  margin-bottom: 0.9rem;
+  margin-bottom: 1rem;
   box-shadow: 0 12px 24px rgba(245, 158, 11, 0.24);
 }
 
@@ -703,22 +756,22 @@
 .sp-tabbar {
   position: fixed;
   left: 50%;
-  bottom: 1rem;
+  bottom: max(0.85rem, env(safe-area-inset-bottom));
   transform: translateX(-50%);
   width: min(450px, calc(100% - 1.4rem));
   display: grid;
-  grid-template-columns: 1fr 76px 1fr;
-  gap: 0.55rem;
+  grid-template-columns: minmax(0, 1fr) 74px minmax(0, 1fr);
+  gap: 0.5rem;
   align-items: end;
   z-index: 50;
   pointer-events: none;
 }
 
 .sp-tabbar-side {
-  min-height: 78px;
+  min-height: 74px;
   background: rgba(255,255,255,0.96);
   border: 1px solid rgba(226,232,240,0.84);
-  border-radius: 26px;
+  border-radius: 28px;
   box-shadow: 0 14px 34px rgba(42, 30, 75, 0.14);
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -743,8 +796,8 @@
 .sp-tab-item.active { color: #111827; }
 
 .sp-scan-fab {
-  width: 76px;
-  height: 76px;
+  width: 74px;
+  height: 74px;
   border-radius: 50%;
   border: 7px solid rgba(255,255,255,0.8);
   background: var(--brand, #a40818);
@@ -759,8 +812,18 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 6.7rem;
+  bottom: 6.4rem;
   padding: 0;
+}
+
+@media (max-width: 380px) {
+  .sp-progress-hero h1 { font-size: 2.25rem; }
+  .sp-premium { font-size: 0.58rem; }
+  .sp-logo-lockup > span { max-width: 110px; }
+  .sp-stamp-row { gap: 0.5rem; }
+  .sp-away { font-size: 0.95rem; }
+  .sp-claim-btn,
+  .sp-review-btn { min-height: 54px; font-size: 0.98rem; }
 }
 
 /* ═══════════════════════════════════════════════
