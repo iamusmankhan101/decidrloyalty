@@ -167,7 +167,7 @@ export default function CardPage() {
     const hasBalance   = balance > 0;
     return (
       <div className="sp" style={{ '--brand': '#059669' }}>
-        <CustomerBackButton onBack={goBack} />
+        <CustomerBackButton />
         <div className="cb-card-header">
           <div className="cb-card-header-top">
             <p className="cb-business-name">{business?.name || business?.businessName}</p>
