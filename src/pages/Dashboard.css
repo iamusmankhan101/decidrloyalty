@@ -313,6 +313,14 @@
   margin-bottom: 0.35rem;
 }
 
+.db-card-title-icon { display: flex; align-items: center; gap: 0.45rem; }
+.db-card-title-icon svg { flex-shrink: 0; }
+
+.db-medal { display: inline-block; vertical-align: middle; }
+.db-medal-0 { color: #ca8a04; }
+.db-medal-1 { color: #94a3b8; }
+.db-medal-2 { color: #b45309; }
+
 .db-card-sub {
   font-size: 0.83rem;
   color: #64748b;
@@ -377,6 +385,10 @@
    BUTTONS
 ═══════════════════════════════════════════════ */
 .db-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
   padding: 0.7rem 1.5rem;
   background: #ff0000;
   color: #fff;
@@ -398,6 +410,10 @@
 }
 
 .db-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   padding: 0.6rem 1.25rem;
   background: transparent;
   color: #475569;
@@ -678,7 +694,7 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .db-empty { text-align: center; padding: 3rem; color: #64748b; font-size: 0.9rem; }
-.db-empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.db-empty-icon { display: block; margin: 0 auto 0.75rem; color: #cbd5e1; }
 
 .db-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .db-table th { text-align: left; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 0.75rem 0.75rem; border-bottom: 1px solid #f1f5f9; white-space: nowrap; }
@@ -697,7 +713,7 @@
 .db-mini-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid #e2e8f0; background: #f8fafc; flex-shrink: 0; }
 .db-stamp-count { font-size: 0.75rem; color: #64748b; margin-left: 4px; white-space: nowrap; }
 
-.db-reward-badge { display: inline-block; background: #d1fae5; color: #065f46; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+.db-reward-badge { display: inline-flex; align-items: center; gap: 3px; background: #d1fae5; color: #065f46; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
 .db-reward-badge.zero { background: #f1f5f9; color: #94a3b8; }
 
 /* ═══════════════════════════════════════════════
@@ -784,6 +800,9 @@
 }
 
 .cb-subnav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   padding: 0.4rem 1rem;
   border-radius: 999px;
   border: 1.5px solid #e2e8f0;

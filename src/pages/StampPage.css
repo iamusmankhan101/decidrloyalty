@@ -50,7 +50,7 @@
   gap: 0.75rem;
 }
 
-.sp-error-icon { font-size: 3rem; }
+.sp-error-icon { color: #cbd5e1; }
 .sp-error h2 { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
 .sp-error p  { font-size: 0.88rem; color: #64748b; line-height: 1.6; }
 
@@ -261,6 +261,10 @@
   transition: opacity 0.2s, transform 0.15s;
   font-family: inherit;
   letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
 }
 
 .sp-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
@@ -535,6 +539,9 @@
 }
 
 .sp-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
   font-size: 0.66rem;
   font-weight: 800;
   text-transform: uppercase;

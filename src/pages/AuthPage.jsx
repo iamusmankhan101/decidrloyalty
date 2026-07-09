@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, Store, AlertCircle, ArrowRight, Loader2, ArrowLeft } from 'lucide-react';
+import {
+  Mail, Lock, Eye, EyeOff, Store, AlertCircle, ArrowRight, Loader2, ArrowLeft,
+  Coffee, Banknote, HandFist, Award, Bell, Tag, Ticket, Gift, Check,
+} from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import './AuthPage.css';
 
 const CARD_TYPES = [
-  { id: 'stamp',        emoji: '☕', name: 'Stamp Card',      desc: 'Collect stamps, earn free rewards',     live: true  },
-  { id: 'cashback',     emoji: '💰', name: 'Cashback Card',   desc: 'Earn Rs. back on every visit',          live: true  },
-  { id: 'punch',        emoji: '👊', name: 'Punch Card',      desc: 'Digital punch-based reward tracking',   live: false },
-  { id: 'membership',   emoji: '🏅', name: 'Membership',      desc: 'Monthly or yearly member benefits',     live: false },
-  { id: 'subscription', emoji: '🔔', name: 'Subscription',    desc: 'Recurring service subscriptions',       live: false },
-  { id: 'coupon',       emoji: '🏷️',  name: 'Coupons',         desc: 'Issue and track discount coupons',      live: false },
-  { id: 'event',        emoji: '🎫', name: 'Event Pass',      desc: 'Ticketing and event access cards',      live: false },
-  { id: 'gift',         emoji: '🎁', name: 'Gift Card',       desc: 'Prepaid digital gift cards',            live: false },
+  { id: 'stamp',        Icon: Coffee,   name: 'Stamp Card',      desc: 'Collect stamps, earn free rewards',     live: true  },
+  { id: 'cashback',     Icon: Banknote, name: 'Cashback Card',   desc: 'Earn Rs. back on every visit',          live: true  },
+  { id: 'punch',        Icon: HandFist, name: 'Punch Card',      desc: 'Digital punch-based reward tracking',   live: false },
+  { id: 'membership',   Icon: Award,    name: 'Membership',      desc: 'Monthly or yearly member benefits',     live: false },
+  { id: 'subscription', Icon: Bell,     name: 'Subscription',    desc: 'Recurring service subscriptions',       live: false },
+  { id: 'coupon',       Icon: Tag,      name: 'Coupons',         desc: 'Issue and track discount coupons',      live: false },
+  { id: 'event',        Icon: Ticket,   name: 'Event Pass',      desc: 'Ticketing and event access cards',      live: false },
+  { id: 'gift',         Icon: Gift,     name: 'Gift Card',       desc: 'Prepaid digital gift cards',            live: false },
 ];
 
 const AUTH_ATTEMPT_KEY = 'loyalty_auth_attempts';
@@ -170,7 +173,7 @@ export default function AuthPage({ mode }) {
           <div className="auth-left-body">
             <h2 className="auth-left-headline">
               {selectedType
-                ? `${selectedType.emoji} ${selectedType.name}`
+                ? <><selectedType.Icon size={26} strokeWidth={1.9} className="auth-left-headline-icon" /> {selectedType.name}</>
                 : 'Turn every visit into a reason to come back.'}
             </h2>
             <p className="auth-left-sub">
@@ -225,11 +228,13 @@ export default function AuthPage({ mode }) {
                   onClick={() => selectType(type)}
                   className={`auth-type-card${cardType === type.id ? ' selected' : ''}${!type.live ? ' disabled' : ''}`}
                 >
-                  <span className="auth-type-emoji">{type.emoji}</span>
+                  <span className="auth-type-emoji"><type.Icon size={22} strokeWidth={1.9} /></span>
                   <span className="auth-type-name">{type.name}</span>
                   <span className="auth-type-desc">{type.desc}</span>
                   {!type.live && <span className="auth-type-soon">Soon</span>}
-                  {type.live && cardType === type.id && <span className="auth-type-check">✓</span>}
+                  {type.live && cardType === type.id && (
+                    <span className="auth-type-check"><Check size={12} strokeWidth={3} /></span>
+                  )}
                 </button>
               ))}
             </div>
@@ -256,7 +261,7 @@ export default function AuthPage({ mode }) {
 
             {isSignup && (
               <button className="auth-back" onClick={() => setStep('pick')}>
-                <ArrowLeft size={15} /> {selectedType?.emoji} {selectedType?.name}
+                <ArrowLeft size={15} /> {selectedType && <selectedType.Icon size={14} strokeWidth={2} />} {selectedType?.name}
               </button>
             )}
 

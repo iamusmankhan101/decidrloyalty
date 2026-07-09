@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Check } from 'lucide-react';
 import { CustomerBackButton, CustomerBottomNav } from '../components/CustomerChrome';
 import './CustomerPage.css';
 
@@ -111,7 +112,7 @@ function CustomerCard({ card, phone, onRemove }) {
           <div className="cp-stamp-dots">
             {Array.from({ length: Math.min(card.stampsRequired || 9, 8) }, (_, i) => (
               <span key={i} className={i < (card.stampCount || 0) ? 'filled' : ''}>
-                {i < (card.stampCount || 0) ? '✓' : ''}
+                {i < (card.stampCount || 0) ? <Check size={12} strokeWidth={3} /> : ''}
               </span>
             ))}
           </div>

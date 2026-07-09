@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { Frown, BadgeCheck, Check, Gift, Star, ArrowRight } from 'lucide-react';
 import { CustomerBackButton, CustomerBottomNav } from '../components/CustomerChrome';
 import './StampPage.css';
 
@@ -187,7 +188,7 @@ export default function StampPage() {
   if (view === STATES.ERROR) {
     return (
       <div className="sp-error">
-        <div className="sp-error-icon">😕</div>
+        <div className="sp-error-icon"><Frown size={48} strokeWidth={1.5} /></div>
         <h2>Program not found</h2>
         <p>This loyalty program doesn't exist or has been deactivated.</p>
       </div>
@@ -214,7 +215,7 @@ export default function StampPage() {
                 </div>
                 <span>Loyalty Card</span>
               </div>
-              <span className="sp-premium">Premium Partner ✓</span>
+              <span className="sp-premium"><BadgeCheck size={13} strokeWidth={2.25} /> Premium Partner</span>
             </div>
             <p className="sp-hello">Hi, {customerName}</p>
             <h1>{count} of {stamps} Stamps</h1>
@@ -246,7 +247,7 @@ export default function StampPage() {
                     className={`sp-app-stamp${i < count ? ' filled' : ''}${i === stamps - 1 ? ' reward' : ''}`}
                     style={i < count ? { background: color, borderColor: color } : {}}
                   >
-                    {i < count ? '✓' : i === stamps - 1 ? '🎁' : ''}
+                    {i < count ? <Check size={18} strokeWidth={2.75} /> : i === stamps - 1 ? <Gift size={16} strokeWidth={2} /> : ''}
                   </span>
                 ))}
               </div>
@@ -256,12 +257,12 @@ export default function StampPage() {
                   : <>Your reward is ready!</>}
               </p>
               <button className="sp-claim-btn" disabled={remaining > 0} style={{ background: color }}>
-                <span>🎁</span> Claim Reward
+                <Gift size={20} strokeWidth={2} /> Claim Reward
               </button>
             </section>
 
             <a className="sp-review-btn" href="https://www.google.com/search?q=google+review" target="_blank" rel="noopener noreferrer">
-              <span>★</span> Rate us on Google
+              <Star size={18} strokeWidth={2} fill="currentColor" /> Rate us on Google
             </a>
 
             <WalletActions walletUrl={result?.walletUrl} />
@@ -354,7 +355,7 @@ export default function StampPage() {
             disabled={submitting || !phone.trim() || checkingPhone}
             style={{ background: color }}
           >
-            {submitting ? 'Saving…' : 'Get My Card →'}
+            {submitting ? 'Saving…' : <>Get My Card <ArrowRight size={17} strokeWidth={2.5} /></>}
           </button>
         </form>
 

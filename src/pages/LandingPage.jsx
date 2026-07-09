@@ -1,5 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Coffee, Check, Smartphone, Wallet, Palette, BarChart3, Zap, Lock, Sparkles,
+  Crown, Gift, Tag, Ticket, Croissant, Repeat, Plug, ArrowRight, X,
+} from 'lucide-react';
 import './LandingPage.css';
 
 const WavyLines = () => (
@@ -114,10 +118,10 @@ const PhoneMockup = () => (
           <p className="lp-loyalty-brand">DECIDR LOYALTY</p>
           <p className="lp-loyalty-name">Loyalty Card</p>
         </div>
-        <div className="lp-loyalty-icon">☕</div>
+        <div className="lp-loyalty-icon"><Coffee size={16} strokeWidth={2} /></div>
       </div>
       <div className="lp-loyalty-stamps">
-        <span className="lp-stamp lp-stamp-done">✓</span>
+        <span className="lp-stamp lp-stamp-done"><Check size={11} strokeWidth={3} /></span>
         {Array.from({ length: 9 }, (_, i) => <span key={i} className="lp-stamp" />)}
       </div>
       <p className="lp-loyalty-prog">1/10 · Free coffee</p>
@@ -136,12 +140,12 @@ const HERO_STATS = ['+40% Repeat Visits', '2x Customer Retention'];
 const BUSINESS_TYPES = ['Cafes', 'Restaurants', 'Salons', 'Retail stores', 'Gyms', 'Services'];
 
 const FEATURES = [
-  { icon: '📱', title: 'Digital Stamp Cards', desc: 'Replace paper cards with a seamless digital experience customers actually use.' },
-  { icon: '👛', title: 'Wallet Ready', desc: 'Customers can save their card to Google Wallet. Apple Wallet support is coming soon.' },
-  { icon: '🎨', title: 'Your Brand', desc: 'Fully customized with your logo, colors, and reward name.' },
-  { icon: '📊', title: 'Real-time Analytics', desc: 'See who your regulars are, how many stamps are issued, and rewards redeemed.' },
-  { icon: '⚡', title: '5-Minute Setup', desc: 'Set up your loyalty program, print your QR code, and go live today.' },
-  { icon: '🔒', title: 'No App Needed', desc: 'Customers scan a QR code — no app download required on either side.' },
+  { Icon: Smartphone, title: 'Digital Stamp Cards', desc: 'Replace paper cards with a seamless digital experience customers actually use.' },
+  { Icon: Wallet,     title: 'Wallet Ready', desc: 'Customers can save their card to Google Wallet. Apple Wallet support is coming soon.' },
+  { Icon: Palette,    title: 'Your Brand', desc: 'Fully customized with your logo, colors, and reward name.' },
+  { Icon: BarChart3,  title: 'Real-time Analytics', desc: 'See who your regulars are, how many stamps are issued, and rewards redeemed.' },
+  { Icon: Zap,        title: '5-Minute Setup', desc: 'Set up your loyalty program, print your QR code, and go live today.' },
+  { Icon: Lock,       title: 'No App Needed', desc: 'Customers scan a QR code — no app download required on either side.' },
 ];
 
 const HOW = [
@@ -197,14 +201,14 @@ function CounterFlowSection() {
 }
 
 const CARD_TYPES = [
-  { name: 'Stamp Card',   icon: '☕', value: '9 / 10',      desc: 'One more visit for a free reward',   accent: '#f97316' },
-  { name: 'Cashback',     icon: '💰', value: 'PKR 340',     desc: '5% back on every purchase',          accent: '#6366f1' },
-  { name: 'Membership',   icon: '👑', value: 'Platinum',    desc: 'Unlimited refills · priority queue',  accent: '#8b5cf6' },
-  { name: 'Gift Card',    icon: '🎁', value: 'PKR 2,000',   desc: 'Send to a friend, redeem anywhere',  accent: '#ec4899' },
-  { name: 'Coupon',       icon: '🏷️', value: '30% OFF',    desc: 'Valid this weekend only',             accent: '#f59e0b' },
-  { name: 'Event Pass',   icon: '🎟️', value: 'Table #7',   desc: 'Brunch reservation · 11 AM slot',    accent: '#a855f7' },
-  { name: 'Punch Card',   icon: '🥐', value: '5 / 8',      desc: 'Free pastry after 8 punches',        accent: '#3b82f6' },
-  { name: 'Subscription', icon: '🔁', value: 'Active',      desc: 'Monthly flat white club · auto-renew', accent: '#10b981' },
+  { name: 'Stamp Card',   Icon: Coffee,    value: '9 / 10',      desc: 'One more visit for a free reward',   accent: '#f97316' },
+  { name: 'Cashback',     Icon: Wallet,    value: 'PKR 340',     desc: '5% back on every purchase',          accent: '#6366f1' },
+  { name: 'Membership',   Icon: Crown,     value: 'Platinum',    desc: 'Unlimited refills · priority queue',  accent: '#8b5cf6' },
+  { name: 'Gift Card',    Icon: Gift,      value: 'PKR 2,000',   desc: 'Send to a friend, redeem anywhere',  accent: '#ec4899' },
+  { name: 'Coupon',       Icon: Tag,       value: '30% OFF',    desc: 'Valid this weekend only',             accent: '#f59e0b' },
+  { name: 'Event Pass',   Icon: Ticket,    value: 'Table #7',   desc: 'Brunch reservation · 11 AM slot',    accent: '#a855f7' },
+  { name: 'Punch Card',   Icon: Croissant, value: '5 / 8',      desc: 'Free pastry after 8 punches',        accent: '#3b82f6' },
+  { name: 'Subscription', Icon: Repeat,    value: 'Active',      desc: 'Monthly flat white club · auto-renew', accent: '#10b981' },
 ];
 
 const SCROLL_PER_CARD = 140;
@@ -216,7 +220,7 @@ function CardTypesSection() {
       <div className="lp-ct-glow lp-ct-glow-2" />
       <div className="lp-ct-inner">
         <div className="lp-ct-header">
-          <span className="lp-ct-eyebrow">✦ 8 card types · one platform</span>
+          <span className="lp-ct-eyebrow"><Sparkles size={13} strokeWidth={2.25} /> 8 card types · one platform</span>
           <h2 className="lp-ct-heading">
             From stamp cards to memberships.<br />
             <span className="lp-ct-accent">All in the wallet.</span>
@@ -231,7 +235,7 @@ function CardTypesSection() {
                   <p className="lp-ct-name">{c.name}</p>
                 </div>
                 <div className="lp-ct-icon" style={{ background: `linear-gradient(135deg, ${c.accent}, ${c.accent}99)` }}>
-                  {c.icon}
+                  <c.Icon size={19} strokeWidth={2} color="#fff" />
                 </div>
               </div>
               <div className="lp-ct-card-bottom">
@@ -267,7 +271,7 @@ function FeaturesSection() {
       <div className="lp-feat-tunnel" ref={tunnelRef}>
         <div className="lp-feat-pin">
           <div className="lp-features-header">
-            <span className="lp-features-badge">✦ Feature rich</span>
+            <span className="lp-features-badge"><Sparkles size={13} strokeWidth={2.25} /> Feature rich</span>
             <h2 className="lp-features-heading">Everything your business needs</h2>
             <p className="lp-features-sub">Built for local teams that want a simple loyalty system customers can use in seconds.</p>
           </div>
@@ -277,7 +281,7 @@ function FeaturesSection() {
                 key={f.title}
                 className={`lp-feat-card${i < visibleCount ? ' lp-feat-card--in' : ''}`}
               >
-                <div className="lp-feat-icon">{f.icon}</div>
+                <div className="lp-feat-icon"><f.Icon size={19} strokeWidth={1.9} /></div>
                 <div className="lp-feat-body">
                   <h3 className="lp-feat-title">{f.title}</h3>
                   <p className="lp-feat-desc">{f.desc}</p>
@@ -309,12 +313,12 @@ const PLANS = [
       'Push notifications on stamp & reward',
       'Email support',
     ],
-    cta: 'Start with Starter →',
+    cta: 'Start with Starter',
     ctaStyle: 'outline',
   },
   {
     name: 'Growth',
-    badge: '⚡ Most Popular',
+    badge: 'Most Popular',
     monthlyPrice: 'PKR 8,000',
     annualPrice: 'PKR 6,000',
     annualNote: 'Billed annually · save PKR 24,000/yr',
@@ -330,7 +334,7 @@ const PLANS = [
       'Real-time analytics dashboard',
       'Priority email & chat support',
     ],
-    cta: 'Book a demo →',
+    cta: 'Book a demo',
     ctaHref: 'https://wa.me/923712524553',
     ctaStyle: 'primary',
   },
@@ -351,7 +355,7 @@ const PLANS = [
       'Dedicated success manager',
       'SLA & onboarding workshop',
     ],
-    cta: 'Talk to sales →',
+    cta: 'Talk to sales',
     ctaStyle: 'outline',
   },
 ];
@@ -362,7 +366,7 @@ function PricingSection() {
     <section className="lp-pricing" id="pricing">
       <div className="lp-pricing-inner">
         <div className="lp-pricing-header">
-          <span className="lp-pricing-badge">✦ Simple pricing</span>
+          <span className="lp-pricing-badge"><Sparkles size={13} strokeWidth={2.25} /> Simple pricing</span>
           <h2 className="lp-pricing-heading">Plans that grow with you</h2>
           <p className="lp-pricing-sub">Start free, scale when ready. No hidden fees.</p>
           <div className="lp-pricing-toggle">
@@ -377,7 +381,7 @@ function PricingSection() {
         <div className="lp-pricing-grid">
           {PLANS.map(p => (
             <div key={p.name} className={`lp-plan${p.ctaStyle === 'primary' ? ' lp-plan--featured' : ''}`}>
-              {p.badge && <span className="lp-plan-badge">{p.badge}</span>}
+              {p.badge && <span className="lp-plan-badge"><Zap size={12} strokeWidth={2.5} fill="currentColor" /> {p.badge}</span>}
               <div className="lp-plan-top">
                 <p className="lp-plan-name">{p.name}</p>
                 <div className="lp-plan-price">
@@ -386,18 +390,18 @@ function PricingSection() {
                 </div>
                 <p className="lp-plan-note">{annual ? p.annualNote : 'Billed monthly'}</p>
                 <p className="lp-plan-desc">{p.desc}</p>
-                <span className="lp-plan-pos-tag">🔌 {p.posTag}</span>
+                <span className="lp-plan-pos-tag"><Plug size={12} strokeWidth={2.25} /> {p.posTag}</span>
               </div>
               <ul className="lp-plan-features">
                 {p.features.map(f => (
                   <li key={f} className="lp-plan-feature">
-                    <span className="lp-plan-check">✓</span>{f}
+                    <span className="lp-plan-check"><Check size={14} strokeWidth={2.75} /></span>{f}
                   </li>
                 ))}
               </ul>
               {p.ctaHref
-                ? <a href={p.ctaHref} target="_blank" rel="noreferrer" className={`lp-plan-cta${p.ctaStyle === 'primary' ? ' lp-plan-cta--primary' : ''}`}>{p.cta}</a>
-                : <Link to="/signup" className={`lp-plan-cta${p.ctaStyle === 'primary' ? ' lp-plan-cta--primary' : ''}`}>{p.cta}</Link>
+                ? <a href={p.ctaHref} target="_blank" rel="noreferrer" className={`lp-plan-cta${p.ctaStyle === 'primary' ? ' lp-plan-cta--primary' : ''}`}>{p.cta} <ArrowRight size={15} strokeWidth={2.25} /></a>
+                : <Link to="/signup" className={`lp-plan-cta${p.ctaStyle === 'primary' ? ' lp-plan-cta--primary' : ''}`}>{p.cta} <ArrowRight size={15} strokeWidth={2.25} /></Link>
               }
             </div>
           ))}
@@ -423,7 +427,7 @@ export default function LandingPage() {
       {/* Mobile menu overlay */}
       {menuOpen && (
         <div className="lp-mobile-menu">
-          <button className="lp-mobile-close" onClick={closeMenu} aria-label="Close menu">×</button>
+          <button className="lp-mobile-close" onClick={closeMenu} aria-label="Close menu"><X size={26} strokeWidth={2} /></button>
           <a href="#features" className="lp-mobile-link" onClick={closeMenu}>Features</a>
           <a href="#how" className="lp-mobile-link" onClick={closeMenu}>How it works</a>
           <Link to="/customer" className="lp-mobile-link" onClick={closeMenu}>Customer app</Link>
@@ -486,7 +490,7 @@ export default function LandingPage() {
       <section className="lp-how" id="how">
         <div className="lp-how-inner">
           <div className="lp-how-header">
-            <span className="lp-how-badge">✦ Simple process</span>
+            <span className="lp-how-badge"><Sparkles size={13} strokeWidth={2.25} /> Simple process</span>
             <h2 className="lp-how-title">How it works</h2>
             <p className="lp-how-sub">From setup to your first loyal customer in under 10 minutes.</p>
           </div>

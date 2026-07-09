@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Camera, Settings2, Users, BarChart3, Zap, Banknote, Store, QrCode, Phone, Gift, LogOut, CheckCircle2, LayoutDashboard } from 'lucide-react';
+import {
+  Camera, Settings2, Users, BarChart3, Zap, Banknote, Store, QrCode, Phone, Gift,
+  LogOut, CheckCircle2, LayoutDashboard, Check, X, RefreshCw, Upload, Download,
+  ArrowRight, PartyPopper, Star, TrendingUp, Trophy, Medal, CreditCard, Plus, Minus,
+} from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
@@ -89,7 +93,7 @@ function DashboardTab({ rid, cardType, businessName, primaryColor }) {
             <div className="db-loading"><div className="db-spinner" /></div>
           ) : customers.length === 0 ? (
             <div className="db-empty">
-              <p className="db-empty-icon">📊</p>
+              <BarChart3 className="db-empty-icon" size={40} strokeWidth={1.5} />
               <p>No activity yet.</p>
             </div>
           ) : (
@@ -104,7 +108,7 @@ function DashboardTab({ rid, cardType, businessName, primaryColor }) {
             <div className="db-loading"><div className="db-spinner" /></div>
           ) : recent.length === 0 ? (
             <div className="db-empty">
-              <p className="db-empty-icon">👥</p>
+              <Users className="db-empty-icon" size={40} strokeWidth={1.5} />
               <p>No customers yet.</p>
             </div>
           ) : (
@@ -217,14 +221,14 @@ function ScanTab({ rid, token, program }) {
     return (
       <div className="db-content db-scan-content">
         <div className="db-reward-screen">
-          <div className="db-reward-burst">🎉</div>
+          <div className="db-reward-burst"><PartyPopper size={56} strokeWidth={1.5} /></div>
           <h2 className="db-reward-title">Reward Earned!</h2>
           <p className="db-reward-sub">
             <strong>{result.customer?.name || result.customer?.phone}</strong> has earned a free <strong>{program?.rewardName || 'reward'}</strong>!
           </p>
           <div className="db-reward-actions">
             <button className="db-btn-primary db-btn-lg" onClick={redeemReward}>
-              ✓ Mark as Redeemed
+              <Check size={18} strokeWidth={2.5} /> Mark as Redeemed
             </button>
             <button className="db-btn-outline" onClick={reset}>Skip</button>
           </div>
@@ -443,13 +447,15 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
                         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                         body: JSON.stringify({ restaurantId: rid, ...form, logoUrl: '' }),
                       });
-                    }}>✕</button>
+                    }}><X size={11} strokeWidth={3} /></button>
                 </div>
               )}
               <label className={`db-logo-label${logoUploading ? ' uploading' : ''}`}>
                 <input type="file" accept="image/*" className="db-logo-input"
                   onChange={handleLogoUpload} disabled={logoUploading} />
-                {logoUploading ? 'Uploading…' : form.logoUrl ? '↑ Replace logo' : '↑ Upload logo'}
+                {logoUploading ? 'Uploading…' : (
+                  <><Upload size={14} strokeWidth={2.25} /> {form.logoUrl ? 'Replace logo' : 'Upload logo'}</>
+                )}
               </label>
             </div>
             {logoError && <span className="db-hint" style={{ color: '#ef4444' }}>{logoError}</span>}
@@ -503,9 +509,9 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
           </div>
           <p className="db-qr-url">{stampUrl}</p>
           <button className="db-btn-outline"
-            style={{ display: 'block', width: '100%', textAlign: 'center', marginTop: '0.75rem', cursor: 'pointer' }}
+            style={{ width: '100%', marginTop: '0.75rem', cursor: 'pointer' }}
             onClick={downloadQR}>
-            ↓ Download QR Code
+            <Download size={16} strokeWidth={2.25} /> Download QR Code
           </button>
 
           {/* Card preview */}
@@ -544,14 +550,14 @@ function CustomersTab({ customers, custLoading, loadCustomers, search, setSearch
         <div className="db-table-toolbar">
           <input className="db-search" placeholder="Search by name or phone…"
             value={search} onChange={e => setSearch(e.target.value)} />
-          <button className="db-btn-outline" onClick={loadCustomers}>↻ Refresh</button>
+          <button className="db-btn-outline" onClick={loadCustomers}><RefreshCw size={14} strokeWidth={2.25} /> Refresh</button>
         </div>
 
         {custLoading ? (
           <div className="db-loading"><div className="db-spinner" /></div>
         ) : filtered.length === 0 ? (
           <div className="db-empty">
-            <p className="db-empty-icon">👥</p>
+            <Users className="db-empty-icon" size={40} strokeWidth={1.5} />
             <p>No customers yet.</p>
             <p style={{ fontSize: '0.82rem', color: '#94a3b8', marginTop: '0.4rem' }}>
               Customers appear here after their first stamp.
@@ -593,7 +599,7 @@ function CustomersTab({ customers, custLoading, loadCustomers, search, setSearch
                     </td>
                     <td>
                       {c.rewardCount > 0
-                        ? <span className="db-reward-badge">{c.rewardCount} 🎁</span>
+                        ? <span className="db-reward-badge"><Gift size={12} strokeWidth={2.25} /> {c.rewardCount}</span>
                         : <span className="db-reward-badge zero">0</span>}
                     </td>
                     <td className="db-td-date">
@@ -623,17 +629,19 @@ function StatsTab({ stats, customers }) {
 
       <div className="db-stats-grid">
         {[
-          { label: 'Total Customers',    value: stats?.totalCustomers  ?? '—', icon: '👥', color: '#022a8a' },
-          { label: 'Stamps Issued',      value: stats?.totalStamps     ?? '—', icon: '⭐', color: '#f59e0b' },
-          { label: 'Rewards Redeemed',   value: stats?.totalRewards    ?? '—', icon: '🎁', color: '#10b981' },
+          { label: 'Total Customers',    value: stats?.totalCustomers  ?? '—', Icon: Users,       color: '#022a8a' },
+          { label: 'Stamps Issued',      value: stats?.totalStamps     ?? '—', Icon: Star,        color: '#f59e0b' },
+          { label: 'Rewards Redeemed',   value: stats?.totalRewards    ?? '—', Icon: Gift,         color: '#10b981' },
           { label: 'Avg Stamps / Customer',
             value: stats?.totalCustomers
               ? (stats.totalStamps / stats.totalCustomers).toFixed(1)
               : '—',
-            icon: '📈', color: '#ff0000' },
+            Icon: TrendingUp, color: '#ff0000' },
         ].map(s => (
           <div key={s.label} className="db-stat-card">
-            <div className="db-stat-icon" style={{ background: s.color + '18', color: s.color }}>{s.icon}</div>
+            <div className="db-stat-icon" style={{ background: s.color + '18', color: s.color }}>
+              <s.Icon size={20} strokeWidth={1.75} />
+            </div>
             <div className="db-stat-val">{s.value}</div>
             <div className="db-stat-label">{s.label}</div>
           </div>
@@ -642,7 +650,7 @@ function StatsTab({ stats, customers }) {
 
       {topCustomers.length > 0 && (
         <div className="db-card" style={{ marginTop: '1.5rem' }}>
-          <h2 className="db-card-title">🏆 Top Regulars</h2>
+          <h2 className="db-card-title db-card-title-icon"><Trophy size={17} strokeWidth={2} /> Top Regulars</h2>
           <div className="db-table-wrap">
             <table className="db-table">
               <thead>
@@ -652,12 +660,14 @@ function StatsTab({ stats, customers }) {
                 {topCustomers.map((c, i) => (
                   <tr key={c.id}>
                     <td className="db-rank">
-                      {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
+                      {i < 3
+                        ? <Medal size={16} strokeWidth={2} className={`db-medal db-medal-${i}`} />
+                        : `#${i + 1}`}
                     </td>
                     <td className="db-td-name">{c.name || '—'}</td>
                     <td className="db-td-phone">{c.phone}</td>
                     <td><strong>{c.stampCount}</strong></td>
-                    <td><span className="db-reward-badge">{c.rewardCount || 0} 🎁</span></td>
+                    <td><span className="db-reward-badge"><Gift size={12} strokeWidth={2.25} /> {c.rewardCount || 0}</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -835,10 +845,10 @@ function CashbackTab({ rid, token, slug }) {
 
   // ── Sub-nav ──
   const subViews = [
-    { id: 'earn',      label: '+ Earn' },
-    { id: 'redeem',    label: '− Redeem' },
-    { id: 'customers', label: 'Customers' },
-    { id: 'setup',     label: 'Setup' },
+    { id: 'earn',      label: 'Earn',      Icon: Plus },
+    { id: 'redeem',    label: 'Redeem',    Icon: Minus },
+    { id: 'customers', label: 'Customers', Icon: Users },
+    { id: 'setup',     label: 'Setup',     Icon: Settings2 },
   ];
 
   return (
@@ -856,7 +866,7 @@ function CashbackTab({ rid, token, slug }) {
       <div className="cb-subnav">
         {subViews.map(v => (
           <button key={v.id} className={`cb-subnav-btn${view === v.id ? ' active' : ''}`} onClick={() => setView(v.id)}>
-            {v.label}
+            <v.Icon size={14} strokeWidth={2.25} /> {v.label}
           </button>
         ))}
       </div>
@@ -865,15 +875,15 @@ function CashbackTab({ rid, token, slug }) {
       {view === 'earn' && (
         !program ? (
           <div className="db-card cb-empty-card">
-            <p className="db-empty-icon">💳</p>
+            <CreditCard className="db-empty-icon" size={40} strokeWidth={1.5} />
             <p>No cashback program yet.</p>
             <button className="db-btn-primary" style={{ marginTop: '1rem' }} onClick={() => setView('setup')}>
-              Set up cashback →
+              Set up cashback <ArrowRight size={16} strokeWidth={2.25} />
             </button>
           </div>
         ) : earnResult ? (
           <div className="db-card cb-result-card">
-            <div className="cb-result-icon">✓</div>
+            <div className="cb-result-icon"><Check size={24} strokeWidth={2.5} /></div>
             <h2 className="cb-result-title">Rs. {earnResult.cashbackEarned} earned!</h2>
             <p className="cb-result-sub">
               {earnResult.customer.name ? `${earnResult.customer.name} · ` : ''}
@@ -884,7 +894,7 @@ function CashbackTab({ rid, token, slug }) {
               <span className="cb-balance-value">Rs. {earnResult.balance}</span>
             </div>
             <button className="db-btn-outline" style={{ marginTop: '1.25rem' }} onClick={resetEarn}>
-              Next Customer →
+              Next Customer <ArrowRight size={15} strokeWidth={2.25} />
             </button>
           </div>
         ) : (
@@ -918,7 +928,7 @@ function CashbackTab({ rid, token, slug }) {
               <button className="db-btn-primary db-btn-lg" type="submit"
                 disabled={earning || !earnPhone.trim() || !earnAmount}
                 style={{ width: '100%', marginTop: '0.5rem' }}>
-                {earning ? 'Adding…' : '+ Add Cashback'}
+                {earning ? 'Adding…' : <><Plus size={16} strokeWidth={2.5} /> Add Cashback</>}
               </button>
             </form>
           </div>
@@ -929,15 +939,15 @@ function CashbackTab({ rid, token, slug }) {
       {view === 'redeem' && (
         !program ? (
           <div className="db-card cb-empty-card">
-            <p className="db-empty-icon">💳</p>
+            <CreditCard className="db-empty-icon" size={40} strokeWidth={1.5} />
             <p>No cashback program yet.</p>
             <button className="db-btn-primary" style={{ marginTop: '1rem' }} onClick={() => setView('setup')}>
-              Set up cashback →
+              Set up cashback <ArrowRight size={16} strokeWidth={2.25} />
             </button>
           </div>
         ) : redeemResult ? (
           <div className="db-card cb-result-card">
-            <div className="cb-result-icon cb-result-icon--redeem">−</div>
+            <div className="cb-result-icon cb-result-icon--redeem"><Minus size={24} strokeWidth={2.5} /></div>
             <h2 className="cb-result-title">Rs. {redeemResult.amountRedeemed} redeemed</h2>
             <p className="cb-result-sub">
               {redeemResult.customer.name ? `${redeemResult.customer.name} · ` : ''}
@@ -948,7 +958,7 @@ function CashbackTab({ rid, token, slug }) {
               <span className="cb-balance-value">Rs. {redeemResult.newBalance}</span>
             </div>
             <button className="db-btn-outline" style={{ marginTop: '1.25rem' }} onClick={resetRedeem}>
-              Next Customer →
+              Next Customer <ArrowRight size={15} strokeWidth={2.25} />
             </button>
           </div>
         ) : (
@@ -989,7 +999,7 @@ function CashbackTab({ rid, token, slug }) {
               <button className="db-btn-primary db-btn-lg" type="submit"
                 disabled={redeeming || !redeemPhone.trim() || !redeemAmount || !redeemBalance?.balance}
                 style={{ width: '100%', marginTop: '0.5rem', background: '#10b981' }}>
-                {redeeming ? 'Processing…' : '− Redeem Cashback'}
+                {redeeming ? 'Processing…' : <><Minus size={16} strokeWidth={2.5} /> Redeem Cashback</>}
               </button>
             </form>
           </div>
@@ -1003,7 +1013,7 @@ function CashbackTab({ rid, token, slug }) {
             <span className="db-card-title" style={{ marginBottom: 0 }}>
               {cbStats?.totalCustomers ?? 0} customer{cbStats?.totalCustomers !== 1 ? 's' : ''}
             </span>
-            <button className="db-btn-outline" onClick={loadCbCustomers}>↻ Refresh</button>
+            <button className="db-btn-outline" onClick={loadCbCustomers}><RefreshCw size={14} strokeWidth={2.25} /> Refresh</button>
           </div>
 
           {cbStats && (
@@ -1025,7 +1035,7 @@ function CashbackTab({ rid, token, slug }) {
             <div className="db-loading"><div className="db-spinner" /></div>
           ) : cbCustomers.length === 0 ? (
             <div className="db-empty">
-              <p className="db-empty-icon">💳</p>
+              <CreditCard className="db-empty-icon" size={40} strokeWidth={1.5} />
               <p>No customers yet.</p>
             </div>
           ) : (
@@ -1278,12 +1288,12 @@ Content-Type: application/json
                   {showKey ? 'Hide' : 'Show'}
                 </button>
                 <button className="db-btn-outline pos-key-btn" onClick={handleCopy}>
-                  {copied ? '✓ Copied' : 'Copy'}
+                  {copied ? <><Check size={14} strokeWidth={2.5} /> Copied</> : 'Copy'}
                 </button>
               </div>
               <div className="pos-key-actions">
                 <button className="db-btn-primary" onClick={handleGenerate} disabled={generating}>
-                  {generating ? 'Generating…' : '↻ Regenerate Key'}
+                  {generating ? 'Generating…' : <><RefreshCw size={15} strokeWidth={2.25} /> Regenerate Key</>}
                 </button>
                 <button className="db-btn-outline" style={{ color: '#ef4444', borderColor: '#ef4444' }}
                   onClick={handleRevoke} disabled={revoking}>
@@ -1298,7 +1308,7 @@ Content-Type: application/json
             <>
               <p className="db-hint" style={{ marginBottom: '1rem' }}>No API key yet. Generate one to get started.</p>
               <button className="db-btn-primary" onClick={handleGenerate} disabled={generating}>
-                {generating ? 'Generating…' : '+ Generate API Key'}
+                {generating ? 'Generating…' : <><Plus size={16} strokeWidth={2.5} /> Generate API Key</>}
               </button>
             </>
           )}

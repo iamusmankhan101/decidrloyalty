@@ -1058,6 +1058,9 @@
   top: -13px;
   left: 50%;
   transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: #ff0000;
   color: #fff;
   font-size: 0.7rem;
@@ -1124,7 +1127,9 @@
 .lp-plan--featured .lp-plan-desc { color: rgba(255,255,255,0.75); }
 
 .lp-plan-pos-tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
@@ -1163,9 +1168,8 @@
 .lp-plan--featured .lp-plan-feature { color: rgba(255,255,255,0.85); }
 
 .lp-plan-check {
+  display: inline-flex;
   color: #ff0000;
-  font-weight: 700;
-  font-size: 0.8rem;
   margin-top: 1px;
   flex-shrink: 0;
 }
@@ -1173,7 +1177,10 @@
 .lp-plan--featured .lp-plan-check { color: #7dd3fc; }
 
 .lp-plan-cta {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   text-align: center;
   padding: 0.85rem 1.5rem;
   border-radius: 12px;

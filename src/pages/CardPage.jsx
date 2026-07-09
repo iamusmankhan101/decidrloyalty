@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { Frown, Hand, ArrowRight } from 'lucide-react';
 import { CustomerBackButton, CustomerBottomNav } from '../components/CustomerChrome';
 import './StampPage.css';
 import './CardPage.css';
@@ -153,7 +154,7 @@ export default function CardPage() {
   if (view === STATES.ERROR) {
     return (
       <div className="sp-error">
-        <div className="sp-error-icon">😕</div>
+        <div className="sp-error-icon"><Frown size={48} strokeWidth={1.5} /></div>
         <h2>Program not found</h2>
         <p>This cashback program doesn't exist or has been deactivated.</p>
       </div>
@@ -184,7 +185,9 @@ export default function CardPage() {
 
         <div className="sp-body">
           <h2 className="sp-stamped-title" style={{ color: '#065f46' }}>
-            {result.customer?.name ? `Hi ${result.customer.name}! 👋` : 'Your Card'}
+            {result.customer?.name
+              ? <>Hi {result.customer.name}! <Hand size={20} strokeWidth={2} style={{ verticalAlign: '-3px' }} /></>
+              : 'Your Card'}
           </h2>
           <p className="sp-stamped-sub">
             {hasBalance
@@ -278,7 +281,7 @@ export default function CardPage() {
             disabled={submitting || !phone.trim()}
             style={{ background: submitting || !phone.trim() ? '#94a3b8' : '#059669' }}
           >
-            {submitting ? 'Loading…' : 'View My Card →'}
+            {submitting ? 'Loading…' : <>View My Card <ArrowRight size={17} strokeWidth={2.5} /></>}
           </button>
         </form>
 
