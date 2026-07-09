@@ -1,10 +1,170 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Camera, Settings2, Users, BarChart3, Zap, Banknote, Store, QrCode, Phone, Gift, LogOut, CheckCircle2 } from 'lucide-react';
+import { Camera, Settings2, Users, BarChart3, Zap, Banknote, Store, QrCode, Phone, Gift, LogOut, CheckCircle2, LayoutDashboard } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
 
 const API = '/api/loyalty';
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const diffMs = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 30) return `${days}d ago`;
+  return new Date(dateStr).toLocaleDateString();
+}
+
+/* ─── Dashboard (home) Tab ────────────────────────────────────── */
+function DashboardTab({ rid, cardType, businessName, primaryColor }) {
+  const [customers, setCustomers] = useState([]);
+  const [stats, setStats]         = useState(null);
+  const [loading, setLoading]     = useState(true);
+
+  useEffect(() => {
+    if (!rid) return;
+    setLoading(true);
+    const action = cardType === 'cashback' ? 'cashback-customers' : 'customers';
+    fetch(`${API}?action=${action}&restaurantId=${rid}`)
+      .then(r => r.ok ? r.json() : { customers: [], stats: null })
+      .then(d => { setCustomers(d.customers || []); setStats(d.stats || null); })
+      .finally(() => setLoading(false));
+  }, [rid, cardType]);
+
+  const isCashback = cardType === 'cashback';
+  const accent = primaryColor || '#ff0000';
+
+  const tiles = isCashback
+    ? [
+        { label: 'Customers',       value: stats?.totalCustomers ?? '—', Icon: Users },
+        { label: 'Total Earned',    value: stats ? `Rs. ${stats.totalEarned ?? 0}` : '—', Icon: Banknote },
+        { label: 'Total Redeemed',  value: stats ? `Rs. ${stats.totalRedeemed ?? 0}` : '—', Icon: Gift },
+      ]
+    : [
+        { label: 'Customers',          value: stats?.totalCustomers ?? '—', Icon: Users },
+        { label: 'Stamps Issued',      value: stats?.totalStamps ?? '—', Icon: QrCode },
+        { label: 'Rewards Redeemed',   value: stats?.totalRewards ?? '—', Icon: Gift },
+      ];
+
+  const recent = [...customers]
+    .filter(c => c.createdAt)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 6);
+
+  return (
+    <div className="db-content">
+      <div className="db-header">
+        <span className="db-eyebrow">Overview</span>
+        <h1 className="db-title">{businessName}</h1>
+        <p className="db-subtitle">Here's how your loyalty program is performing.</p>
+      </div>
+
+      <div className="db-stats-grid db-dash-stats">
+        {tiles.map(t => (
+          <div key={t.label} className="db-stat-card db-dash-tile">
+            <div className="db-stat-icon" style={{ background: accent + '18', color: accent }}>
+              <t.Icon size={20} strokeWidth={1.75} />
+            </div>
+            <div className="db-stat-val">{t.value}</div>
+            <div className="db-stat-label">{t.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="db-grid-2 db-dash-grid">
+        <div className="db-card">
+          <h2 className="db-card-title">
+            {isCashback ? 'Balance distribution' : 'Stamp progress'}
+          </h2>
+          <p className="db-card-sub">
+            {isCashback
+              ? 'How many customers hold each range of cashback balance.'
+              : 'How close your customers are to earning a reward.'}
+          </p>
+          {loading ? (
+            <div className="db-loading"><div className="db-spinner" /></div>
+          ) : customers.length === 0 ? (
+            <div className="db-empty">
+              <p className="db-empty-icon">📊</p>
+              <p>No activity yet.</p>
+            </div>
+          ) : (
+            <ProgressBarChart customers={customers} isCashback={isCashback} accent={accent} />
+          )}
+        </div>
+
+        <div className="db-card">
+          <h2 className="db-card-title">Recent activity</h2>
+          <p className="db-card-sub">Customers who joined most recently.</p>
+          {loading ? (
+            <div className="db-loading"><div className="db-spinner" /></div>
+          ) : recent.length === 0 ? (
+            <div className="db-empty">
+              <p className="db-empty-icon">👥</p>
+              <p>No customers yet.</p>
+            </div>
+          ) : (
+            <ul className="db-activity-list">
+              {recent.map(c => (
+                <li key={c.id} className="db-activity-row">
+                  <div className="db-cust-avatar" style={{ background: accent }}>
+                    {(c.name?.[0] || c.phone?.[0] || '?').toUpperCase()}
+                  </div>
+                  <div className="db-activity-body">
+                    <p className="db-activity-name">{c.name || c.phone}</p>
+                    <p className="db-activity-meta">
+                      joined · {isCashback ? `Rs. ${c.balance ?? 0} balance` : `${c.stampCount ?? 0} stamps`}
+                    </p>
+                  </div>
+                  <span className="db-activity-time">{timeAgo(c.createdAt)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* Bucketed bar chart — real, derived client-side from customer records (no daily time-series data is available from the API). */
+function ProgressBarChart({ customers, isCashback, accent }) {
+  const values = customers.map(c => isCashback ? (c.balance || 0) : (c.stampCount || 0));
+  const max = Math.max(...values, 1);
+  const bucketCount = 5;
+  const step = Math.max(Math.ceil((max + 1) / bucketCount), 1);
+  const buckets = Array.from({ length: bucketCount }, (_, i) => {
+    const lo = i * step;
+    const hi = i === bucketCount - 1 ? Infinity : (i + 1) * step - 1;
+    const count = values.filter(v => v >= lo && v <= hi).length;
+    const label = i === bucketCount - 1 && hi === Infinity ? `${lo}+` : (lo === hi ? `${lo}` : `${lo}-${hi}`);
+    return { label, count };
+  });
+  const maxCount = Math.max(...buckets.map(b => b.count), 1);
+
+  return (
+    <div className="db-bar-chart" role="img" aria-label="Distribution of customers by progress">
+      {buckets.map(b => (
+        <div key={b.label} className="db-bar-col">
+          <div className="db-bar-track">
+            <div
+              className="db-bar-fill"
+              style={{ height: `${(b.count / maxCount) * 100}%`, background: accent }}
+              title={`${b.count} customer${b.count !== 1 ? 's' : ''}`}
+            >
+              {b.count > 0 && <span className="db-bar-count">{b.count}</span>}
+            </div>
+          </div>
+          <span className="db-bar-label">{b.label}{isCashback ? '' : ' stamps'}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /* ─── Scan Tab ─────────────────────────────────────────────── */
 function ScanTab({ rid, token, program }) {
@@ -1219,6 +1379,7 @@ Content-Type: application/json
 
 /* ─── Main Dashboard ─────────────────────────────────────────── */
 const ALL_TABS = [
+  { id: 'dashboard', Icon: LayoutDashboard, label: 'Dashboard', types: ['stamp', 'cashback'] },
   { id: 'scan',      Icon: Camera,    label: 'Scan',      types: ['stamp'] },
   { id: 'cashback',  Icon: Banknote,  label: 'Cashback',  types: ['cashback'] },
   { id: 'setup',     Icon: Settings2, label: 'Setup',     types: ['stamp'] },
@@ -1233,7 +1394,7 @@ export default function Dashboard() {
   const [liveCardType, setLiveCardType] = useState(user?.cardType || 'stamp');
   const cardType = liveCardType;
   const TABS = ALL_TABS.filter(t => t.types.includes(cardType));
-  const [tab, setTab] = useState(cardType === 'cashback' ? 'cashback' : 'scan');
+  const [tab, setTab] = useState('dashboard');
 
   // Correct tab if card type resolves differently after live detection
   const prevCardType = React.useRef(cardType);
@@ -1241,7 +1402,7 @@ export default function Dashboard() {
     if (prevCardType.current !== cardType) {
       prevCardType.current = cardType;
       const validIds = ALL_TABS.filter(t => t.types.includes(cardType)).map(t => t.id);
-      if (!validIds.includes(tab)) setTab(cardType === 'cashback' ? 'cashback' : 'scan');
+      if (!validIds.includes(tab)) setTab('dashboard');
     }
   }, [cardType, tab]);
 
@@ -1384,6 +1545,9 @@ export default function Dashboard() {
           </div>
         </header>
 
+        {tab === 'dashboard' && (
+          <DashboardTab rid={rid} cardType={cardType} businessName={businessName} primaryColor={form.primaryColor} />
+        )}
         {tab === 'scan' && (
           <ScanTab rid={rid} token={token} program={program} />
         )}
