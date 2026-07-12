@@ -145,6 +145,7 @@ export default function StampPage() {
         id: slug,
         type: 'stamp',
         businessName: program?.name || 'Loyalty Card',
+        logoUrl: program?.logoUrl || '',
       }, phone.trim());
       setResult(data);
       setView(STATES.CARD);

@@ -50,6 +50,7 @@ async function loadStampCard(card, phone) {
     ...card,
     status: 'ready',
     businessName: programData.program?.name || card.businessName || 'Loyalty Card',
+    logoUrl: programData.program?.logoUrl || card.logoUrl || '',
     color: programData.program?.primaryColor || '#ff0000',
     rewardName: programData.program?.rewardName || 'Reward',
     stampsRequired: programData.program?.stampsRequired || 9,
@@ -75,6 +76,12 @@ async function loadCashbackCard(card, phone) {
       programData.program?.name ||
       card.businessName ||
       'Cashback Card',
+    logoUrl:
+      programData.restaurant?.logoUrl ||
+      programData.business?.logoUrl ||
+      programData.program?.logoUrl ||
+      card.logoUrl ||
+      '',
     cashbackRate: programData.program?.cashbackRate ?? null,
     balance: balanceData.balance ?? balanceData.account?.balance ?? 0,
     totalEarned: balanceData.totalEarned ?? balanceData.account?.totalEarned ?? 0,
@@ -88,13 +95,20 @@ function CustomerCard({ card, phone, onRemove }) {
   const progress = card.stampsRequired ? Math.min(100, ((card.stampCount || 0) / card.stampsRequired) * 100) : 0;
   const color = isCashback ? '#059669' : (card.color || '#a40818');
   const remaining = Math.max(0, (card.stampsRequired || 9) - (card.stampCount || 0));
+  const businessName = card.businessName || (isCashback ? 'Cashback Card' : 'Loyalty Card');
+  const initial = (businessName[0] || 'L').toUpperCase();
 
   return (
     <article className={`cp-card cp-card--${card.type}`} style={{ '--card-color': color }}>
       <div className="cp-card-top">
-        <div>
-          <p className="cp-card-kicker">{isCashback ? 'Cashback' : 'Stamp card'}</p>
-          <h2>{card.businessName || (isCashback ? 'Cashback Card' : 'Loyalty Card')}</h2>
+        <div className="cp-card-brand">
+          <div className="cp-card-logo">
+            {card.logoUrl ? <img src={card.logoUrl} alt={`${businessName} logo`} /> : <span>{initial}</span>}
+          </div>
+          <div>
+            <p className="cp-card-kicker">{isCashback ? 'Cashback' : 'Stamp card'}</p>
+            <h2>{businessName}</h2>
+          </div>
         </div>
         <Link to={href} className="cp-icon-link" aria-label="Open card">Open</Link>
       </div>

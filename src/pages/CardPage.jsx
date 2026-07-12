@@ -123,6 +123,7 @@ export default function CardPage() {
         id: slug,
         type: 'cashback',
         businessName: business?.name || business?.businessName || 'Cashback Card',
+        logoUrl: business?.logoUrl || business?.logo || program?.logoUrl || '',
       }, phone.trim());
       setView(STATES.CARD);
       if (data.walletUrl) setTimeout(() => setShowWallet(true), 600);
