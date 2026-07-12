@@ -5,7 +5,7 @@ const TOKEN_KEY = 'loyalty_token';
 const USER_KEY = 'loyalty_user';
 
 function readStoredItem(key) {
-  return sessionStorage.getItem(key) || localStorage.getItem(key);
+  return localStorage.getItem(key) || sessionStorage.getItem(key);
 }
 
 function clearStoredAuth() {
@@ -43,20 +43,20 @@ export function AuthProvider({ children }) {
       .then(data => {
         if (data?.user) {
           setUser(data.user);
-          sessionStorage.setItem(TOKEN_KEY, storedToken);
-          sessionStorage.setItem(USER_KEY, JSON.stringify(data.user));
-          localStorage.removeItem(TOKEN_KEY);
-          localStorage.removeItem(USER_KEY);
+          localStorage.setItem(TOKEN_KEY, storedToken);
+          localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+          sessionStorage.removeItem(TOKEN_KEY);
+          sessionStorage.removeItem(USER_KEY);
         }
       })
       .finally(() => setLoading(false));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function login(tok, userData) {
-    sessionStorage.setItem(TOKEN_KEY, tok);
-    sessionStorage.setItem(USER_KEY, JSON.stringify(userData));
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    localStorage.setItem(TOKEN_KEY, tok);
+    localStorage.setItem(USER_KEY, JSON.stringify(userData));
+    sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(USER_KEY);
     setToken(tok);
     setUser(userData);
   }

@@ -21,9 +21,9 @@ export function CustomerBackButton({ fallback = '/customer', label = 'Back', onB
   );
 }
 
-export function CustomerBottomNav({ active = 'home', onReward }) {
+export function CustomerBottomNav({ active = 'home', onReward, homeHref = '/customer' }) {
   const items = [
-    { id: 'home', Icon: Home, label: 'Home', href: '/customer' },
+    { id: 'home', Icon: Home, label: 'Home', href: homeHref },
     { id: 'explore', Icon: Compass, label: 'Explore', href: '/' },
     { id: 'reward', Icon: Gift, label: 'Reward', onClick: onReward },
     { id: 'profile', Icon: UserRound, label: 'Profile', href: '/customer' },

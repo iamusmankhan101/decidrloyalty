@@ -143,6 +143,8 @@ export default function CardPage() {
     rewardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+  const cardHomeHref = `/card/${encodeURIComponent(slug || '')}`;
+
   if (view === STATES.LOADING) {
     return (
       <div className="sp-loading">
@@ -169,7 +171,7 @@ export default function CardPage() {
     const hasBalance   = balance > 0;
     return (
       <div className="sp" style={{ '--brand': '#059669' }}>
-        <CustomerBackButton />
+        <CustomerBackButton fallback={cardHomeHref} />
         <div className="cb-card-header">
           <div className="cb-card-header-top">
             <p className="cb-business-name">{business?.name || business?.businessName}</p>
@@ -221,14 +223,14 @@ export default function CardPage() {
         <div className="sp-footer">
           <p>Powered by <strong>decidr loyalty</strong></p>
         </div>
-        <CustomerBottomNav active="reward" onReward={scrollToReward} />
+        <CustomerBottomNav active="reward" onReward={scrollToReward} homeHref={cardHomeHref} />
       </div>
     );
   }
 
   return (
     <div className="sp" style={{ '--brand': '#059669' }}>
-      <CustomerBackButton />
+      <CustomerBackButton fallback={cardHomeHref} />
       <div className="cb-card-header">
         <div className="cb-card-header-top">
           <p className="cb-business-name">{business?.name || business?.businessName}</p>
@@ -294,7 +296,7 @@ export default function CardPage() {
       <div className="sp-footer">
         <p>Powered by <strong>decidr loyalty</strong></p>
       </div>
-      <CustomerBottomNav active="home" />
+      <CustomerBottomNav active="home" homeHref={cardHomeHref} />
     </div>
   );
 }

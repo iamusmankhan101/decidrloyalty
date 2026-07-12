@@ -174,6 +174,7 @@ export default function StampPage() {
   const reward = program?.rewardName || 'Free Reward';
   const businessName = program?.name || 'Loyalty Card';
   const businessInitial = (businessName[0] || 'L').toUpperCase();
+  const cardHomeHref = `/stamp/${encodeURIComponent(slug || '')}`;
 
   /* ── Loading ── */
   if (view === STATES.LOADING) {
@@ -204,7 +205,7 @@ export default function StampPage() {
     const customerName = result?.customer?.name || name || 'Customer';
     return (
       <div className="sp" style={{ '--brand': color }}>
-        <CustomerBackButton />
+        <CustomerBackButton fallback={cardHomeHref} />
         <div className="sp-app-shell">
           <section className="sp-progress-hero" style={{ background: color }}>
             <div className="sp-hero-top">
@@ -274,7 +275,7 @@ export default function StampPage() {
             </div>
           </main>
 
-          <CustomerBottomNav active="home" onReward={scrollToReward} />
+          <CustomerBottomNav active="home" onReward={scrollToReward} homeHref={cardHomeHref} />
         </div>
 
         {showWalletSheet && (
@@ -294,7 +295,7 @@ export default function StampPage() {
   /* ── Enter details ── */
   return (
     <div className="sp" style={{ '--brand': color }}>
-      <CustomerBackButton />
+      <CustomerBackButton fallback={cardHomeHref} />
       <div className="sp-header" style={{ background: color }}>
         {program.logoUrl
           ? <img src={program.logoUrl} alt={program.name} className="sp-logo" />
@@ -368,7 +369,7 @@ export default function StampPage() {
       <div className="sp-footer">
         <p>Powered by <strong>decidr loyalty</strong></p>
       </div>
-      <CustomerBottomNav active="home" />
+      <CustomerBottomNav active="home" homeHref={cardHomeHref} />
     </div>
   );
 }
