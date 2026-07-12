@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Compass, Gift, Home, QrCode, UserRound } from 'lucide-react';
 import './CustomerChrome.css';
 
@@ -21,9 +21,13 @@ export function CustomerBackButton({ fallback = '/customer', label = 'Back', onB
   );
 }
 
-export function CustomerBottomNav({ active = 'home', onReward, homeHref = '/customer' }) {
+export function CustomerBottomNav({ active = 'home', onReward, homeHref, scanHref }) {
+  const location = useLocation();
+  const isPublicCardPath = /^\/(?:stamp|card)\/[^/]+/.test(location.pathname);
+  const resolvedHomeHref = homeHref || (isPublicCardPath ? location.pathname : '/customer');
+  const resolvedScanHref = scanHref || resolvedHomeHref;
   const items = [
-    { id: 'home', Icon: Home, label: 'Home', href: homeHref },
+    { id: 'home', Icon: Home, label: 'Home', href: resolvedHomeHref },
     { id: 'explore', Icon: Compass, label: 'Explore', href: '/' },
     { id: 'reward', Icon: Gift, label: 'Reward', onClick: onReward },
     { id: 'profile', Icon: UserRound, label: 'Profile', href: '/customer' },
@@ -54,7 +58,7 @@ export function CustomerBottomNav({ active = 'home', onReward, homeHref = '/cust
       <div className="sp-tabbar-side">
         {items.slice(0, 2).map(renderItem)}
       </div>
-      <Link to="/customer" className="sp-scan-fab" aria-label="Scan or add QR card">
+      <Link to={resolvedScanHref} className="sp-scan-fab" aria-label="Scan or add QR card">
         <QrCode size={30} strokeWidth={2.4} />
       </Link>
       <div className="sp-tabbar-side">
