@@ -299,8 +299,8 @@ const PLANS = [
   {
     name: 'Starter',
     badge: null,
-    monthlyPrice: 'PKR 6,000',
-    annualPrice: 'PKR 4,500',
+    monthlyPrice: 'PKR 5,500',
+    annualPrice: 'PKR 4,000',
     annualNote: 'Billed annually · save PKR 18,000/yr',
     desc: 'For one outlet getting started with digital loyalty.',
     posTag: 'Staff web app at counter — works with any POS',
@@ -319,9 +319,9 @@ const PLANS = [
   {
     name: 'Growth',
     badge: 'Most Popular',
-    monthlyPrice: 'PKR 8,000',
-    annualPrice: 'PKR 6,000',
-    annualNote: 'Billed annually · save PKR 24,000/yr',
+    monthlyPrice: 'PKR 8,500',
+    annualPrice: 'PKR 7,000',
+    annualNote: 'Billed annually · save PKR 18,000/yr',
     desc: 'Receipt QR codes that work with any POS printer — no extra step for staff.',
     posTag: 'Receipt QR codes — any POS printer',
     features: [
