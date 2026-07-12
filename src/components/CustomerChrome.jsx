@@ -11,8 +11,7 @@ export function CustomerBackButton({ fallback = '/customer', label = 'Back', onB
       onBack();
       return;
     }
-    if (window.history.length > 1) navigate(-1);
-    else navigate(fallback);
+    navigate(fallback);
   }
 
   return (
