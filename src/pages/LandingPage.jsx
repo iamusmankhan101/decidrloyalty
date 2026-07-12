@@ -180,7 +180,6 @@ function CounterFlowSection() {
           <div className="lp-counter-ticket">
             <p className="lp-ticket-label">Scan at counter</p>
             <div className="lp-ticket-qr"><QRMockup /></div>
-            <p className="lp-ticket-url">loyalty.trydecidr.xyz/card/5</p>
           </div>
           <div className="lp-flow-list">
             {COUNTER_FLOW.map((step, idx) => (
