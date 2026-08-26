@@ -107,17 +107,30 @@ async function forwardRequest(req, res) {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       ...(req.headers.authorization ? { Authorization: req.headers.authorization } : {}),
+      // The auth cookie is scoped to this origin, so it only reaches the backend
+      // if we hand it over.
+      ...(req.headers.cookie ? { Cookie: req.headers.cookie } : {}),
     },
     body,
   });
 
   res.statusCode = response.status;
   res.setHeader('Cache-Control', 'no-store');
+
+  // Set-Cookie has to be passed through as a list — folding several into one
+  // comma-joined header, as Headers.forEach does, corrupts them.
+  const setCookie = typeof response.headers.getSetCookie === 'function'
+    ? response.headers.getSetCookie()
+    : [];
+
   response.headers.forEach((value, key) => {
-    if (!['content-encoding', 'content-length', 'transfer-encoding'].includes(key.toLowerCase())) {
-      res.setHeader(key, value);
-    }
+    const name = key.toLowerCase();
+    if (['content-encoding', 'content-length', 'transfer-encoding'].includes(name)) return;
+    if (name === 'set-cookie' && setCookie.length) return;
+    res.setHeader(key, value);
   });
+
+  if (setCookie.length) res.setHeader('Set-Cookie', setCookie);
 
   const payload = Buffer.from(await response.arrayBuffer());
   res.end(payload);

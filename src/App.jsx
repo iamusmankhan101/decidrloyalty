@@ -22,8 +22,10 @@ function PrivateRoute({ children }) {
 }
 
 function PublicRoute({ children }) {
-  const { user, loading } = useAuth();
-  if (loading) return null;
+  const { user } = useAuth();
+  // Deliberately not gated on `loading`: whether a session exists is only
+  // knowable from the server now, and login shouldn't sit blank waiting on that.
+  // Show the form, and redirect if someone already signed in turns up.
   return user ? <Navigate to="/dashboard" replace /> : children;
 }
 

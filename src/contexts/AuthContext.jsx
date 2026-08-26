@@ -3,77 +3,83 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { clearNiche, saveNiche } from '../components/niches';
 
 const AuthContext = createContext(null);
-const TOKEN_KEY = 'loyalty_token';
+// The session itself lives in an HttpOnly cookie the browser attaches on its own,
+// so nothing here is a credential — this is only the cached profile we render
+// before the server confirms who's signed in.
 const USER_KEY = 'loyalty_user';
-
-function readStoredItem(key) {
-  return localStorage.getItem(key) || sessionStorage.getItem(key);
-}
 
 function clearStoredAuth() {
   // The niche seeds new-program defaults, so it must not outlive the account.
   clearNiche();
-  sessionStorage.removeItem(TOKEN_KEY);
   sessionStorage.removeItem(USER_KEY);
-  localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
+  // Tokens used to be kept here. Clear any left over from before the move.
+  localStorage.removeItem('loyalty_token');
+  sessionStorage.removeItem('loyalty_token');
 }
 
 function readUser() {
-  try { const s = readStoredItem(USER_KEY); return s ? JSON.parse(s) : null; }
-  catch { return null; }
+  try {
+    const stored = localStorage.getItem(USER_KEY) || sessionStorage.getItem(USER_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch { return null; }
+}
+
+function storeUser(user) {
+  try { localStorage.setItem(USER_KEY, JSON.stringify(user)); } catch {}
 }
 
 export function AuthProvider({ children }) {
   const [user, setUser]       = useState(readUser);
-  const [token, setToken]     = useState(() => readStoredItem(TOKEN_KEY));
   const [loading, setLoading] = useState(true);
 
-  // Runs once on mount only — verifies a stored token after a page refresh.
-  // Not re-triggered by login() changing token state.
+  // Runs once on mount — asks the server who the cookie belongs to. A cached user
+  // renders immediately; this either confirms it or clears it.
   useEffect(() => {
-    const storedToken = readStoredItem(TOKEN_KEY);
-    if (!storedToken) { setLoading(false); return; }
+    let cancelled = false;
 
-    fetch('/api/auth', { headers: { Authorization: `Bearer ${storedToken}` } })
-      .then(r => {
-        if (r.status === 401) {
-          setToken(null); setUser(null);
+    fetch('/api/auth', { credentials: 'same-origin' })
+      .then(async res => {
+        if (cancelled) return;
+        if (res.status === 401) {
+          setUser(null);
           clearStoredAuth();
-          return null;
+          return;
         }
-        return r.ok ? r.json() : null;
+        if (!res.ok) return; // Server trouble — keep the cached session as-is.
+        const data = await res.json().catch(() => null);
+        if (cancelled || !data?.user) return;
+        setUser(data.user);
+        storeUser(data.user);
+        if (data.user.niche) saveNiche(data.user.niche);
       })
-      .then(data => {
-        if (data?.user) {
-          setUser(data.user);
-          if (data.user.niche) saveNiche(data.user.niche);
-          localStorage.setItem(TOKEN_KEY, storedToken);
-          localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-          sessionStorage.removeItem(TOKEN_KEY);
-          sessionStorage.removeItem(USER_KEY);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+      .catch(() => {}) // Offline: the cached user stands until the server says otherwise.
+      .finally(() => { if (!cancelled) setLoading(false); });
 
-  function login(tok, userData) {
-    localStorage.setItem(TOKEN_KEY, tok);
-    localStorage.setItem(USER_KEY, JSON.stringify(userData));
-    sessionStorage.removeItem(TOKEN_KEY);
-    sessionStorage.removeItem(USER_KEY);
-    setToken(tok);
+    return () => { cancelled = true; };
+  }, []);
+
+  // The cookie is already set by the login response; we only record who it is.
+  function login(userData) {
+    storeUser(userData);
     setUser(userData);
   }
 
-  function logout() {
+  async function logout() {
+    try {
+      await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ action: 'logout' }),
+      });
+    } catch {} // Even if the call fails, drop the local session.
     clearStoredAuth();
-    setToken(null);
     setUser(null);
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

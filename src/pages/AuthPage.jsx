@@ -19,9 +19,6 @@ const CARD_TYPES = [
   { id: 'gift',         Icon: Gift,     name: 'Gift Card',       desc: 'Prepaid digital gift cards',            live: false },
 ];
 
-const AUTH_ATTEMPT_KEY = 'loyalty_auth_attempts';
-const MAX_AUTH_ATTEMPTS = 5;
-const AUTH_LOCK_MS = 10 * 60 * 1000;
 const AUTH_TIMEOUT_MS = 15000;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -29,42 +26,9 @@ function normalizeEmail(email) {
   return email.trim().toLowerCase();
 }
 
-function authAttemptId(mode, email) {
-  return `${mode}:${normalizeEmail(email) || 'unknown'}`;
-}
-
-function readAuthAttempts() {
-  try { return JSON.parse(localStorage.getItem(AUTH_ATTEMPT_KEY) || '{}'); }
-  catch { return {}; }
-}
-
-function getAuthLock(mode, email) {
-  const record = readAuthAttempts()[authAttemptId(mode, email)];
-  if (!record?.lockedUntil || record.lockedUntil <= Date.now()) return null;
-  return record.lockedUntil;
-}
-
-function recordAuthFailure(mode, email) {
-  const attempts = readAuthAttempts();
-  const id = authAttemptId(mode, email);
-  const current = attempts[id] || { count: 0, lockedUntil: 0 };
-  const nextCount = current.lockedUntil > Date.now() ? current.count : current.count + 1;
-  attempts[id] = {
-    count: nextCount,
-    lockedUntil: nextCount >= MAX_AUTH_ATTEMPTS ? Date.now() + AUTH_LOCK_MS : 0,
-  };
-  localStorage.setItem(AUTH_ATTEMPT_KEY, JSON.stringify(attempts));
-  return attempts[id].lockedUntil;
-}
-
-function clearAuthFailures(mode, email) {
-  const attempts = readAuthAttempts();
-  delete attempts[authAttemptId(mode, email)];
-  localStorage.setItem(AUTH_ATTEMPT_KEY, JSON.stringify(attempts));
-}
-
-function lockMessage(lockedUntil) {
-  const mins = Math.max(1, Math.ceil((lockedUntil - Date.now()) / 60000));
+function cooldownMessage(seconds) {
+  if (!seconds) return 'Too many attempts. Please wait and try again.';
+  const mins = Math.max(1, Math.ceil(seconds / 60));
   return `Too many attempts. Please try again in ${mins} minute${mins === 1 ? '' : 's'}.`;
 }
 
@@ -106,12 +70,7 @@ export default function AuthPage({ mode }) {
     const businessName = form.businessName.trim();
     const liveCardType = CARD_TYPES.some(t => t.id === cardType && t.live);
     const validNiche = !!findNiche(niche);
-    const lockedUntil = getAuthLock(mode, email);
 
-    if (lockedUntil) {
-      setError(lockMessage(lockedUntil));
-      return;
-    }
     if (!EMAIL_RE.test(email)) {
       setError('Enter a valid email address.');
       return;
@@ -144,30 +103,23 @@ export default function AuthPage({ mode }) {
       const res  = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify(body),
         signal: controller.signal,
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        // The server throttles too, and its cooldown is the one that actually
-        // holds — surface that rather than the local counter's guess.
+        // Throttling is enforced server-side, so its cooldown is the one to show.
         if (res.status === 429) {
           const seconds = Number(data.retryAfter) || Number(res.headers.get('Retry-After')) || 0;
-          const mins = Math.max(1, Math.ceil(seconds / 60));
-          throw new Error(seconds
-            ? `Too many attempts. Please try again in ${mins} minute${mins === 1 ? '' : 's'}.`
-            : 'Too many attempts. Please wait and try again.');
+          throw new Error(cooldownMessage(seconds));
         }
-        const nextLock = [401, 403, 409, 422].includes(res.status)
-          ? recordAuthFailure(mode, email)
-          : 0;
-        if (nextLock) throw new Error(lockMessage(nextLock));
         if (isSignup && res.status === 409) throw new Error('Unable to create this account. Try signing in or use a different email.');
         throw new Error(isSignup ? 'Unable to create account. Check your details and try again.' : 'Invalid email or password.');
       }
-      clearAuthFailures(mode, email);
       if (isSignup) saveNiche(niche);
-      login(data.token, data.user);
+      // The session arrived as an HttpOnly cookie; this only records who it is.
+      login(data.user);
       navigate('/dashboard', { replace: true });
     } catch (err) {
       if (err.name === 'AbortError') setError('Request timed out. Please try again.');

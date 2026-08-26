@@ -172,7 +172,7 @@ function ProgressBarChart({ customers, isCashback, accent }) {
 }
 
 /* ─── Scan Tab ─────────────────────────────────────────────── */
-function ScanTab({ rid, token, program }) {
+function ScanTab({ rid, program }) {
   const [phone, setPhone]     = useState('');
   const [stamping, setStamping] = useState(false);
   const [result, setResult]   = useState(null);
@@ -194,7 +194,7 @@ function ScanTab({ rid, token, program }) {
     try {
       const res = await fetch(`${API}?action=stamp`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ restaurantId: rid, phone: phone.trim() }),
       });
       const data = await res.json();
@@ -211,7 +211,7 @@ function ScanTab({ rid, token, program }) {
     try {
       await fetch(`${API}?action=redeem`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ restaurantId: rid, phone: phone.trim() }),
       });
     } catch {}
@@ -335,7 +335,7 @@ function ScanTab({ rid, token, program }) {
 }
 
 /* ─── Setup Tab ─────────────────────────────────────────────── */
-function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, saveProgram }) {
+function SetupTab({ rid, form, setForm, program, saving, saveMsg, saveProgram }) {
   const stampUrl = `https://loyalty.trydecidr.xyz/stamp/${rid}`;
   const qrCanvasRef = useRef(null);
   const [logoUploading, setLogoUploading] = useState(false);
@@ -384,7 +384,7 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
       // Auto-save so the logo persists on refresh and shows on the stamp page
       await fetch('/api/loyalty?action=setup', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ restaurantId: rid, ...form, logoUrl: secure_url }),
       });
     } catch (err) {
@@ -445,7 +445,7 @@ function SetupTab({ rid, token, form, setForm, program, saving, saveMsg, savePro
                       setForm(f => ({ ...f, logoUrl: '' }));
                       fetch('/api/loyalty?action=setup', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ restaurantId: rid, ...form, logoUrl: '' }),
                       });
                     }}><X size={11} strokeWidth={3} /></button>
@@ -683,7 +683,7 @@ function StatsTab({ stats, customers }) {
 /* ─── Cashback Tab ──────────────────────────────────────────── */
 const CB_API = '/api/loyalty';
 
-function CashbackTab({ rid, token, slug }) {
+function CashbackTab({ rid, slug }) {
   const [program, setProgram]     = useState(null);
   const [progLoading, setProgLoading] = useState(true);
   const [view, setView]           = useState('earn'); // 'earn' | 'redeem' | 'customers' | 'setup'
@@ -740,9 +740,7 @@ function CashbackTab({ rid, token, slug }) {
 
   function loadCbCustomers() {
     setCbCustLoading(true);
-    fetch(`${CB_API}?action=cashback-customers&restaurantId=${rid}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    fetch(`${CB_API}?action=cashback-customers&restaurantId=${rid}`)
       .then(r => r.ok ? r.json() : { customers: [], stats: null })
       .then(d => { setCbCustomers(d.customers || []); setCbStats(d.stats || null); })
       .finally(() => setCbCustLoading(false));
@@ -753,7 +751,7 @@ function CashbackTab({ rid, token, slug }) {
     try {
       const res = await fetch(`${CB_API}?action=cashback-setup`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ restaurantId: rid, ...cbForm }),
       });
       const data = await res.json();
@@ -775,7 +773,7 @@ function CashbackTab({ rid, token, slug }) {
     try {
       const res = await fetch(`${CB_API}?action=cashback-earn`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ restaurantId: rid, phone: earnPhone.trim(), name: earnName.trim(), amountSpent: Number(earnAmount) }),
       });
       const data = await res.json();
@@ -803,9 +801,7 @@ function CashbackTab({ rid, token, slug }) {
       setCheckingBal(true);
       redeemPhoneCheckRef.current = setTimeout(async () => {
         try {
-          const r = await fetch(`${CB_API}?action=cashback-balance&phone=${encodeURIComponent(val.trim())}&restaurantId=${rid}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const r = await fetch(`${CB_API}?action=cashback-balance&phone=${encodeURIComponent(val.trim())}&restaurantId=${rid}`);
           const d = await r.json();
           setRedeemBalance(d);
         } catch { setRedeemBalance(null); }
@@ -821,7 +817,7 @@ function CashbackTab({ rid, token, slug }) {
     try {
       const res = await fetch(`${CB_API}?action=cashback-redeem`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ restaurantId: rid, phone: redeemPhone.trim(), amountToRedeem: Number(redeemAmount) }),
       });
       const data = await res.json();
@@ -1135,7 +1131,7 @@ function CashbackTab({ rid, token, slug }) {
 }
 
 /* ─── POS Integration Tab ───────────────────────────────────── */
-function PosTab({ rid, token, cardType }) {
+function PosTab({ rid, cardType }) {
   const [apiKey, setApiKey]             = useState(null);
   const [loading, setLoading]           = useState(true);
   const [generating, setGenerating]     = useState(false);
@@ -1147,9 +1143,7 @@ function PosTab({ rid, token, cardType }) {
 
   useEffect(() => {
     if (!rid) return;
-    fetch(`${API}?action=get-key&restaurantId=${rid}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    fetch(`${API}?action=get-key&restaurantId=${rid}`)
       .then(r => r.ok ? r.json() : { apiKey: null })
       .then(d => setApiKey(d.apiKey || null))
       .finally(() => setLoading(false));
@@ -1162,14 +1156,14 @@ function PosTab({ rid, token, cardType }) {
       if (cbData?.program) setDetectedType('cashback');
       else if (stData?.program) setDetectedType('stamp');
     }).catch(() => {});
-  }, [rid, token]);
+  }, [rid]);
 
   async function handleGenerate() {
     setGenerating(true); setError('');
     try {
       const res = await fetch(`${API}?action=generate-key`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ restaurantId: rid }),
       });
       const data = await res.json();
@@ -1189,7 +1183,7 @@ function PosTab({ rid, token, cardType }) {
     try {
       const res = await fetch(`${API}?action=revoke-key`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ restaurantId: rid }),
       });
       if (!res.ok) throw new Error('Failed to revoke');
@@ -1400,7 +1394,7 @@ const ALL_TABS = [
 ];
 
 export default function Dashboard() {
-  const { user, token, logout } = useAuth();
+  const { user, logout } = useAuth();
   // Detect effective card type from live program data — overrides stale user.cardType from localStorage
   const [liveCardType, setLiveCardType] = useState(user?.cardType || 'stamp');
   const cardType = liveCardType;
@@ -1482,7 +1476,7 @@ export default function Dashboard() {
     try {
       const res = await fetch(`${API}?action=setup`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ restaurantId: rid, ...form }),
       });
       const data = await res.json();
@@ -1560,11 +1554,11 @@ export default function Dashboard() {
           <DashboardTab rid={rid} cardType={cardType} businessName={businessName} primaryColor={form.primaryColor} />
         )}
         {tab === 'scan' && (
-          <ScanTab rid={rid} token={token} program={program} />
+          <ScanTab rid={rid} program={program} />
         )}
         {tab === 'setup' && (
           <SetupTab
-            rid={rid} token={token}
+            rid={rid}
             form={form} setForm={setForm}
             program={program}
             saving={saving} saveMsg={saveMsg}
@@ -1582,13 +1576,13 @@ export default function Dashboard() {
           />
         )}
         {tab === 'cashback' && (
-          <CashbackTab rid={rid} token={token} slug={user?.slug} />
+          <CashbackTab rid={rid} slug={user?.slug} />
         )}
         {tab === 'stats' && (
           <StatsTab stats={stats} customers={customers} />
         )}
         {tab === 'pos' && (
-          <PosTab rid={rid} token={token} cardType={cardType} />
+          <PosTab rid={rid} cardType={cardType} />
         )}
       </main>
 
