@@ -149,11 +149,19 @@ export default function AuthPage({ mode }) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const nextLock = [401, 403, 409, 422, 429].includes(res.status)
+        // The server throttles too, and its cooldown is the one that actually
+        // holds — surface that rather than the local counter's guess.
+        if (res.status === 429) {
+          const seconds = Number(data.retryAfter) || Number(res.headers.get('Retry-After')) || 0;
+          const mins = Math.max(1, Math.ceil(seconds / 60));
+          throw new Error(seconds
+            ? `Too many attempts. Please try again in ${mins} minute${mins === 1 ? '' : 's'}.`
+            : 'Too many attempts. Please wait and try again.');
+        }
+        const nextLock = [401, 403, 409, 422].includes(res.status)
           ? recordAuthFailure(mode, email)
           : 0;
         if (nextLock) throw new Error(lockMessage(nextLock));
-        if (res.status === 429) throw new Error('Too many attempts. Please wait before trying again.');
         if (isSignup && res.status === 409) throw new Error('Unable to create this account. Try signing in or use a different email.');
         throw new Error(isSignup ? 'Unable to create account. Check your details and try again.' : 'Invalid email or password.');
       }
