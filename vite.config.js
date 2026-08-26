@@ -33,7 +33,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://trydecidr.xyz',
+        // Must be the www host: the apex 308-redirects here, and the browser drops
+        // the Authorization header across that origin hop — which logged the user
+        // out on every refresh.
+        target: 'https://www.trydecidr.xyz',
         changeOrigin: true,
       },
     },
