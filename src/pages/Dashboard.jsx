@@ -1421,7 +1421,7 @@ export default function Dashboard() {
   const [form, setForm] = useState({
     primaryColor: '#ff0000',
     logoUrl: '',
-    rewardName: nicheDefaultReward(),
+    rewardName: nicheDefaultReward(user?.niche),
     stampsRequired: 10,
     staffPin: '',
     active: true,
@@ -1455,7 +1455,7 @@ export default function Dashboard() {
           setForm({
             primaryColor:   data.program.primaryColor   || '#ff0000',
             logoUrl:        data.program.logoUrl        || '',
-            rewardName:     data.program.rewardName     || nicheDefaultReward(),
+            rewardName:     data.program.rewardName     || nicheDefaultReward(user?.niche),
             stampsRequired: data.program.stampsRequired || 10,
             staffPin:       '',
             active:         !!data.program.active,

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-import { clearNiche } from '../components/niches';
+import { clearNiche, saveNiche } from '../components/niches';
 
 const AuthContext = createContext(null);
 const TOKEN_KEY = 'loyalty_token';
@@ -47,6 +47,7 @@ export function AuthProvider({ children }) {
       .then(data => {
         if (data?.user) {
           setUser(data.user);
+          if (data.user.niche) saveNiche(data.user.niche);
           localStorage.setItem(TOKEN_KEY, storedToken);
           localStorage.setItem(USER_KEY, JSON.stringify(data.user));
           sessionStorage.removeItem(TOKEN_KEY);

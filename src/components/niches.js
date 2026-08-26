@@ -32,8 +32,9 @@ export function findNiche(id) {
 }
 
 /**
- * The backend doesn't round-trip the niche yet, so keep our own copy — the stored
- * user object is replaced wholesale every time the token is verified.
+ * The niche lives on the restaurants row server-side and comes back on the user
+ * object. This local copy is only a cache, so signup can seed defaults before the
+ * first verify round-trip and offline reloads still read right.
  */
 export function saveNiche(id) {
   try { localStorage.setItem(NICHE_KEY, id); } catch {}
@@ -48,6 +49,6 @@ export function readNiche() {
   catch { return ''; }
 }
 
-export function nicheDefaultReward(fallback = 'Free Coffee') {
-  return findNiche(readNiche())?.defaultReward || fallback;
+export function nicheDefaultReward(nicheId, fallback = 'Free Coffee') {
+  return (findNiche(nicheId) || findNiche(readNiche()))?.defaultReward || fallback;
 }
