@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Frown, BadgeCheck, Gift, Star, ArrowRight } from 'lucide-react';
 import { CustomerBackButton, CustomerBottomNav } from '../components/CustomerChrome';
 import { stampArt } from '../components/rewardIcon';
-import StampMark from '../components/StampMark';
+import StampMark, { useStampArt } from '../components/StampMark';
 import './StampPage.css';
 
 const API = '/api/loyalty';
@@ -210,9 +210,10 @@ export default function StampPage() {
   const businessName = program?.name || 'Loyalty Card';
   const businessInitial = (businessName[0] || 'L').toUpperCase();
   const stamp = stampArt(reward);
+  const useStampImage = useStampArt(stamp);
   // Custom artwork can't be recoloured to sit on the brand fill, so a filled
   // slot becomes a white plate with a brand-coloured rim instead.
-  const fillStyle = stamp.type === 'image'
+  const fillStyle = useStampImage
     ? { background: '#fff', borderColor: color }
     : { background: color, borderColor: color };
   const cardHomeHref = `/stamp/${encodeURIComponent(slug || '')}`;
@@ -291,10 +292,10 @@ export default function StampPage() {
                     style={i < count ? fillStyle : {}}
                   >
                     {i < count
-                      ? <StampMark art={stamp} filled />
+                      ? <StampMark art={stamp} useImage={useStampImage} filled />
                       : i === stamps - 1
                         ? <Gift size={16} strokeWidth={2} />
-                        : <StampMark art={stamp} />}
+                        : <StampMark art={stamp} useImage={useStampImage} />}
                   </span>
                 ))}
               </div>

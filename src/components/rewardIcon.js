@@ -6,12 +6,35 @@ import {
 } from 'lucide-react';
 
 /**
- * Custom artwork beats the line icons where we have it. Checked before
- * REWARD_ICONS, and matched the same way — first hit wins.
+ * Custom stamp artwork, by convention at /icons/stamps/<name>.png. Checked before
+ * REWARD_ICONS and matched the same way, first hit wins — but a file that isn't
+ * there yet costs nothing: StampPage probes it and falls back to the line icon,
+ * so dropping a new PNG in lights it up with no code change.
  */
 const REWARD_IMAGES = [
-  [/coffee|latte|cappu|espresso|americano|mocha|macchiato|caf[eé]/, '/icons/6030268.png'],
+  [/ice ?cream|gelato|sundae|scoop|cone/, 'icecream'],
+  [/milk ?shake|shake|smoothie|juice|soda|cola|lemonade|slush|mocktail/, 'juice'],
+  [/coffee|latte|cappu|espresso|americano|mocha|macchiato|caf[eé]/, 'coffee'],
+  [/tea|chai|karak/, 'tea'],
+  [/pizza/, 'pizza'],
+  [/burger|whopper/, 'burger'],
+  [/sandwich|sub\b|wrap|panini|shawarma|roll/, 'sandwich'],
+  [/donut|doughnut/, 'donut'],
+  [/cookie|biscuit|brownie/, 'cookie'],
+  [/croissant|bakery|bread|bun|bagel|pastry/, 'bakery'],
+  [/cup ?cake|cake/, 'cake'],
+  [/dessert|pudding|waffle|pancake|crepe|kunafa/, 'dessert'],
+  [/hair ?cut|haircut|salon|barber|blow ?dry|trim|shave|beard/, 'haircut'],
+  [/car ?wash|wash|detail|valet/, 'carwash'],
+  [/gym|workout|training|fitness|yoga/, 'gym'],
+  [/spa|massage|facial|manicure|pedicure|hammam/, 'spa'],
+  [/laundry|dry ?clean|shirt|clothes|apparel|garment/, 'laundry'],
+  [/meal|food|dinner|lunch|platter|biryani|curry|pasta|steak|kebab|dish/, 'meal'],
 ];
+
+export function stampImageUrl(name) {
+  return `/icons/stamps/${name}.png`;
+}
 
 /**
  * Reward name → the icon stamped into each slot. First match wins, so the more
@@ -67,6 +90,8 @@ export function rewardIcon(rewardName) {
 export function stampArt(rewardName) {
   const text = String(rewardName || '').toLowerCase();
   const image = REWARD_IMAGES.find(([pattern]) => pattern.test(text));
-  if (image) return { type: 'image', src: image[1] };
-  return { type: 'icon', Icon: rewardIcon(text) };
+  return {
+    src: image ? stampImageUrl(image[1]) : '',
+    Icon: rewardIcon(text),
+  };
 }
