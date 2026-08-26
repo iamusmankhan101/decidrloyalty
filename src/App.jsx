@@ -33,8 +33,8 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login"  element={<PublicRoute><AuthPage mode="login"  /></PublicRoute>} />
-          <Route path="/signup" element={<PublicRoute><AuthPage mode="signup" /></PublicRoute>} />
+          <Route path="/login"  element={<PublicRoute><AuthPage key="login" mode="login" /></PublicRoute>} />
+          <Route path="/signup" element={<PublicRoute><AuthPage key="signup" mode="signup" /></PublicRoute>} />
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/customer" element={<CustomerPage />} />
           <Route path="/stamp/:slug" element={<StampPage />} />

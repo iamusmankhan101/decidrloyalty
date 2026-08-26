@@ -158,6 +158,9 @@ export default function AuthPage({ mode }) {
   }
 
   const selectedType = CARD_TYPES.find(t => t.id === cardType);
+  // Signup can never show the form without a chosen card type — the submit guard
+  // would reject it with no way to recover from this screen.
+  const activeStep = isSignup && !selectedType ? 'pick' : step;
 
   return (
     <div className="auth-page">
@@ -183,7 +186,7 @@ export default function AuthPage({ mode }) {
             </p>
 
             {/* Card type preview dots */}
-            {isSignup && step === 'pick' && (
+            {isSignup && activeStep === 'pick' && (
               <div className="auth-type-dots">
                 {CARD_TYPES.map(t => (
                   <span
@@ -214,7 +217,7 @@ export default function AuthPage({ mode }) {
         </div>
 
         {/* ── Step 1: Card type picker ── */}
-        {step === 'pick' && (
+        {activeStep === 'pick' && (
           <div className="auth-card auth-card--wide">
             <h1 className="auth-title">Choose your card type</h1>
             <p className="auth-sub">Pick the loyalty format that fits your business.</p>
@@ -256,7 +259,7 @@ export default function AuthPage({ mode }) {
         )}
 
         {/* ── Step 2: Signup / Login form ── */}
-        {step === 'form' && (
+        {activeStep === 'form' && (
           <div className="auth-card">
 
             {isSignup && (
