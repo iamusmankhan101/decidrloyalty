@@ -177,7 +177,7 @@ function ScanTab({ rid, token, program }) {
   const [result, setResult]   = useState(null);
   const [error, setError]     = useState('');
   const inputRef = useRef(null);
-  const stampsRequired = program?.stampsRequired || 9;
+  const stampsRequired = program?.stampsRequired || 10;
 
   useEffect(() => { inputRef.current?.focus(); }, []);
 
@@ -588,13 +588,13 @@ function CustomersTab({ customers, custLoading, loadCustomers, search, setSearch
                     <td className="db-td-phone">{c.phone}</td>
                     <td>
                       <div className="db-mini-stamps">
-                        {Array.from({ length: stampsRequired || 9 }, (_, i) => (
+                        {Array.from({ length: stampsRequired || 10 }, (_, i) => (
                           <span key={i}
                             className={`db-mini-dot${i < c.stampCount ? ' filled' : ''}`}
                             style={i < c.stampCount ? { background: primaryColor || '#ff0000', borderColor: primaryColor || '#ff0000' } : {}}
                           />
                         ))}
-                        <span className="db-stamp-count">{c.stampCount}/{stampsRequired || 9}</span>
+                        <span className="db-stamp-count">{c.stampCount}/{stampsRequired || 10}</span>
                       </div>
                     </td>
                     <td>
@@ -1249,7 +1249,7 @@ Content-Type: application/json
   "success": true,
   "rewarded": false,
   "stampCount": 3,
-  "stampsRequired": 9,
+  "stampsRequired": 10,
   "rewardName": "Free Haircut",
   "customer": {
     "name": "Sara",
@@ -1421,7 +1421,7 @@ export default function Dashboard() {
     primaryColor: '#ff0000',
     logoUrl: '',
     rewardName: 'Free Coffee',
-    stampsRequired: 9,
+    stampsRequired: 10,
     staffPin: '',
     active: true,
   });
@@ -1455,7 +1455,7 @@ export default function Dashboard() {
             primaryColor:   data.program.primaryColor   || '#ff0000',
             logoUrl:        data.program.logoUrl        || '',
             rewardName:     data.program.rewardName     || 'Free Coffee',
-            stampsRequired: data.program.stampsRequired || 9,
+            stampsRequired: data.program.stampsRequired || 10,
             staffPin:       '',
             active:         !!data.program.active,
           });

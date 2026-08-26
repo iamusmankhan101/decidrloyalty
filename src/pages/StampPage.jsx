@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Frown, BadgeCheck, Check, Gift, Star, ArrowRight } from 'lucide-react';
+import { Frown, BadgeCheck, Gift, Star, ArrowRight } from 'lucide-react';
 import { CustomerBackButton, CustomerBottomNav } from '../components/CustomerChrome';
+import { rewardIcon } from '../components/rewardIcon';
 import './StampPage.css';
 
 const API = '/api/loyalty';
@@ -203,10 +204,11 @@ export default function StampPage() {
   }
 
   const color  = program?.primaryColor || '#ff0000';
-  const stamps = program?.stampsRequired || 9;
+  const stamps = program?.stampsRequired || 10;
   const reward = program?.rewardName || 'Free Reward';
   const businessName = program?.name || 'Loyalty Card';
   const businessInitial = (businessName[0] || 'L').toUpperCase();
+  const StampIcon = rewardIcon(reward);
   const cardHomeHref = `/stamp/${encodeURIComponent(slug || '')}`;
 
   /* ── Loading ── */
@@ -282,7 +284,11 @@ export default function StampPage() {
                     className={`sp-app-stamp${i < count ? ' filled' : ''}${i === stamps - 1 ? ' reward' : ''}`}
                     style={i < count ? { background: color, borderColor: color } : {}}
                   >
-                    {i < count ? <Check size={18} strokeWidth={2.75} /> : i === stamps - 1 ? <Gift size={16} strokeWidth={2} /> : ''}
+                    {i < count
+                      ? <StampIcon size={18} strokeWidth={2.5} />
+                      : i === stamps - 1
+                        ? <Gift size={16} strokeWidth={2} />
+                        : <StampIcon size={17} strokeWidth={1.75} className="sp-stamp-ghost" />}
                   </span>
                 ))}
               </div>

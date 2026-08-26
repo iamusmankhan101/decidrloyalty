@@ -53,7 +53,7 @@ async function loadStampCard(card, phone) {
     logoUrl: programData.program?.logoUrl || card.logoUrl || '',
     color: programData.program?.primaryColor || '#ff0000',
     rewardName: programData.program?.rewardName || 'Reward',
-    stampsRequired: programData.program?.stampsRequired || 9,
+    stampsRequired: programData.program?.stampsRequired || 10,
     stampCount: cardData.card?.stampCount ?? 0,
     rewardCount: cardData.card?.rewardCount ?? 0,
   };
@@ -94,7 +94,7 @@ function CustomerCard({ card, phone, onRemove }) {
   const href = isCashback ? `/card/${card.id}` : `/stamp/${card.id}`;
   const progress = card.stampsRequired ? Math.min(100, ((card.stampCount || 0) / card.stampsRequired) * 100) : 0;
   const color = isCashback ? '#059669' : (card.color || '#a40818');
-  const remaining = Math.max(0, (card.stampsRequired || 9) - (card.stampCount || 0));
+  const remaining = Math.max(0, (card.stampsRequired || 10) - (card.stampCount || 0));
   const businessName = card.businessName || (isCashback ? 'Cashback Card' : 'Loyalty Card');
   const initial = (businessName[0] || 'L').toUpperCase();
 
@@ -124,7 +124,7 @@ function CustomerCard({ card, phone, onRemove }) {
       ) : (
         <div className="cp-stamp-panel">
           <div className="cp-stamp-dots">
-            {Array.from({ length: Math.min(card.stampsRequired || 9, 8) }, (_, i) => (
+            {Array.from({ length: Math.min(card.stampsRequired || 10, 8) }, (_, i) => (
               <span key={i} className={i < (card.stampCount || 0) ? 'filled' : ''}>
                 {i < (card.stampCount || 0) ? <Check size={12} strokeWidth={3} /> : ''}
               </span>
@@ -133,7 +133,7 @@ function CustomerCard({ card, phone, onRemove }) {
           <div className="cp-progress-track">
             <span style={{ width: `${progress}%` }} />
           </div>
-          <p><strong>{card.stampCount || 0}</strong> / {card.stampsRequired || 9} stamps</p>
+          <p><strong>{card.stampCount || 0}</strong> / {card.stampsRequired || 10} stamps</p>
           <small>{remaining > 0 ? `${remaining} more for ${card.rewardName || 'Reward'}` : `${card.rewardName || 'Reward'} ready`}</small>
         </div>
       )}

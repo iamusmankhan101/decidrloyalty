@@ -737,6 +737,12 @@
   font-size: 1.2rem;
 }
 
+/* Empty slots preview what's being collected, without competing with the
+   filled ones for attention. */
+.sp-stamp-ghost {
+  color: rgba(127, 29, 29, 0.22);
+}
+
 .sp-away {
   color: #8d929f;
   font-size: 0.86rem;
