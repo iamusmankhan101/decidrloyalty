@@ -69,8 +69,12 @@
 
 .sp-logo {
   height: 52px;
+  max-width: 220px;
   object-fit: contain;
-  filter: brightness(0) invert(1);
+  background: #fff;
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
 }
 
 .sp-cafe-name {
@@ -516,7 +520,7 @@
 .sp-restaurant-logo {
   width: 42px;
   height: 42px;
-  border-radius: 50%;
+  border-radius: 12px;
   background:
     linear-gradient(145deg, rgba(255,255,255,0.26), rgba(255,255,255,0.08)),
     rgba(255,255,255,0.16);
@@ -530,12 +534,18 @@
   backdrop-filter: blur(10px);
 }
 
+/* An uploaded logo owns the whole tile: square full-bleed marks fill it edge to
+   edge, wider marks letterbox on white instead of on the brand colour. */
+.sp-restaurant-logo:has(img) {
+  background: #fff;
+  backdrop-filter: none;
+}
+
 .sp-restaurant-logo img {
-  width: 82%;
-  height: 82%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.24));
 }
 
 .sp-restaurant-logo span {
@@ -651,11 +661,16 @@
   border: 1px solid rgba(255,255,255,0.7);
 }
 
+.sp-treat-art:has(img) {
+  background: #fff;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
 .sp-treat-art img {
-  width: 82%;
-  height: 82%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.22));
+  display: block;
 }
 
 .sp-next-treat p,
