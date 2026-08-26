@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+import { clearNiche } from '../components/niches';
+
 const AuthContext = createContext(null);
 const TOKEN_KEY = 'loyalty_token';
 const USER_KEY = 'loyalty_user';
@@ -9,6 +11,8 @@ function readStoredItem(key) {
 }
 
 function clearStoredAuth() {
+  // The niche seeds new-program defaults, so it must not outlive the account.
+  clearNiche();
   sessionStorage.removeItem(TOKEN_KEY);
   sessionStorage.removeItem(USER_KEY);
   localStorage.removeItem(TOKEN_KEY);

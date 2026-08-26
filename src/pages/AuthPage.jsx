@@ -5,6 +5,7 @@ import {
   Coffee, Banknote, HandFist, Award, Bell, Tag, Ticket, Gift, Check,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { NICHES, findNiche, saveNiche } from '../components/niches';
 import './AuthPage.css';
 
 const CARD_TYPES = [
@@ -72,9 +73,10 @@ export default function AuthPage({ mode }) {
   const navigate  = useNavigate();
   const isSignup  = mode === 'signup';
 
-  // step: 'pick' (card type) | 'form' (credentials)
+  // step: 'pick' (card type) | 'niche' (business type) | 'form' (credentials)
   const [step, setStep]         = useState(isSignup ? 'pick' : 'form');
   const [cardType, setCardType] = useState('');
+  const [niche, setNiche]       = useState('');
   const [form, setForm]         = useState({ businessName: '', email: '', password: '' });
   const [showPass, setShowPass] = useState(false);
   const [error, setError]       = useState('');
@@ -87,8 +89,13 @@ export default function AuthPage({ mode }) {
     setCardType(type.id);
   }
 
-  function continueToForm() {
+  function continueToNiche() {
     if (!cardType) return;
+    setStep('niche');
+  }
+
+  function continueToForm() {
+    if (!niche) return;
     setStep('form');
   }
 
@@ -98,6 +105,7 @@ export default function AuthPage({ mode }) {
     const password = form.password;
     const businessName = form.businessName.trim();
     const liveCardType = CARD_TYPES.some(t => t.id === cardType && t.live);
+    const validNiche = !!findNiche(niche);
     const lockedUntil = getAuthLock(mode, email);
 
     if (lockedUntil) {
@@ -120,13 +128,17 @@ export default function AuthPage({ mode }) {
       setError('Choose a valid card type.');
       return;
     }
+    if (isSignup && !validNiche) {
+      setError('Choose what your business sells.');
+      return;
+    }
 
     setLoading(true); setError('');
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), AUTH_TIMEOUT_MS);
     try {
       const body = isSignup
-        ? { action: 'register', email, password, restaurantName: businessName, role: 'restaurant', cardType }
+        ? { action: 'register', email, password, restaurantName: businessName, role: 'restaurant', cardType, niche }
         : { action: 'login', email, password };
 
       const res  = await fetch('/api/auth', {
@@ -146,6 +158,7 @@ export default function AuthPage({ mode }) {
         throw new Error(isSignup ? 'Unable to create account. Check your details and try again.' : 'Invalid email or password.');
       }
       clearAuthFailures(mode, email);
+      if (isSignup) saveNiche(niche);
       login(data.token, data.user);
       navigate('/dashboard', { replace: true });
     } catch (err) {
@@ -157,10 +170,14 @@ export default function AuthPage({ mode }) {
     }
   }
 
-  const selectedType = CARD_TYPES.find(t => t.id === cardType);
-  // Signup can never show the form without a chosen card type — the submit guard
-  // would reject it with no way to recover from this screen.
-  const activeStep = isSignup && !selectedType ? 'pick' : step;
+  const selectedType  = CARD_TYPES.find(t => t.id === cardType);
+  const selectedNiche = findNiche(niche);
+  // Signup can never show a later step without the earlier answer — the submit
+  // guards would reject it with no way to recover from that screen.
+  const activeStep = !isSignup ? step
+    : !selectedType ? 'pick'
+    : (!selectedNiche && step === 'form') ? 'niche'
+    : step;
 
   return (
     <div className="auth-page">
@@ -175,14 +192,18 @@ export default function AuthPage({ mode }) {
 
           <div className="auth-left-body">
             <h2 className="auth-left-headline">
-              {selectedType
-                ? <><selectedType.Icon size={26} strokeWidth={1.9} className="auth-left-headline-icon" /> {selectedType.name}</>
-                : 'Turn every visit into a reason to come back.'}
+              {selectedNiche
+                ? <><selectedNiche.Icon size={26} strokeWidth={1.9} className="auth-left-headline-icon" /> {selectedNiche.name}</>
+                : selectedType
+                  ? <><selectedType.Icon size={26} strokeWidth={1.9} className="auth-left-headline-icon" /> {selectedType.name}</>
+                  : 'Turn every visit into a reason to come back.'}
             </h2>
             <p className="auth-left-sub">
-              {selectedType
-                ? selectedType.desc
-                : 'Choose a loyalty card type and go live in minutes — no app needed.'}
+              {selectedNiche
+                ? `Your card starts set up for ${selectedNiche.defaultReward.toLowerCase()} — change it any time.`
+                : selectedType
+                  ? selectedType.desc
+                  : 'Choose a loyalty card type and go live in minutes — no app needed.'}
             </p>
 
             {/* Card type preview dots */}
@@ -244,7 +265,7 @@ export default function AuthPage({ mode }) {
 
             <button
               className="auth-btn"
-              onClick={continueToForm}
+              onClick={continueToNiche}
               disabled={!cardType}
               style={{ marginTop: '1.5rem' }}
             >
@@ -258,13 +279,56 @@ export default function AuthPage({ mode }) {
           </div>
         )}
 
-        {/* ── Step 2: Signup / Login form ── */}
+        {/* ── Step 2: What the business sells ── */}
+        {activeStep === 'niche' && (
+          <div className="auth-card auth-card--wide">
+            <button className="auth-back" onClick={() => setStep('pick')}>
+              <ArrowLeft size={15} /> {selectedType && <selectedType.Icon size={14} strokeWidth={2} />} {selectedType?.name}
+            </button>
+
+            <h1 className="auth-title">What do you sell?</h1>
+            <p className="auth-sub">We'll set up your reward and stamp icons to match.</p>
+
+            <div className="auth-type-grid auth-niche-grid">
+              {NICHES.map(item => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setNiche(item.id)}
+                  className={`auth-type-card auth-niche-card${niche === item.id ? ' selected' : ''}`}
+                >
+                  <span className="auth-type-emoji"><item.Icon size={20} strokeWidth={1.9} /></span>
+                  <span className="auth-type-name">{item.name}</span>
+                  {niche === item.id && (
+                    <span className="auth-type-check"><Check size={12} strokeWidth={3} /></span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <button
+              className="auth-btn"
+              onClick={continueToForm}
+              disabled={!niche}
+              style={{ marginTop: '1.5rem' }}
+            >
+              Continue <ArrowRight size={16} />
+            </button>
+
+            <p className="auth-switch" style={{ marginTop: '1.25rem' }}>
+              Already have an account?{' '}
+              <Link to="/login" className="auth-switch-link">Log in</Link>
+            </p>
+          </div>
+        )}
+
+        {/* ── Step 3: Signup / Login form ── */}
         {activeStep === 'form' && (
           <div className="auth-card">
 
             {isSignup && (
-              <button className="auth-back" onClick={() => setStep('pick')}>
-                <ArrowLeft size={15} /> {selectedType && <selectedType.Icon size={14} strokeWidth={2} />} {selectedType?.name}
+              <button className="auth-back" onClick={() => setStep('niche')}>
+                <ArrowLeft size={15} /> {selectedNiche && <selectedNiche.Icon size={14} strokeWidth={2} />} {selectedNiche?.name}
               </button>
             )}
 

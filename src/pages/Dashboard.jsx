@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useAuth } from '../contexts/AuthContext';
+import { nicheDefaultReward } from '../components/niches';
 import './Dashboard.css';
 
 const API = '/api/loyalty';
@@ -1420,7 +1421,7 @@ export default function Dashboard() {
   const [form, setForm] = useState({
     primaryColor: '#ff0000',
     logoUrl: '',
-    rewardName: 'Free Coffee',
+    rewardName: nicheDefaultReward(),
     stampsRequired: 10,
     staffPin: '',
     active: true,
@@ -1454,7 +1455,7 @@ export default function Dashboard() {
           setForm({
             primaryColor:   data.program.primaryColor   || '#ff0000',
             logoUrl:        data.program.logoUrl        || '',
-            rewardName:     data.program.rewardName     || 'Free Coffee',
+            rewardName:     data.program.rewardName     || nicheDefaultReward(),
             stampsRequired: data.program.stampsRequired || 10,
             staffPin:       '',
             active:         !!data.program.active,
