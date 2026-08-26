@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Frown, BadgeCheck, Gift, Star, ArrowRight } from 'lucide-react';
 import { CustomerBackButton, CustomerBottomNav } from '../components/CustomerChrome';
-import { rewardIcon } from '../components/rewardIcon';
+import { stampArt } from '../components/rewardIcon';
+import StampMark from '../components/StampMark';
 import './StampPage.css';
 
 const API = '/api/loyalty';
@@ -208,7 +209,12 @@ export default function StampPage() {
   const reward = program?.rewardName || 'Free Reward';
   const businessName = program?.name || 'Loyalty Card';
   const businessInitial = (businessName[0] || 'L').toUpperCase();
-  const StampIcon = rewardIcon(reward);
+  const stamp = stampArt(reward);
+  // Custom artwork can't be recoloured to sit on the brand fill, so a filled
+  // slot becomes a white plate with a brand-coloured rim instead.
+  const fillStyle = stamp.type === 'image'
+    ? { background: '#fff', borderColor: color }
+    : { background: color, borderColor: color };
   const cardHomeHref = `/stamp/${encodeURIComponent(slug || '')}`;
 
   /* ── Loading ── */
@@ -282,13 +288,13 @@ export default function StampPage() {
                   <span
                     key={i}
                     className={`sp-app-stamp${i < count ? ' filled' : ''}${i === stamps - 1 ? ' reward' : ''}`}
-                    style={i < count ? { background: color, borderColor: color } : {}}
+                    style={i < count ? fillStyle : {}}
                   >
                     {i < count
-                      ? <StampIcon size={18} strokeWidth={2.5} />
+                      ? <StampMark art={stamp} filled />
                       : i === stamps - 1
                         ? <Gift size={16} strokeWidth={2} />
-                        : <StampIcon size={17} strokeWidth={1.75} className="sp-stamp-ghost" />}
+                        : <StampMark art={stamp} />}
                   </span>
                 ))}
               </div>

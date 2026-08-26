@@ -6,6 +6,14 @@ import {
 } from 'lucide-react';
 
 /**
+ * Custom artwork beats the line icons where we have it. Checked before
+ * REWARD_ICONS, and matched the same way — first hit wins.
+ */
+const REWARD_IMAGES = [
+  [/coffee|latte|cappu|espresso|americano|mocha|macchiato|caf[eé]/, '/icons/6030268.png'],
+];
+
+/**
  * Reward name → the icon stamped into each slot. First match wins, so the more
  * specific term has to come first ("milkshake" before "milk", "ice cream"
  * before "cream"). Anything unrecognised falls back to a plain check.
@@ -49,4 +57,16 @@ export function rewardIcon(rewardName) {
   const text = String(rewardName || '').toLowerCase();
   const match = REWARD_ICONS.find(([pattern]) => pattern.test(text));
   return match ? match[1] : Check;
+}
+
+/**
+ * What to stamp into a slot: custom artwork if this reward has any, otherwise a
+ * line icon. Callers need to know which, since art keeps its own colours and an
+ * icon takes the card's.
+ */
+export function stampArt(rewardName) {
+  const text = String(rewardName || '').toLowerCase();
+  const image = REWARD_IMAGES.find(([pattern]) => pattern.test(text));
+  if (image) return { type: 'image', src: image[1] };
+  return { type: 'icon', Icon: rewardIcon(text) };
 }

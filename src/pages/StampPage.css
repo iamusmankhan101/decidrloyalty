@@ -743,6 +743,17 @@
   color: rgba(127, 29, 29, 0.22);
 }
 
+.sp-stamp-img {
+  width: 68%;
+  height: 68%;
+  object-fit: contain;
+  display: block;
+}
+
+.sp-stamp-img.ghost {
+  opacity: 0.26;
+}
+
 .sp-away {
   color: #8d929f;
   font-size: 0.86rem;
