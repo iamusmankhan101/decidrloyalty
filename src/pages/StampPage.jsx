@@ -22,6 +22,11 @@ function saveCustomerCard(card, phone) {
   } catch {}
 }
 
+function readSavedPhone() {
+  try { return localStorage.getItem(CUSTOMER_PHONE_KEY) || ''; }
+  catch { return ''; }
+}
+
 function WalletSheet({ walletUrl, onDismiss }) {
   if (!walletUrl) return null;
   return (
@@ -84,13 +89,41 @@ export default function StampPage() {
 
   useEffect(() => {
     if (!slug) { setView(STATES.ERROR); return; }
-    fetch(`${API}?action=program&${programParam}`)
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (data?.program) { setProgram(data.program); setView(STATES.ENTER); }
-        else setView(STATES.ERROR);
-      })
-      .catch(() => setView(STATES.ERROR));
+    let cancelled = false;
+
+    (async () => {
+      let data = null;
+      try {
+        const res = await fetch(`${API}?action=program&${programParam}`);
+        data = res.ok ? await res.json().catch(() => null) : null;
+      } catch { data = null; }
+      if (cancelled) return;
+      if (!data?.program) { setView(STATES.ERROR); return; }
+      setProgram(data.program);
+
+      // A customer who already has a card on this program should land back on it
+      // after a refresh instead of being sent through the phone screen again.
+      const savedPhone = readSavedPhone();
+      if (savedPhone) {
+        let card = null;
+        try {
+          const r = await fetch(`${API}?action=card&phone=${encodeURIComponent(savedPhone)}&${programParam}`);
+          card = r.ok ? await r.json().catch(() => null) : null;
+        } catch { card = null; }
+        if (cancelled) return;
+        if (card?.card) {
+          setPhone(savedPhone);
+          setName(card.customer?.name || card.card.customerName || card.card.name || '');
+          setResult(card);
+          setView(STATES.CARD);
+          return;
+        }
+      }
+
+      setView(STATES.ENTER);
+    })();
+
+    return () => { cancelled = true; };
   }, [slug, programParam]);
 
   useEffect(() => {

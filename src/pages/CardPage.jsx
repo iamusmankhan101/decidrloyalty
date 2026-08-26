@@ -23,6 +23,18 @@ function saveCustomerCard(card, phone) {
   } catch {}
 }
 
+function readSavedPhone() {
+  try { return localStorage.getItem(CUSTOMER_PHONE_KEY) || ''; }
+  catch { return ''; }
+}
+
+function hasSavedCard(id, type) {
+  try {
+    const cards = JSON.parse(localStorage.getItem(CUSTOMER_CARDS_KEY) || '[]');
+    return Array.isArray(cards) && cards.some(c => String(c.id) === String(id) && c.type === type);
+  } catch { return false; }
+}
+
 function WalletSheet({ walletUrl, onDismiss }) {
   if (!walletUrl) return null;
   return (
@@ -83,18 +95,48 @@ export default function CardPage() {
 
   useEffect(() => {
     if (!slug) { setView(STATES.ERROR); return; }
-    fetch(`${API}?action=${programAction}&${programParam}`)
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (data?.program) {
-          setBusiness(data.restaurant || data.business || data.program);
-          setProgram(data.program);
-          setView(STATES.ENTER);
-        } else {
-          setView(STATES.ERROR);
+    let cancelled = false;
+
+    (async () => {
+      let data = null;
+      try {
+        const res = await fetch(`${API}?action=${programAction}&${programParam}`);
+        data = res.ok ? await res.json().catch(() => null) : null;
+      } catch { data = null; }
+      if (cancelled) return;
+      if (!data?.program) { setView(STATES.ERROR); return; }
+      setBusiness(data.restaurant || data.business || data.program);
+      setProgram(data.program);
+
+      // Reopen the balance a refresh would otherwise throw away. Only for a phone
+      // that already registered here on this device, so we never conjure a card.
+      const savedPhone = readSavedPhone();
+      if (savedPhone && hasSavedCard(slug, 'cashback')) {
+        let balance = null;
+        try {
+          const r = await fetch(`${API}?action=cashback-balance&${programParam}&phone=${encodeURIComponent(savedPhone)}`);
+          balance = r.ok ? await r.json().catch(() => null) : null;
+        } catch { balance = null; }
+        if (cancelled) return;
+        if (balance) {
+          setPhone(savedPhone);
+          setResult({
+            ...balance,
+            account: balance.account || {
+              balance: balance.balance ?? 0,
+              totalEarned: balance.totalEarned ?? 0,
+              totalRedeemed: balance.totalRedeemed ?? 0,
+            },
+          });
+          setView(STATES.CARD);
+          return;
         }
-      })
-      .catch(() => setView(STATES.ERROR));
+      }
+
+      setView(STATES.ENTER);
+    })();
+
+    return () => { cancelled = true; };
   }, [slug, programAction, programParam]);
 
   useEffect(() => {
